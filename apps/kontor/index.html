@@ -112,14 +112,6 @@
   .tag.planlagt { background: rgba(245,158,11,.15); color: #fcd34d; }
   .tag.udfort, .tag.udført { background: rgba(16,185,129,.15); color: #6ee7b7; }
   .empty { text-align: center; color: var(--muted); padding: 32px; }
-  .truck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(315px, 1fr)); gap: 18px; }
-  .truck-card { background: var(--surface); border: 4px solid var(--accent); border-radius: var(--radius); padding: 24px; cursor: pointer; transition: border-color .15s, transform .12s, box-shadow .12s; }
-  .truck-card:hover { transform: translateY(-2px); box-shadow: 0 4px 18px rgba(0,0,0,.3); border-color: var(--accent2); }
-  .truck-card.has-skade { border-color: var(--red); }
-  .truck-card .tnr { font-size: 33px; font-weight: 700; margin-bottom: 5px; }
-  .truck-card .tmeta { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
-  .truck-card .tstats { display: flex; gap: 24px; font-size: 18px; flex-wrap: wrap; }
-  .truck-card .tstat .tv { font-weight: 700; } .truck-card .tstat .tl { color: var(--muted); font-size: 13px; }
   .truck-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
   .truck-status.aktiv { background: var(--green); } .truck-status.inaktiv { background: var(--red); }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -223,26 +215,6 @@
   .cat-card .cat-notice { margin-top:12px; font-size:11px; color: var(--muted); display:flex; align-items:center; gap:6px; }
   .cat-card.overdue .cat-notice { color:#000; }
 
-  /* CHAUFFØR CARDS */
-  .driver-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-bottom: 24px; }
-  .driver-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
-  .driver-card.has-skader { border-left: 3px solid var(--red); }
-  .driver-card .dname { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-  .driver-card .dmeta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
-  .driver-card .dstats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .driver-card .dstat { background: var(--surface2); border-radius: 6px; padding: 8px 10px; }
-  .driver-card .dstat .dv { font-size: 16px; font-weight: 700; }
-  .driver-card .dstat .dl { font-size: 10px; color: var(--muted); }
-  .driver-card .dstat.red .dv { color: var(--red); }
-  /* BIL UDGIFTER OVERSIGT */
-  .bil-udgifter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px; }
-  .bil-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
-  .bil-card .bnr { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-  .bil-card .bmeta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
-  .bil-card .bbar-wrap { background: var(--surface2); border-radius: 4px; height: 6px; margin-bottom: 8px; overflow: hidden; }
-  .bil-card .bbar { height: 100%; border-radius: 4px; background: var(--accent); }
-  .bil-card .bamt { font-size: 15px; font-weight: 700; color: var(--accent); }
-  .bil-card .bsub { font-size: 11px; color: var(--muted); }
 
   /* ===== PRINT ===== */
   @media print {
@@ -264,9 +236,6 @@
     .print-header .print-meta { font-size: 11px; color: #555; text-align: right; }
     .bil-bar-wrap { background: #eee !important; }
     .bil-bar { background: #333 !important; }
-    .driver-card, .bil-card { border: 1px solid #ccc !important; background: #fff !important; }
-    .driver-card .dstat { background: #f5f5f5 !important; }
-    .driver-card .dv { color: #000 !important; }
     @page { margin: 15mm; }
   }
   .print-section { display: none; }
@@ -392,13 +361,9 @@
   .side-nav-logout { width: 100%; }
 
   /* Kort og tabeller får ro: tynde kanter, ingen tunge skygger */
-  :root.light .card, :root.light .kpi, :root.light .panel,
-  :root.light .truck-card, :root.light .bil-card, :root.light .driver-card {
+  :root.light .card, :root.light .kpi, :root.light .panel {
     box-shadow: 0 1px 2px rgba(20,35,45,.04);
   }
-  :root.light .truck-card { border: 1px solid var(--border) !important; border-left: 3px solid var(--accent) !important; }
-  :root.light .truck-card.has-skade { border-left-color: var(--red) !important; }
-  :root.light .truck-card:hover { border-color: var(--border2) !important; box-shadow: 0 3px 10px rgba(20,35,45,.08); }
   .btn-primary { background: var(--accent); border-color: var(--accent); }
   #syncBar { background: var(--cyan); }
 
@@ -656,7 +621,10 @@
     <h3 data-t="trucks_title">📦 Alle enheder</h3>
     <button class="btn btn-primary" data-t="add_truck" onclick="openModal(&#39;modalNyBil&#39;)">+ Tilføj enhed</button>
   </div>
-  <div class="truck-grid" id="truckGrid"></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th data-t="col_truck">Enhed</th><th data-t="col_reg">Reg.nr.</th><th data-t="col_year">Årgang</th><th data-t="col_status">Status</th><th data-t="lbl_expenses">Udgifter</th><th data-t="lbl_tasks">Opgaver</th></tr></thead>
+    <tbody id="truckGrid"></tbody>
+  </table></div>
 </div>
 
 <!-- ===== STATISTIK ===== -->
@@ -770,7 +738,6 @@
       </div>
       <!-- BIL -->
       <div id="detailBil" style="">
-        <div class="bil-udgifter-grid" id="bilUdgifterGrid"></div>
         <div class="tbl-wrap"><table>
           <thead><tr><th data-t="col_truck">Enhed</th><th data-t="col_reg">Reg.nr.</th><th data-t="col_exp_count">Antal udgifter</th><th data-t="col_total_exp">Samlede udgifter</th><th data-t="col_dmg_count">Antal skader</th><th data-t="col_dmg_cost">Skadeomkostninger</th></tr></thead>
           <tbody id="bilUdgifterBody"></tbody>
@@ -778,7 +745,6 @@
       </div>
       <!-- VÆRKSTED -->
       <div id="detailVaerksted" style="display:none;">
-        <div class="driver-grid" id="workshopStatGrid"></div>
         <div class="tbl-wrap"><table>
           <thead><tr><th data-t="col_name">Navn</th><th data-t="col_count">Antal</th><th data-t="col_total_exp">Samlede udgifter</th><th data-t="lbl_invoiced">Faktureret beløb (kr)</th><th data-t="lbl_diff">Difference</th></tr></thead>
           <tbody id="workshopStatBody"></tbody>
@@ -786,9 +752,8 @@
       </div>
       <!-- CHAUFFØR -->
       <div id="detailChauffeur" style="display:none;">
-        <div class="driver-grid" id="driverStatGrid"></div>
         <div class="tbl-wrap"><table>
-          <thead><tr><th data-t="col_name">Navn</th><th data-t="col_dmg_total">col_dmg_total</th><th data-t="col_dmg_costs">col_dmg_costs</th><th data-t="col_latest_dmg">col_latest_dmg</th></tr></thead>
+          <thead><tr><th data-t="col_name">Navn</th><th data-t="col_dmg_total">Skader i alt</th><th data-t="col_dmg_open">Åbne skader</th><th data-t="col_dmg_costs">Skadeomkostninger</th><th data-t="col_latest_dmg">Seneste skade</th></tr></thead>
           <tbody id="driverStatBody"></tbody>
         </table></div>
       </div>
@@ -880,7 +845,10 @@
       <h3 data-t="nav_drivers_contacts">👤 Chauffører</h3>
       <span id="chauffContactCount" style="font-size:12px;color:var(--muted)">14 vist</span>
     </div>
-    <div id="chauffContactGrid" class="driver-grid" style="margin-bottom:32px"></div>
+    <div class="tbl-wrap" style="margin-bottom:32px"><table>
+      <thead><tr><th data-t="col_name">Navn</th><th data-t="col_license">Kørekortklasse</th><th data-t="col_employed">Ansat siden</th><th data-t="col_phone">Telefon</th><th data-t="col_email">Email</th></tr></thead>
+      <tbody id="chauffContactGrid"></tbody>
+    </table></div>
   </div>
 
   <!-- VÆRKSTEDER -->
@@ -889,7 +857,10 @@
       <h3 data-t="nav_workshop_contacts">🔧 Værksteder</h3>
       <span id="vaerkContactCount" style="font-size:12px;color:var(--muted)">9 vist</span>
     </div>
-    <div id="vaerkContactGrid" class="driver-grid"></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th data-t="col_name">Navn</th><th data-t="col_contact">Kontaktperson</th><th data-t="col_phone">Telefon</th><th data-t="col_email">Email</th></tr></thead>
+      <tbody id="vaerkContactGrid"></tbody>
+    </table></div>
   </div>
 
 </div>
@@ -1407,9 +1378,10 @@
     col_truck:'Enhed',col_desc:'Beskrivelse',col_type:'Type',col_amount:'Beløb',col_date:'Dato',
     col_category:'Kategori',col_status:'Status',col_driver:'Chauffør',col_performer:'Værksted',
     col_km:'Km',col_insurance:'Forsikring',col_reg:'Reg.nr.',col_year:'Årgang',col_purchase:'Købspris (kr)',
-    col_name:'Navn',col_phone:'Telefon',col_license:'Kørekortklasse',col_employed:'Ansat siden',
+    col_name:'Navn',col_phone:'Telefon',col_email:'Email',col_contact:'Kontaktperson',col_license:'Kørekortklasse',col_employed:'Ansat siden',
     col_vehicle_no:'Vognr.',col_exp_count:'Antal udgifter',col_total_exp:'Samlede udgifter',
     col_dmg_count:'Antal skader',col_dmg_cost:'Skadeomkostninger',col_share:'Andel',
+    col_dmg_total:'Skader i alt',col_dmg_open:'Åbne skader',col_dmg_costs:'Skadeomkostninger',col_latest_dmg:'Seneste skade',
     col_share_pct:'Andel %',col_count:'Antal',col_total:'I alt',
     // recent
     recent_title:'🕒 Seneste aktivitet',no_entries:'Ingen poster endnu',
@@ -1517,9 +1489,10 @@
     col_truck:'Unit',col_desc:'Description',col_type:'Type',col_amount:'Amount',col_date:'Date',
     col_category:'Category',col_status:'Status',col_driver:'Driver',col_performer:'Workshop',
     col_km:'Km',col_insurance:'Insurance',col_reg:'Reg. no.',col_year:'Year',col_purchase:'Purchase price',
-    col_name:'Name',col_phone:'Phone',col_license:'Licence class',col_employed:'Employed since',
+    col_name:'Name',col_phone:'Phone',col_email:'Email',col_contact:'Contact person',col_license:'Licence class',col_employed:'Employed since',
     col_vehicle_no:'Vehicle no.',col_exp_count:'No. of expenses',col_total_exp:'Total expenses',
     col_dmg_count:'No. of damages',col_dmg_cost:'Damage costs',col_share:'Share',
+    col_dmg_total:'Damages total',col_dmg_open:'Open damages',col_dmg_costs:'Damage costs',col_latest_dmg:'Latest damage',
     col_share_pct:'Share %',col_count:'Count',col_total:'Total',
     recent_title:'🕒 Recent activity',no_entries:'No entries yet',
     tasks_title:'🔧 All tasks',new_task:'+ New task',
@@ -1607,7 +1580,7 @@
     const btn = document.getElementById('langBtn');
     if(btn) btn.textContent = window.LANG === 'da' ? '🌐 English' : '🌐 Dansk';
     applyStaticTranslations();
-    if(typeof refreshAll === 'function') refreshAll();
+    if(typeof window.refreshAll === 'function') window.refreshAll();
   };
 
   window.applyStaticTranslations = function() {
@@ -1883,6 +1856,7 @@ function refreshAll() {
   renderKontakter();
   updateBadges();
 }
+window.refreshAll = refreshAll;
 
 // ===== DROPDOWNS =====
 function populateDropdowns() {
@@ -2519,20 +2493,21 @@ window.openServiceModal = function(tid, typeId) {
 function renderTrucks() {
   const grid = document.getElementById('truckGrid');
   const ids = Object.keys(trucks).sort((a,b)=>(trucks[a].vognr||'').localeCompare(trucks[b].vognr||''));
-  if(!ids.length){grid.innerHTML=`<p style="color:var(--muted)">${T('no_trucks_yet')}</p>`;return;}
+  if(!ids.length){grid.innerHTML=`<tr><td colspan="6" class="empty">${T('no_trucks_yet')}</td></tr>`;return;}
   grid.innerHTML = ids.map(id=>{
     const t=trucks[id];
     const udgBil=Object.values(udgifter).filter(u=>u.truck===id).reduce((s,u)=>s+Number(u.beloeb||0),0);
     const opgBil=Object.values(opgaver).filter(o=>o.truck===id).length;
     const hasSkade=Object.values(opgaver).some(o=>o.truck===id&&normType(o.type)==='3'&&o.status!=='udført');
-    return `<div class="truck-card ${hasSkade?'has-skade':''}" onclick="openBilDetail('${id}')">
-      <div class="tnr"><span class="truck-status ${normStatus(t.status||'aktiv')}"></span>${t.vognr||id}</div>
-      <div class="tmeta">${t.regnr||T('no_reg')} · ${t.aargang||'—'}</div>
-      <div class="tstats">
-        <div class="tstat"><div class="tv">${kr(udgBil)}</div><div class="tl">Udgifter</div></div>
-        <div class="tstat"><div class="tv">${opgBil}</div><div class="tl">Opgaver</div></div>
-      </div>
-    </div>`;
+    const status=normStatus(t.status||'aktiv');
+    return `<tr style="cursor:pointer" onclick="openBilDetail('${id}')">
+      <td><span class="truck-status ${status}"></span>${t.vognr||id}${hasSkade?`<span class="tag skade" style="margin-left:8px">${typeLabel('3')}</span>`:''}</td>
+      <td>${t.regnr||T('no_reg')}</td>
+      <td>${t.aargang||'—'}</td>
+      <td>${status==='aktiv'?T('s_active'):T('s_inactive')}</td>
+      <td>${kr(udgBil)}</td>
+      <td>${opgBil}</td>
+    </tr>`;
   }).join('');
 }
 
@@ -2926,15 +2901,12 @@ window.renderBilOversigt = function() {
   const filtUdg = filterByPeriod(Object.values(udgifter), fra, til);
   const filtOpg = filterByPeriod(Object.values(opgaver), fra, til);
   const totalAlle = filtUdg.reduce((s,u)=>s+Number(u.beloeb||0),0);
-  const maxUdg = Math.max(1,...tids.map(id=>filtUdg.filter(u=>u.truck===id).reduce((s,u)=>s+Number(u.beloeb||0),0)));
 
   document.getElementById('statPeriodeInfo').textContent = periodeInfo(fra, til, filtUdg.length, totalAlle);
 
-  const bilGrid = document.getElementById('bilUdgifterGrid');
   const bilBody = document.getElementById('bilUdgifterBody');
 
   if(!tids.length){
-    bilGrid.innerHTML=`<p style="color:var(--muted)">${T('no_trucks_stat')}</p>`;
     bilBody.innerHTML=`<tr><td colspan="6" class="empty">${T('no_trucks_body')}</td></tr>`;
     return;
   }
@@ -2947,15 +2919,6 @@ window.renderBilOversigt = function() {
     const skadeKr=skader.reduce((s,o)=>s+Number(o.beloeb||0),0);
     return {id,t,totalUdg,antalUdg:udgs.length,antalSkader:skader.length,skadeKr};
   }).sort((a,b)=>b.totalUdg-a.totalUdg);
-
-  bilGrid.innerHTML = bilStats.map(b=>`
-    <div class="bil-card" style="cursor:pointer" onclick="openTruckTrend('${b.id}')" title="${window.LANG==='en'?'Click to see 52-week trend':'Klik for 52-ugers kurve'}">
-      <div class="bnr"><span class="truck-status ${normStatus(b.t.status||'aktiv')}"></span>${b.t.vognr||b.id} <span style="font-size:11px;color:var(--accent);font-weight:600">📈</span></div>
-      <div class="bmeta">${b.t.regnr||'—'} · ${b.antalUdg} ${T('bill_expenses')}</div>
-      <div class="bbar-wrap"><div class="bbar" style="width:${Math.round(b.totalUdg/maxUdg*100)}%"></div></div>
-      <div class="bamt">${kr(b.totalUdg)}</div>
-      <div class="bsub">${b.antalSkader>0?`⚠ ${b.antalSkader} skade${b.antalSkader>1?'r':''} · ${kr(b.skadeKr)}`:T('no_damage')}</div>
-    </div>`).join('');
 
   bilBody.innerHTML = bilStats.map(b=>`
     <tr style="cursor:pointer" onclick="openTruckTrend('${b.id}')">
@@ -3228,11 +3191,9 @@ window.renderChauffeurStat = function() {
 
   // periode info shown in shared banner
 
-  const driverGrid = document.getElementById('driverStatGrid');
   const driverBody = document.getElementById('driverStatBody');
 
   if(!cids.length){
-    driverGrid.innerHTML='<p style="color:var(--muted)">Ingen chauffører oprettet endnu.</p>';
     driverBody.innerHTML=`<tr><td colspan="5" class="empty">${T('no_drivers_body')}</td></tr>`;
     return;
   }
@@ -3245,25 +3206,14 @@ window.renderChauffeurStat = function() {
     return {cid,navn:chauffoerer[cid].navn||cid,antal:mine.length,aabne,totalKr,seneste};
   }).sort((a,b)=>b.antal-a.antal);
 
-  driverGrid.innerHTML = cStats.map(c=>`
-    <div class="driver-card ${c.antal>0?'has-skader':''}">
-      <div class="dname">${c.navn}</div>
-      <div class="dmeta">${chauffoerer[c.cid]?.korekort?T('driver_class')+chauffoerer[c.cid].korekort:'—'}</div>
-      <div class="dstats">
-        <div class="dstat ${c.antal>0?'red':''}"><div class="dv">${c.antal}</div><div class="dl">Skader i alt</div></div>
-        <div class="dstat ${c.aabne>0?'red':''}"><div class="dv">${c.aabne}</div><div class="dl">Åbne skader</div></div>
-        <div class="dstat"><div class="dv" style="font-size:13px">${c.totalKr>0?kr(c.totalKr):'0 kr'}</div><div class="dl">Skadeomkostninger</div></div>
-        <div class="dstat"><div class="dv" style="font-size:12px">${c.seneste||'—'}</div><div class="dl">Seneste skade</div></div>
-      </div>
-    </div>`).join('');
-
   driverBody.innerHTML = cStats.map(c=>`
     <tr>
       <td><strong>${c.navn}</strong></td>
       <td>${c.antal>0?`<span style="color:var(--red);font-weight:700">${c.antal}</span>`:0}</td>
+      <td>${c.aabne>0?`<span style="color:var(--red);font-weight:700">${c.aabne}</span>`:0}</td>
       <td>${c.totalKr>0?`<span style="color:var(--red);font-weight:700">${kr(c.totalKr)}</span>`:'0 kr'}</td>
       <td>${c.seneste||'—'}</td>
-    </tr>`).join('') + `<tr style="border-top:2px solid var(--border)"><td><strong>${T('col_total')}</strong></td><td><strong>${cStats.reduce((s,c2)=>s+c2.antal,0)}</strong></td><td><strong>${kr(totalKrAlle)}</strong></td><td></td></tr>`;
+    </tr>`).join('') + `<tr style="border-top:2px solid var(--border)"><td><strong>${T('col_total')}</strong></td><td><strong>${cStats.reduce((s,c2)=>s+c2.antal,0)}</strong></td><td><strong>${cStats.reduce((s,c2)=>s+c2.aabne,0)}</strong></td><td><strong>${kr(totalKrAlle)}</strong></td><td></td></tr>`;
 }
 
 function renderVaerkstedStat() {
@@ -3308,29 +3258,12 @@ function renderVaerkstedStat() {
 
   const list = Object.values(performers).sort((a,b) => (b.faktureret+b.anslaaet) - (a.faktureret+a.anslaaet));
 
-  const grid = document.getElementById('workshopStatGrid');
   const body = document.getElementById('workshopStatBody');
   const activeList = list.filter(p => p.antalUdg+p.antalOpg > 0 || Object.values(vaerksteder).some(v=>v.navn===p.navn));
   if(!activeList.length) {
-    grid.innerHTML = `<p style="color:var(--muted)">${T('no_performers')}</p>`;
     body.innerHTML = `<tr><td colspan="5" class="empty">${T('no_performers')}</td></tr>`;
     return;
   }
-
-  grid.innerHTML = activeList.map(p => {
-    const diff = p.faktureret - p.anslaaet;
-    const diffColor = diff > 0 ? 'var(--red)' : diff < 0 ? 'var(--green)' : 'var(--muted)';
-    return `<div class="driver-card ${p.opgaver>0?'has-skader':''}">
-      <div class="dname">🔧 ${p.navn}</div>
-      <div class="dmeta">${p.antalUdg} ${window.LANG==='en'?'expenses':'udgifter'} · ${p.antalOpg} ${window.LANG==='en'?'tasks':'opgaver'}</div>
-      <div class="dstats">
-        <div class="dstat"><div class="dv" style="font-size:13px">${kr(p.anslaaet)}</div><div class="dl">${T('lbl_est_amount').replace(' (kr)','')}</div></div>
-        <div class="dstat"><div class="dv" style="font-size:13px">${p.faktureret?kr(p.faktureret):'—'}</div><div class="dl">${T('lbl_invoiced').replace(' (kr)','')}</div></div>
-        <div class="dstat"><div class="dv" style="font-size:13px;color:${diffColor}">${p.faktureret?(diff>=0?'+':'')+Number(diff).toLocaleString('da-DK')+' kr':'—'}</div><div class="dl">${T('lbl_diff')}</div></div>
-        <div class="dstat"><div class="dv">${p.antalUdg+p.antalOpg}</div><div class="dl">${T('col_count')}</div></div>
-      </div>
-    </div>`;
-  }).join('');
 
   body.innerHTML = activeList.map(p => {
     const diff = p.faktureret - p.anslaaet;
@@ -3830,17 +3763,15 @@ window.renderKontakter = function() {
     if(!search) return true;
     return fields.some(f=>(f||'').toLowerCase().includes(search));
   }
-  function makeCard(navn, meta, tlf, email, aktiv) {
+  function makeRow(navn, cells, tlf, email, aktiv) {
     const tlfLink  = tlf   ? `<a href="tel:${tlf.replace(/\s/g,'')}"  style="color:var(--accent);text-decoration:none;">📞 ${tlf}</a>`   : '<span style="color:var(--muted)">—</span>';
     const mailLink = email ? `<a href="mailto:${email}" style="color:var(--accent);text-decoration:none;">✉️ ${email}</a>` : '<span style="color:var(--muted)">—</span>';
-    return `<div class="driver-card" style="opacity:${aktiv?1:0.5}">
-      <div class="dname"><span class="truck-status ${aktiv?'aktiv':'inaktiv'}"></span>${navn||'—'}</div>
-      <div class="dmeta" style="min-height:16px">${meta||'&nbsp;'}</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;font-size:13px">
-        <div>${tlfLink}</div>
-        <div>${mailLink}</div>
-      </div>
-    </div>`;
+    return `<tr style="opacity:${aktiv?1:0.5}">
+      <td><span class="truck-status ${aktiv?'aktiv':'inaktiv'}"></span>${navn||'—'}</td>
+      ${cells.map(c=>`<td>${c||'—'}</td>`).join('')}
+      <td>${tlfLink}</td>
+      <td>${mailLink}</td>
+    </tr>`;
   }
 
   // --- CHAUFFØRER ---
@@ -3860,10 +3791,9 @@ window.renderKontakter = function() {
       ? filtered.map(id => {
           const c=chauffoerer[id];
           const aktiv=normStatus(c.status)!=='inaktiv';
-          const meta = [c.korekort?'Klasse '+c.korekort:'', c.ansat?'Ansat '+c.ansat:''].filter(Boolean).join(' · ');
-          return makeCard(c.navn, meta, c.tlf, c.email, aktiv);
+          return makeRow(c.navn, [c.korekort, c.ansat], c.tlf, c.email, aktiv);
         }).join('')
-      : `<p style="color:var(--muted);grid-column:1/-1">${search?T('no_entries'):T('no_drivers')}</p>`;
+      : `<tr><td colspan="5" class="empty">${search?T('no_entries'):T('no_drivers')}</td></tr>`;
     if(ccount) ccount.textContent = filtered.length + ' ' + (window.LANG==='en'?'shown':'vist');
   }
 
@@ -3884,9 +3814,9 @@ window.renderKontakter = function() {
       ? filtered.map(id => {
           const v=vaerksteder[id];
           const aktiv=v.aktiv!==false;
-          return makeCard(v.navn, v.kontakt||'', v.tlf, v.email, aktiv);
+          return makeRow(v.navn, [v.kontakt], v.tlf, v.email, aktiv);
         }).join('')
-      : `<p style="color:var(--muted);grid-column:1/-1">${search?T('no_entries'):T('no_workshops')}</p>`;
+      : `<tr><td colspan="4" class="empty">${search?T('no_entries'):T('no_workshops')}</td></tr>`;
     if(vcount) vcount.textContent = filtered.length + ' ' + (window.LANG==='en'?'shown':'vist');
   }
 };
