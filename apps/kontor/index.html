@@ -250,7 +250,8 @@
   /* ===== PRINT ===== */
   @media print {
     body { background: #fff !important; color: #000 !important; font-size: 12px; }
-    header, nav, #syncBar, #connStatus, .no-print, .btn, .btn-icon, .filter-row { display: none !important; }
+    header, nav, .side-nav, #syncBar, #connStatus, .no-print, .btn, .btn-icon, .filter-row { display: none !important; }
+    #appShell { display: block !important; }
     main { padding: 0; max-width: 100%; }
     .tab { display: none !important; }
     .print-section { display: block !important; }
@@ -285,7 +286,13 @@
   @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr; }
     .profit-inputs, .profit-result { grid-template-columns: 1fr; }
-    nav button { padding: 12px 8px; font-size: 12px; }
+    nav.side-nav-list button { padding: 12px 8px; font-size: 12px; }
+    #appShell { flex-direction: column; }
+    .side-nav { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: nowrap;
+      overflow-x: auto; padding: 10px 0; align-items: center; }
+    .side-nav-logo { padding: 0 12px; flex-shrink: 0; width: 90px; }
+    .side-nav-group, .side-nav-divider { display: none; }
+    nav.side-nav-list { flex-direction: row; }
   }
 
   /* ===== BILLEDER PÅ OPGAVER ===== */
@@ -349,24 +356,34 @@
   :root.light .tag.udført                                   { background:#e6f4ef; color:#0f6047; }
 
   /* Topbjælken er mørk i begge temaer — den er appens identitet */
-  header { background: var(--sidebar); border-bottom: none; height: 108px; }
-  .header-inner { height: 108px; padding: 0 26px; gap: 16px; }
-  header h1 { font-size: 17px; font-weight: 500; letter-spacing: .16em; color: #fff; }
-  header h1 span { color: #fff; }
+  header { background: var(--sidebar); border-bottom: none; height: 70px; }
+  .header-inner { height: 70px; padding: 0 26px; gap: 16px; }
   #headerLogo { height: 34px !important; }
   #kundeNavn { color: #93aab4 !important; font-size: 12.5px !important;
-               padding-left: 16px; border-left: 1px solid rgba(255,255,255,.14); }
+               padding-left: 0; border-left: none; }
   #headerUserName { color: #93aab4 !important; }
   .header-inner button { background: rgba(255,255,255,.07) !important;
     border: 1px solid rgba(255,255,255,.14) !important; color: #cfdde3 !important; }
   .header-inner button:hover { background: rgba(255,255,255,.13) !important; }
 
-  nav { background: var(--sidebar-2); border-bottom: none; }
-  .nav-inner { padding: 0 22px; }
-  nav button { color: #a9c0c9; padding: 12px 15px; font-weight: 500; border-bottom: 2px solid transparent; }
-  nav button:hover { color: #fff; }
-  nav button.active { color: #fff; background: var(--sidebar-aktiv); border-bottom-color: var(--cyan); }
+  /* Venstre sidebar-navigation, opdelt i to grupper */
+  #appShell { display: flex; align-items: stretch; }
+  .side-nav { width: 250px; flex-shrink: 0; background: var(--sidebar-2); display: flex;
+    flex-direction: column; padding: 22px 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+  .side-nav-logo { padding: 0 20px 22px; }
+  .side-nav-group { padding: 18px 20px 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .14em;
+    color: var(--cyan); text-transform: uppercase; }
+  .side-nav-group:first-of-type { padding-top: 0; }
+  .side-nav-divider { border: none; border-top: 1px solid rgba(255,255,255,.08); margin: 10px 20px 0; }
+  nav.side-nav-list { background: none; border: none; display: flex; flex-direction: column; gap: 1px; }
+  .side-nav-list { padding: 0; }
+  nav.side-nav-list button { color: #a9c0c9; padding: 10px 20px; font-weight: 500;
+    border-bottom: none; text-align: left; white-space: normal; }
+  nav.side-nav-list button:hover { color: #fff; background: rgba(255,255,255,.05); }
+  nav.side-nav-list button.active { color: #fff; background: var(--sidebar-aktiv); border-bottom-color: transparent;
+    box-shadow: inset 3px 0 0 var(--cyan); }
   .badge { background: var(--yellow); color: #fff; }
+  .content-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
   /* Kort og tabeller får ro: tynde kanter, ingen tunge skygger */
   :root.light .card, :root.light .kpi, :root.light .panel,
@@ -456,6 +473,29 @@
 
 <!-- APP SHELL (hidden until logged in) -->
 <div id="appShell" style="">
+<aside class="side-nav">
+  <div class="side-nav-logo">
+    <img class="app-logo" src="veyro-logo.jpg" alt="Veyro Systems" style="width:100%;height:auto;border-radius:5px;display:block;">
+  </div>
+  <div class="side-nav-group">FleetControl</div>
+  <nav class="side-nav-list">
+    <button onclick="showTab(&#39;overblik&#39;,this)" data-t="nav_overview">📊 Overblik</button>
+    <button onclick="showTab(&#39;opgaver&#39;,this)" data-t="nav_tasks">🔧 Opgaver<span id="badgeOpgaver" class="badge" style=""></span></button>
+    <button onclick="showTab(&#39;udgifter&#39;,this)" data-t="nav_expenses">💰 Udgifter</button>
+    <button onclick="showTab(&#39;service&#39;,this)" data-t="nav_service">📅 Service</button>
+    <button onclick="showTab(&#39;statistik&#39;,this)" data-t="nav_stats">📈 Statistik</button>
+  </nav>
+  <hr class="side-nav-divider">
+  <div class="side-nav-group">Administration</div>
+  <nav class="side-nav-list">
+    <button onclick="showTab(&#39;opsaetning&#39;,this)" data-t="nav_setup">⚙️ Opsætning</button>
+    <button onclick="showTab(&#39;kontakter&#39;,this)" data-t="nav_contacts">📋 Kontakter</button>
+    <button class="active" onclick="showTab(&#39;biler&#39;,this)" data-t="nav_trucks">📦 Enheder</button>
+    <button id="navBrugerAdmin" onclick="showTab(&#39;brugeradmin&#39;,this)" data-t="nav_users">👥 Brugere</button>
+  </nav>
+</aside>
+
+<div class="content-col">
 <div id="ejerBanner" style="display:none;">
   <span>Ejeradgang — du arbejder i <b id="ejerBannerNavn"></b> data.</span>
   <button onclick="skiftKunde()">Skift kunde</button>
@@ -463,9 +503,7 @@
 
 <header>
 <div class="header-inner">
-  <img class="app-logo" src="veyro-logo.jpg" alt="Veyro Systems" style="height:96px;width:auto;border-radius:5px;">
   <img id="headerLogo" src="" alt="" style="display:none;height:76px;max-width:200px;object-fit:contain;border-radius:6px;">
-  <h1><span>Fleet</span>Control</h1>
   <span id="kundeNavn" style="font-size:13px;color:var(--muted);white-space:nowrap;"></span>
   <span id="headerAlerts"></span>
   <button id="themeBtn" onclick="toggleTheme()" style="margin-left:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">☀️</button>
@@ -474,20 +512,6 @@
   <button onclick="doLogout()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">🚪 Log ud</button>
 </div>
 </header>
-
-<nav>
-<div class="nav-inner">
-  <button class="" onclick="showTab(&#39;overblik&#39;,this)" data-t="nav_overview">📊 Overblik</button>
-  <button onclick="showTab(&#39;opgaver&#39;,this)" data-t="nav_tasks" class="">🔧 Opgaver<span id="badgeOpgaver" class="badge" style=""></span></button>
-  <button onclick="showTab(&#39;udgifter&#39;,this)" data-t="nav_expenses" class="">💰 Udgifter</button>
-  <button onclick="showTab(&#39;service&#39;,this)" data-t="nav_service" class="">📅 Service</button>
-  <button onclick="showTab(&#39;biler&#39;,this)" data-t="nav_trucks" class="active">📦 Enheder</button>
-  <button onclick="showTab(&#39;statistik&#39;,this)" data-t="nav_stats" class="">📈 Statistik</button>
-  <button onclick="showTab(&#39;kontakter&#39;,this)" data-t="nav_contacts" class="">📋 Kontakter</button>
-  <button id="navBrugerAdmin" onclick="showTab(&#39;brugeradmin&#39;,this)" data-t="nav_users" style="">👥 Brugere</button>
-  <button onclick="showTab(&#39;opsaetning&#39;,this)" data-t="nav_setup" class="">⚙️ Opsætning</button>
-</div>
-</nav>
 
 <main>
 
@@ -1067,6 +1091,7 @@
 </div>
 
 </div></main>
+</div><!-- end content-col -->
 
 <!-- ===== MODALS ===== -->
 
