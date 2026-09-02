@@ -1,0 +1,35 @@
+name: Deploy Firebase-regler og functions
+
+# Kører når regler eller functions ændres på main.
+# Kræver hemmeligheden FIREBASE_SERVICE_ACCOUNT i repoets Settings → Secrets.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'database.rules.json'
+      - 'storage.rules'
+      - 'firebase.json'
+      - 'functions/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installér functions-afhængigheder
+        run: npm ci --prefix functions || npm install --prefix functions
+
+      - name: Skriv servicekonto til fil
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > "$RUNNER_TEMP/sa.json"
+
+      - name: Deploy
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json
+        run: npx --yes firebase-tools deploy --only database,storage,functions --project "${{ vars.FIREBASE_PROJECT_ID }}" --non-interactive

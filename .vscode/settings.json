@@ -1,0 +1,14 @@
+{
+  "files.eol": "\n",
+  "editor.formatOnSave": false,
+  "html.format.wrapLineLength": 0,
+  "files.associations": {
+    "*.rules": "javascript",
+    "database.rules.json": "jsonc"
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.firebase": true
+  },
+  "cSpell.language": "en,da"
+}

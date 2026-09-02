@@ -1,0 +1,94 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "platform": {
+      "ejere": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "root.child('platform/ejere').child(auth.uid).exists()"
+        }
+      },
+      "config": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('platform/ejere').child(auth.uid).exists()"
+      }
+    },
+    "kunder": {
+      ".read": "auth != null && root.child('platform/ejere').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('platform/ejere').child(auth.uid).exists()",
+      "$kundeId": {
+        "//": "Brugeren skal kunne laese sin egen kundes navn og status ved login.",
+        ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || root.child('users').child(auth.uid).child('kundeId').val() === $kundeId)"
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('role').val() === 'admin' && data.child('kundeId').val() === root.child('users').child(auth.uid).child('kundeId').val()))",
+        ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('role').val() === 'admin' && (!data.exists() || data.child('kundeId').val() === root.child('users').child(auth.uid).child('kundeId').val()) && (!newData.exists() || newData.child('kundeId').val() === root.child('users').child(auth.uid).child('kundeId').val())))",
+        "kundeId": {
+          ".validate": "newData.isString() && root.child('kunder').child(newData.val()).exists()"
+        },
+        "role": {
+          ".validate": "newData.val() === 'admin' || newData.val() === 'user' || newData.val() === 'chauffeur' || newData.val() === 'leverandoer' || newData.val() === 'owner'"
+        }
+      }
+    },
+    "k": {
+      "$kundeId": {
+        "//": "Laese- og skriveadgang staar paa hver enkelt node. Ligger den paa $kundeId, arver alt nedenunder den — og saa kan en chauffoer skrive i brugerlisten.",
+        "trucks": {
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur' || root.child('users').child(auth.uid).child('role').val() === 'leverandoer') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))"
+        },
+        "vaerksteder": {
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur' || root.child('users').child(auth.uid).child('role').val() === 'leverandoer') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))"
+        },
+        "mailConfig": {
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur' || root.child('users').child(auth.uid).child('role').val() === 'leverandoer') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))"
+        },
+        "udgifter": {
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))"
+        },
+        "service": {
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))"
+        },
+        "serviceTyper": {
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))"
+        },
+        "chauffoerer": {
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))"
+        },
+        "settings": {
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))"
+        },
+        "opgaver": {
+          "//": "Chauffoerer opretter indberetninger her. Leverandoerer maa kun aendre deres egne opgaver — se $opgaveId nedenfor.",
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur' || root.child('users').child(auth.uid).child('role').val() === 'leverandoer') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          "$opgaveId": {
+            "//": "Vaerkstedet maa opdatere en opgave det selv staar som udfoerer paa. Det maa hverken oprette eller slette, og det maa ikke flytte opgaven til et andet vaerksted.",
+            ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'leverandoer' && root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret' && data.exists() && newData.exists() && data.child('udforerId').val() === root.child('users').child(auth.uid).child('vaerkstedId').val() && newData.child('udforerId').val() === root.child('users').child(auth.uid).child('vaerkstedId').val()"
+          }
+        },
+        "brugere": {
+          "//": "Kun kundens egen administrator — eller en platformejer — maa roere brugerlisten.",
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          "$uid": {
+            "role": {
+              ".validate": "newData.val() === 'admin' || newData.val() === 'user' || newData.val() === 'chauffeur' || newData.val() === 'leverandoer'"
+            }
+          }
+        }
+      }
+    }
+  }
+}

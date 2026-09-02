@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<!-- saved from url=(0029)https://hizfleet.netlify.app/ -->
+<html lang="da"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#061824">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>🚛 Indberetning</title>
+<style>
+  :root {
+    --sidebar:#061824; --sidebar-2:#0b2531; --sidebar-aktiv:#0e4c57; --cyan:#43cfc4;
+    --bg:#f6f7f9; --surface:#ffffff; --surface2:#f3f6f8;
+    --border:#e4eaee; --border2:#d3dde2;
+    --accent:#0e6e7a; --accent2:#045c6c; --accent-svag:#edf6f5;
+    --green:#157f5f; --yellow:#b47a24; --red:#ca4b4a; --amber:#b7791f;
+    --text:#14232d; --muted:#6b7c86;
+    --radius: 12px; --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  :root.nat {
+    --sidebar:#03121b; --sidebar-2:#0b2531; --sidebar-aktiv:#0e4c57; --cyan:#43cfc4;
+    --bg:#061824; --surface:#0b2531; --surface2:#123240;
+    --border:#1d4150; --border2:#2a5364;
+    --accent:#2aa5ac; --accent2:#43cfc4; --accent-svag:rgba(67,207,196,.12);
+    --green:#34d399; --yellow:#f0b849; --red:#f08b86; --amber:#e0a458;
+    --text:#e6f0f3; --muted:#8ea7b2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+  button, input, select, textarea { font-family: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  /* ===== LOGIN ===== */
+  #loginScreen { display:flex; flex-direction:column; align-items:center; justify-content:center;
+                 min-height:100vh; padding:24px; }
+  .login-box { background: var(--surface); border:1px solid var(--border); border-radius:16px;
+               padding:36px 28px; width:100%; max-width:360px; box-shadow:0 1px 3px rgba(20,35,45,.06); }
+  .login-logo { font-size:44px; text-align:center; margin-bottom:10px; }
+  .login-title { font-size:21px; font-weight:650; text-align:center; margin-bottom:5px; }
+  .login-sub { font-size:13.5px; color:var(--muted); text-align:center; margin-bottom:26px; }
+
+  /* ===== APP ===== */
+  #app { display:none; min-height:100vh; }
+  .mob-header { background: var(--sidebar); color:#fff; padding:13px 18px; display:flex;
+                align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .mob-header-title { font-size:16px; font-weight:600; }
+  .mob-header-user { font-size:11.5px; color:#93aab4; margin-top:2px; }
+  .mob-logout { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16);
+                color:#cfdde3; padding:6px 12px; border-radius:8px; font-size:12px; cursor:pointer; }
+  .nat-knap { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); color:#cfdde3;
+              padding:6px 10px; border-radius:8px; font-size:14px; cursor:pointer; margin-right:8px; }
+
+  .mob-nav { display:flex; background:var(--surface); border-bottom:1px solid var(--border);
+             position:sticky; top:52px; z-index:99; }
+  .mob-nav button { flex:1; padding:12px 8px; border:none; background:none; color:var(--muted);
+                    font-size:13px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; }
+  .mob-nav button.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+  .mob-content { padding:20px 16px; max-width:620px; margin:0 auto; }
+
+  .mob-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+              padding:18px; margin-bottom:14px; }
+  .mob-card-title { font-size:14.5px; font-weight:650; margin-bottom:15px; display:flex;
+                    align-items:center; gap:8px; }
+
+  .form-row { margin-bottom:15px; }
+  .form-row label { display:block; font-size:12.5px; color:var(--muted); margin-bottom:6px; font-weight:500; }
+  .form-row select, .form-row input, .form-row textarea, .inp {
+    width:100%; background:var(--surface); border:1px solid var(--border2); color:var(--text);
+    padding:13px 14px; border-radius:9px; font-size:16px; font-family:var(--font); outline:none;
+    -webkit-appearance:none; appearance:none; }
+  .form-row select:focus, .form-row input:focus, .form-row textarea:focus, .inp:focus { border-color:var(--accent); }
+  .form-row textarea { resize:none; min-height:100px; }
+  .inp { margin-bottom:14px; }
+
+  .type-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .type-btn { padding:16px 12px; border-radius:11px; border:1px solid var(--border2);
+              background:var(--surface); color:var(--text); font-size:13.5px; font-weight:600;
+              cursor:pointer; text-align:center; }
+  .type-btn.selected { border-color:var(--accent); background:var(--accent-svag); color:var(--accent2); }
+  .type-btn .type-icon { font-size:23px; display:block; margin-bottom:6px; }
+
+  .mob-submit { width:100%; padding:16px; background:var(--accent); color:#fff; border:none;
+                border-radius:11px; font-size:16px; font-weight:650; cursor:pointer; margin-top:8px; }
+  .mob-submit:active { opacity:.85; }
+  .mob-submit:disabled { opacity:.5; cursor:not-allowed; }
+
+  .field-input { display:flex; align-items:center; }
+  .field-input input { border-radius:9px 0 0 9px; border-right:none; }
+  .field-input .unit { background:var(--surface2); border:1px solid var(--border2); border-left:none;
+                       padding:13px 14px; border-radius:0 9px 9px 0; color:var(--muted);
+                       font-size:13.5px; white-space:nowrap; }
+
+  #successScreen { display:none; flex-direction:column; align-items:center; justify-content:center;
+                   min-height:60vh; padding:32px; text-align:center; }
+  .success-icon { font-size:62px; margin-bottom:18px; }
+  .success-title { font-size:22px; font-weight:650; margin-bottom:9px; }
+  .success-sub { font-size:14px; color:var(--muted); margin-bottom:30px; }
+  .success-new { padding:15px 30px; background:var(--accent); color:#fff; border:none;
+                 border-radius:11px; font-size:15px; font-weight:650; cursor:pointer; }
+
+  .report-item { display:flex; gap:13px; padding:14px 0; border-bottom:1px solid var(--border);
+                 align-items:flex-start; }
+  .report-item:last-child { border-bottom:none; }
+  .report-dot { width:3px; align-self:stretch; border-radius:2px; flex-shrink:0; background:var(--muted); }
+  .report-dot.indberettet { background:var(--yellow); }
+  .report-dot.udført { background:var(--green); }
+  .report-dot.oprettet { background:var(--muted); }
+  .report-dot.planlagt { background:var(--accent); }
+  .report-info { flex:1; min-width:0; }
+  .report-title { font-size:14px; font-weight:650; }
+  .report-meta { font-size:12px; color:var(--muted); margin-top:3px; }
+  .report-status { font-size:11px; font-weight:650; padding:3px 9px; border-radius:5px;
+                   white-space:nowrap; flex-shrink:0; }
+  .status-indberettet { background:#fdf6e7; color:#8a5c17; }
+  .status-udført { background:#e6f4ef; color:#0f6047; }
+  .status-oprettet { background:#eef1f3; color:#42545f; }
+  .status-planlagt { background:var(--accent-svag); color:var(--accent2); }
+  :root.nat .status-indberettet { background:rgba(240,184,73,.15); color:var(--yellow); }
+  :root.nat .status-udført { background:rgba(52,211,153,.15); color:var(--green); }
+  :root.nat .status-oprettet { background:rgba(142,167,178,.15); color:var(--muted); }
+
+  .btn-outline { width:100%; padding:13px; background:none; border:1px solid var(--border2);
+                 color:var(--text); border-radius:9px; font-size:15px; cursor:pointer; margin-bottom:10px; }
+  .error-msg { color:var(--red); font-size:13px; text-align:center; margin-top:10px; }
+  .input-group { margin-bottom:0; }
+
+  .skade-fields { display:none; }
+  .empty-state { text-align:center; padding:40px 20px; color:var(--muted); font-size:14px; }
+  .empty-state .empty-icon { font-size:44px; margin-bottom:12px; }
+
+  /* ===== BILLEDER ===== */
+  .foto-btns { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .foto-btn { padding:15px 10px; border-radius:11px; border:1px dashed var(--border2);
+              background:var(--surface2); color:var(--text); font-size:13.5px; font-weight:600;
+              cursor:pointer; text-align:center; }
+  .foto-btn:active { border-color:var(--accent); background:var(--accent-svag); }
+  .foto-btn:disabled { opacity:.4; cursor:not-allowed; }
+  .foto-btn .foto-icon { font-size:21px; display:block; margin-bottom:5px; }
+  .foto-hint { font-size:12px; color:var(--muted); margin-top:10px; text-align:center; }
+  .foto-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:10px; margin-bottom:14px; }
+  .foto-thumb { position:relative; aspect-ratio:1; border-radius:9px; overflow:hidden;
+                border:1px solid var(--border); background:var(--surface2); }
+  .foto-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .foto-thumb .foto-del { position:absolute; top:4px; right:4px; width:26px; height:26px;
+    border-radius:50%; background:rgba(6,24,36,.85); border:none; color:#fff; font-size:14px;
+    line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .foto-thumb .foto-size { position:absolute; bottom:0; left:0; right:0; background:rgba(6,24,36,.8);
+    font-size:10px; color:#cfdde3; text-align:center; padding:2px 0; }
+  .foto-busy { font-size:13px; color:var(--accent); margin-bottom:10px; }
+  .foto-badge { display:inline-flex; align-items:center; gap:4px; margin-top:6px; font-size:11px;
+    font-weight:650; padding:3px 9px; border-radius:5px; background:var(--accent-svag);
+    color:var(--accent2); border:none; cursor:pointer; font-family:var(--font); }
+
+  #lightbox { display:none; position:fixed; inset:0; z-index:500; background:rgba(3,18,27,.96);
+    flex-direction:column; align-items:center; justify-content:center; padding:16px; }
+  #lightbox img { max-width:100%; max-height:76vh; border-radius:10px; object-fit:contain; }
+  .lb-bar { display:flex; align-items:center; justify-content:center; gap:18px; margin-top:16px; }
+  .lb-bar button { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); color:#fff;
+    width:46px; height:46px; border-radius:50%; font-size:19px; cursor:pointer; }
+  .lb-count { font-size:14px; color:#93aab4; min-width:52px; text-align:center; }
+  .lb-close { position:absolute; top:14px; right:14px; background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.2); color:#fff; width:40px; height:40px; border-radius:50%;
+    font-size:17px; cursor:pointer; }
+  .lb-open { position:absolute; top:14px; left:14px; font-size:13px; color:#cfdde3;
+    text-decoration:none; border:1px solid rgba(255,255,255,.2); padding:9px 13px;
+    border-radius:9px; background:rgba(255,255,255,.1); }
+</style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  /* Nattilstand — chaufføren vælger selv. Lys læser bedst i sollys,
+     mørk er rarere i førerhuset om aftenen. Valget huskes på telefonen. */
+  (function() {
+    if (localStorage.getItem('fc_nat') === '1') document.documentElement.classList.add('nat');
+    window.skiftNat = function() {
+      const nat = document.documentElement.classList.toggle('nat');
+      localStorage.setItem('fc_nat', nat ? '1' : '0');
+      const b = document.getElementById('natKnap');
+      if (b) b.textContent = nat ? '\u2600\uFE0F' : '\u{1F319}';
+      document.querySelector('meta[name=theme-color]').setAttribute('content', '#061824');
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+      const b = document.getElementById('natKnap');
+      if (b) b.textContent = document.documentElement.classList.contains('nat') ? '\u2600\uFE0F' : '\u{1F319}';
+    });
+  })();
+</script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loadingScreen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 16px;">
+  <div style="font-size:48px;">🚛</div>
+  <div style="font-size:16px;color:#6b7c86;">Forbinder...</div>
+</div>
+
+<div id="loginScreen" style="display:none;">
+  <div class="login-box">
+    <div class="login-logo">🚛</div>
+    <div class="login-title">Flådestyring</div>
+    <div class="login-sub">Chauffør indberetning</div>
+    <div class="input-group">
+      <input class="inp" type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+    </div>
+    <div class="input-group">
+      <input class="inp" type="password" id="loginPw" placeholder="Adgangskode" onkeydown="if(event.key===&#39;Enter&#39;)doLogin()">
+    </div>
+    <div id="loginErr" class="error-msg" style="display:none;"></div>
+    <button class="mob-submit" onclick="doLogin()">Log ind</button>
+    <div style="text-align:center;margin-top:16px;">
+      <a href="#" onclick="showResetForm();return false;" style="color:var(--muted);font-size:14px;text-decoration:none;border-bottom:1px dashed var(--muted);">Glemt adgangskode?</a>
+    </div>
+  </div>
+
+  <!-- RESET PANEL -->
+  <div id="resetPanel" class="login-box" style="display:none;">
+    <div class="login-logo">🔑</div>
+    <div class="login-title">Glemt adgangskode</div>
+    <div class="login-sub">Vi sender dig et reset-link på email</div>
+    <div class="input-group">
+      <input class="inp" type="email" id="resetEmail" placeholder="din@email.dk">
+    </div>
+    <div id="resetMsg" style="font-size:13px;text-align:center;margin-bottom:10px;display:none;"></div>
+    <button class="mob-submit" onclick="sendResetLink()">📧 Send reset-link</button>
+    <button onclick="showLoginForm()" style="width:100%;background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:12px;margin-top:4px;">← Tilbage til login</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;">
+  <div class="mob-header">
+    <div>
+      <div class="mob-header-title">🚛 Indberetning</div>
+      <div class="mob-header-user" id="headerUser"></div>
+    </div>
+    <div style="display:flex;align-items:center">
+      <button class="nat-knap" id="natKnap" onclick="skiftNat()" aria-label="Skift mellem lys og mørk">🌙</button>
+      <button class="mob-logout" onclick="doLogout()">Log ud</button>
+    </div>
+  </div>
+  <div class="mob-nav">
+    <button class="active" onclick="showTab(&#39;ny&#39;,this)">➕ Ny</button>
+    <button onclick="showTab(&#39;mine&#39;,this)">📋 Indberettet</button>
+  </div>
+
+  <!-- NY INDBERETNING -->
+  <div id="tab-ny" class="mob-content">
+
+    <!-- SUCCESS -->
+    <div id="successScreen">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Indberetning sendt!</div>
+      <div class="success-sub">Din indberetning er registreret og sendt til administrator.</div>
+      <button class="success-new" onclick="resetForm()">Ny indberetning</button>
+    </div>
+
+    <!-- FORM -->
+    <div id="formScreen">
+
+      <!-- TRIN 1: Vælg type -->
+      <div id="indStep1">
+        <div class="mob-card-title" style="font-size:16px;font-weight:700;margin-bottom:16px;">📋 Hvad vil du indberette?</div>
+        <div class="type-grid">
+          <button class="type-btn" data-type="2" onclick="vaelgIndType(this)">
+            <span class="type-icon">🔧</span>Reparation
+          </button>
+          <button class="type-btn" data-type="3" onclick="vaelgIndType(this)">
+            <span class="type-icon">💥</span>Skade
+          </button>
+          <button class="type-btn" data-type="4" onclick="vaelgIndType(this)">
+            <span class="type-icon">🛞</span>Dæk
+          </button>
+          <button class="type-btn" data-type="1" onclick="vaelgIndType(this)">
+            <span class="type-icon">⚙️</span>Service
+          </button>
+          <button class="type-btn" data-type="6" onclick="vaelgIndType(this)">
+            <span class="type-icon">🚿</span>Truckwash
+          </button>
+          <button class="type-btn" data-type="7" onclick="vaelgIndType(this)">
+            <span class="type-icon">⛽</span>Tankning
+          </button>
+          <button class="type-btn" data-type="8" onclick="vaelgIndType(this)">
+            <span class="type-icon">🅿️</span>Parkering
+          </button>
+          <button class="type-btn" data-type="5" onclick="vaelgIndType(this)">
+            <span class="type-icon">📝</span>Andet
+          </button>
+        </div>
+      </div>
+
+      <!-- TRIN 2: Udfyld detaljer -->
+      <div id="indStep2" style="display:none;">
+        <!-- Tilbage + valgt type -->
+        <button onclick="indGotilTrin1()" style="background:none;border:1px solid var(--border);color:var(--muted);padding:10px 16px;border-radius:10px;font-size:14px;cursor:pointer;width:100%;margin-bottom:16px;text-align:left;">
+          ← Skift type &nbsp;·&nbsp; <strong id="indValgtType" style="color:var(--text)"></strong>
+        </button>
+
+        <!-- LASTBIL -->
+        <div class="mob-card">
+          <div class="mob-card-title">🚛 Lastbil</div>
+          <div class="form-row">
+            <label>Vognr. *</label>
+            <select id="selTruck"><option value="">— Vælg lastbil —</option></select>
+          </div>
+          <div class="form-row">
+            <label>Dato *</label>
+            <input type="date" id="inputDato">
+          </div>
+          <div class="form-row">
+            <label>Km-stand</label>
+            <div class="field-input">
+              <input type="number" id="inputKm" placeholder="0" style="border-radius:10px 0 0 10px; border-right:none;">
+              <div class="unit">km</div>
+            </div>
+          </div>
+          <div class="form-row" id="braendstofRow" style="display:none;">
+            <label>Brændstoftype *</label>
+            <select id="inputBraendstof">
+              <option value="">— Vælg brændstof —</option>
+              <option value="Diesel">Diesel</option>
+              <option value="AdBlue">AdBlue</option>
+            </select>
+          </div>
+          <div class="form-row" id="literRow" style="display:none;">
+            <label>Antal liter tanket</label>
+            <div class="field-input">
+              <input type="number" id="inputLiter" placeholder="0" style="border-radius:10px 0 0 10px; border-right:none;">
+              <div class="unit">liter</div>
+            </div>
+          </div>
+          <div class="form-row" id="tankstedRow" style="display:none;">
+            <label>Tanksted *</label>
+            <select id="inputTanksted">
+              <option value="">— Vælg tanksted —</option>
+              <option value="DKV">DKV</option>
+              <option value="UNO-X">UNO-X</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- BESKRIVELSE -->
+        <div class="mob-card" id="beskrivelseCard">
+          <div class="mob-card-title" id="beskrivelseTitel">📝 Beskrivelse</div>
+          <div class="form-row">
+            <label id="beskrivelseLabel">Beskriv hændelsen *</label>
+            <textarea id="inputDesc" placeholder="Beskriv hvad der er sket eller skal laves..."></textarea>
+          </div>
+        </div>
+
+        <!-- SKADE FELTER -->
+        <div class="mob-card skade-fields" id="skadeCard">
+          <div class="mob-card-title">💥 Skadeoplysninger</div>
+          <div class="form-row">
+            <label>Skadens art</label>
+            <input type="text" id="inputSkadesArt" placeholder="Fx. bagskærm, forrude...">
+          </div>
+        </div>
+
+        <!-- BILLEDER -->
+        <div class="mob-card" id="fotoCard" style="display:none;">
+          <div class="mob-card-title">📷 Billeder <span id="fotoAntal" style="font-weight:400;color:var(--muted);font-size:13px;"></span></div>
+
+          <div class="foto-grid" id="fotoGrid" style="display:none;"></div>
+          <div class="foto-busy" id="fotoBusy" style="display:none;">⏳ Behandler billede...</div>
+
+          <div class="foto-btns">
+            <button type="button" class="foto-btn" id="fotoKameraBtn" onclick="document.getElementById('fotoKamera').click()">
+              <span class="foto-icon">📸</span>Tag billede
+            </button>
+            <button type="button" class="foto-btn" id="fotoGalleriBtn" onclick="document.getElementById('fotoGalleri').click()">
+              <span class="foto-icon">🖼️</span>Vælg billede
+            </button>
+          </div>
+          <div class="foto-hint" id="fotoHint">Valgfrit · op til 4 billeder</div>
+
+          <input type="file" id="fotoKamera" accept="image/*" capture="environment" style="display:none" onchange="fotoTilfoej(this)">
+          <input type="file" id="fotoGalleri" accept="image/*" multiple style="display:none" onchange="fotoTilfoej(this)">
+        </div>
+
+
+
+        <!-- PARKERING FELTER -->
+        <div class="mob-card" id="parkeringCard" style="display:none;">
+          <div class="mob-card-title">🅿️ Parkeringsoplysninger</div>
+          <div class="form-row">
+            <label>Parkeringssted *</label>
+            <input type="text" id="inputParkeringsSted" placeholder="Fx. Hamburg havn, Berlin center...">
+          </div>
+          <div class="form-row">
+            <label>Pris (kr)</label>
+            <div class="field-input">
+              <input type="number" id="inputParkeringsPris" placeholder="0" style="border-radius:10px 0 0 10px; border-right:none;">
+              <div class="unit">kr</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="submitErr" class="error-msg" style="display:none;margin-bottom:12px;"></div>
+        <button class="mob-submit" id="submitBtn" onclick="submitIndberetning()">
+          📤 Send indberetning
+        </button>
+      </div>
+
+    </div><!-- end formScreen -->
+  </div><!-- end tab-ny -->
+
+  <!-- MINE INDBERETNINGER -->
+  <div id="tab-mine" class="mob-content" style="display:none;">
+    <div class="mob-card">
+      <div class="mob-card-title">📋 Alle indberetninger</div>
+      <div id="mineList"></div>
+    </div>
+  </div>
+
+</div><!-- end app -->
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="if(event.target.id==='lightbox')lbLuk()">
+  <button class="lb-close" onclick="lbLuk()">✕</button>
+  <a class="lb-open" id="lbOpen" href="#" target="_blank" rel="noopener">↗ Åbn</a>
+  <img id="lbImg" src="" alt="Indberetningsbillede">
+  <div class="lb-bar">
+    <button onclick="lbSkift(-1)">‹</button>
+    <div class="lb-count" id="lbCount">1 / 1</div>
+    <button onclick="lbSkift(1)">›</button>
+  </div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push, update, onValue, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+/* Firebase-opsætningen ligger i firebase-config.js ved siden af denne fil.
+   Én kilde til sandhed: config/firebase-config.js — kør "npm run config"
+   efter du har rettet den, så alle tre apps får den samme. */
+const firebaseConfig = window.FIREBASE_CONFIG;
+if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'DIN_API_KEY') {
+  document.body.innerHTML =
+    '<div style="font-family:system-ui;max-width:520px;margin:14vh auto;padding:28px;' +
+    'border:1px solid #3d4b64;border-radius:14px;background:#18202f;color:#e8edf5;line-height:1.6">' +
+    '<h1 style="font-size:19px;margin:0 0 10px">Firebase er ikke sat op endnu</h1>' +
+    '<p style="margin:0;color:#8b98ad">Udfyld <code>config/firebase-config.js</code> med projektets ' +
+    'nøgler og kør <code>npm run config</code>. Så henter appen sig selv igen.</p></div>';
+  throw new Error('Firebase-config mangler');
+}
+
+/* --- Flerkunde: kundens data ligger under k/<kunde-id>/ ------------------ */
+let KUNDE_ID = '';
+let KP = '';
+let mailCfg = {};
+
+const app     = initializeApp(firebaseConfig);
+const db      = getDatabase(app);
+const auth    = getAuth(app);
+const storage = getStorage(app);
+
+let trucks = {}, chauffoerer = {}, currentUser = null, selectedType = '2';
+
+// ===== BILLED-KONFIGURATION =====
+const FOTO_MAX_ANTAL   = 4;      // max antal billeder pr. indberetning
+const FOTO_MAX_KANT    = 1600;   // længste kant i px efter komprimering
+const FOTO_KVALITET     = 0.72;  // JPEG-kvalitet
+const FOTO_TYPER       = ['1','2','3','4','5']; // Service, Reparation, Skade, Dæk, Andet
+let fotos = [];                  // [{blob, url, size}]
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+// ===== AUTH =====
+window.showResetForm = function() {
+  document.querySelector('#loginScreen .login-box:not(#resetPanel)').style.display = 'none';
+  document.getElementById('resetPanel').style.display = '';
+  document.getElementById('resetEmail').value = document.getElementById('loginEmail').value || '';
+};
+window.showLoginForm = function() {
+  document.querySelector('#loginScreen .login-box:not(#resetPanel)').style.display = '';
+  document.getElementById('resetPanel').style.display = 'none';
+};
+window.sendResetLink = async function() {
+  const email = document.getElementById('resetEmail').value.trim();
+  const msg = document.getElementById('resetMsg');
+  if(!email) { msg.style.display=''; msg.style.color='var(--red)'; msg.textContent='Indtast din email'; return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    msg.style.display=''; msg.style.color='var(--green)';
+    msg.textContent='✓ Reset-link sendt — tjek også din spam-mappe';
+  } catch(e) {
+    msg.style.display=''; msg.style.color='var(--red)';
+    msg.textContent = e.code==='auth/user-not-found' ? 'Ingen bruger med denne email' : 'Fejl: '+e.message;
+  }
+};
+window.doLogin = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw    = document.getElementById('loginPw').value;
+  const errEl = document.getElementById('loginErr');
+  errEl.style.display = 'none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+  } catch(e) {
+    errEl.style.display = '';
+    const code = e.code || '';
+    if(code.includes('invalid-credential') || code.includes('wrong-password') || code.includes('user-not-found')) {
+      errEl.textContent = 'Forkert email eller adgangskode';
+    } else if(code.includes('too-many-requests')) {
+      errEl.textContent = 'For mange forsøg — prøv igen om lidt';
+    } else if(code.includes('network')) {
+      errEl.textContent = 'Netværksfejl — tjek din forbindelse';
+    } else {
+      errEl.textContent = 'Fejl: ' + (e.message || e.code);
+    }
+  }
+};
+
+window.doLogout = async function() {
+  if(confirm('Log ud?')) await signOut(auth);
+};
+
+// Timeout fallback — if Firebase hangs after 5s, show login
+const authTimeout = setTimeout(() => {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}, 5000);
+
+onAuthStateChanged(auth, async user => {
+  clearTimeout(authTimeout);
+  document.getElementById('loadingScreen').style.display = 'none';
+
+  if(!user) {
+    KUNDE_ID = ''; KP = '';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    return;
+  }
+
+  const afvis = async t => {
+    const el = document.getElementById('loginErr');
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    el.style.display = ''; el.textContent = t;
+    await signOut(auth);
+  };
+
+  // Hent brugerprofil — den fortæller hvilken kunde chaufføren kører for
+  let profil = {};
+  try {
+    const token = await Promise.race([
+      user.getIdToken(),
+      new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')), 3000))
+    ]);
+    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json?auth='+token);
+    profil = resp.ok ? (await resp.json())||{} : {};
+  } catch(e) { profil = {}; }
+
+  currentUser = { uid:user.uid, email:user.email,
+                  navn: profil.navn || user.email, role: profil.role || 'user' };
+
+  // Ejere kan åbne en bestemt kunde med ?kunde=... i adressen
+  let kundeId = profil.kundeId || '';
+  if(!kundeId) {
+    const fraUrl = new URLSearchParams(location.search).get('kunde');
+    let erEjer = false;
+    try { erEjer = (await get(ref(db,'platform/ejere/'+user.uid))).exists(); } catch(e) {}
+    if(erEjer && fraUrl) kundeId = fraUrl;
+  }
+  if(!kundeId) return afvis('Din bruger er ikke knyttet til en kunde. Kontakt kontoret.');
+
+  let kunde = null;
+  try {
+    const s = await get(ref(db,'kunder/'+kundeId));
+    kunde = s.exists() ? s.val() : null;
+  } catch(e) { kunde = null; }
+  if(!kunde) return afvis('Kunden findes ikke. Kontakt kontoret.');
+  if(kunde.status === 'spaerret') return afvis('Adgangen er midlertidigt lukket. Kontakt kontoret.');
+
+  KUNDE_ID = kundeId;
+  KP = 'k/' + kundeId + '/';
+
+  try {
+    const mc = await get(ref(db,KP+'mailConfig'));
+    mailCfg = mc.exists() ? mc.val() : {};
+  } catch(e) { mailCfg = {}; }
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('headerUser').textContent = currentUser.navn + (kunde.navn ? ' · ' + kunde.navn : '');
+  document.getElementById('inputDato').value = today();
+  startListeners();
+  loadMineIndberetninger();
+});
+
+// ===== DATA =====
+function startListeners() {
+  onValue(ref(db,KP+'trucks'), s => {
+    trucks = s.val()||{};
+    const sel = document.getElementById('selTruck');
+    sel.innerHTML = '<option value="">— Vælg lastbil —</option>';
+    Object.entries(trucks)
+      .filter(([,t]) => (t.status||'aktiv') !== 'inaktiv')
+      .sort((a,b) => (a[1].vognr||'').localeCompare(b[1].vognr||''))
+      .forEach(([id,t]) => {
+        const opt = document.createElement('option');
+        opt.value = id;
+        opt.textContent = t.vognr + (t.regnr?' — '+t.regnr:'');
+        sel.appendChild(opt);
+      });
+  });
+}
+
+function loadMineIndberetninger() {
+  onValue(ref(db,KP+'opgaver'), s => {
+    const all = s.val()||{};
+    const cutoff14 = new Date();
+    cutoff14.setDate(cutoff14.getDate() - 14);
+    const cutoffStr = cutoff14.toISOString().slice(0,10);
+
+    // Show ALL indberetninger (all users) with rules:
+    // - indberettet/planlagt: always show
+    // - udført: only show if within last 14 days
+    // An indberetning is identified by having indberettetAf OR status=indberettet
+    // Once status changes to planlagt/udført it still counts if it originated as indberetning
+    const visible = Object.entries(all)
+      .filter(([,o]) => {
+        // Is it an indberetning? Either has indberettetAf field, or was/is indberettet
+        const isIndberetning = !!o.indberettetAf || o.status === 'indberettet' || o.status === 'planlagt';
+        if(!isIndberetning) return false;
+        if(o.type === '7') return false; // Tankning vises ikke i indberettet
+        if(o.status === 'udført') {
+          // Show udført for 14 days after dato
+          return (o.dato||'') >= cutoffStr;
+        }
+        // Always show indberettet og planlagt
+        return true;
+      })
+      .sort((a,b) => (b[1].dato||'').localeCompare(a[1].dato||''));
+
+    const list = document.getElementById('mineList');
+    if(!visible.length) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div>Ingen aktive indberetninger</div>';
+      return;
+    }
+
+    const typeLabels = {'1':'Service','2':'Reparation','3':'Skade','4':'Dæk','5':'Andet','6':'Truckwash','7':'Tankning','8':'Parkering'};
+    list.innerHTML = visible.map(([id,o]) => {
+      const truckData = trucks[o.truck]||{};
+      const status = o.status||'indberettet';
+      const statusClass = 'status-'+status;
+      const isUdfOrt = status === 'udført';
+      const daysLeft = isUdfOrt ? (() => {
+        const d = new Date(o.dato||today());
+        const diff = 14 - Math.floor((new Date()-d)/(1000*60*60*24));
+        return diff > 0 ? diff : 0;
+      })() : null;
+      return `<div class="report-item" style="${isUdfOrt?'opacity:0.6':''}">
+        <div class="report-dot ${status}"></div>
+        <div class="report-info">
+          <div class="report-title">${typeLabels[o.type]||'Opgave'} — ${truckData.vognr||o.truck||'?'}</div>
+          <div class="report-meta">${o.dato||'—'} · ${o.beskrivelse||'Ingen beskrivelse'}</div>
+          <div class="report-meta" style="margin-top:2px;font-size:11px;">👤 ${o.oprettetAf||'Ukendt'}</div>
+          ${o.planlagtDato?`<div class="report-meta" style="margin-top:2px;font-size:11px;color:#60a5fa;">📅 Planlagt: ${o.planlagtDato}</div>`:''}
+          ${o.udforer?`<div class="report-meta" style="margin-top:2px;font-size:11px;color:#60a5fa;">🔧 Værksted: ${o.udforer}</div>`:''}
+          ${(o.billeder&&o.billeder.length)?`<button type="button" class="foto-badge" data-billeder='${JSON.stringify(o.billeder).replace(/'/g,"&#39;")}' onclick="visOpgaveBilleder(this)">📷 ${o.billeder.length} billede${o.billeder.length===1?'':'r'}</button>`:''}
+          ${isUdfOrt&&daysLeft!==null?`<div class="report-meta" style="color:var(--muted);font-size:10px;">Skjules om ${daysLeft} dag${daysLeft===1?'':'e'}</div>`:''}
+        </div>
+        <div class="report-status ${statusClass}">${status}</div>
+      </div>`;
+    }).join('');
+  });
+}
+
+// ===== BILLEDER =====
+
+// Skalerer og komprimerer et billede i browseren, så en 5 MB iPhone-foto
+// bliver ca. 100-250 KB inden upload. Sparer data for chaufføren og plads i Storage.
+async function komprimerBillede(file) {
+  let bitmap;
+  try {
+    // imageOrientation sikrer at billeder taget i portræt ikke roteres forkert
+    bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+  } catch(e) {
+    bitmap = await new Promise((res, rej) => {
+      const img = new Image();
+      img.onload = () => res(img);
+      img.onerror = () => rej(new Error('Kunne ikke læse billedet'));
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  const w0 = bitmap.width, h0 = bitmap.height;
+  const skala = Math.min(1, FOTO_MAX_KANT / Math.max(w0, h0));
+  const w = Math.round(w0 * skala), h = Math.round(h0 * skala);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(bitmap, 0, 0, w, h);
+  if(bitmap.close) bitmap.close();
+
+  const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', FOTO_KVALITET));
+  if(!blob) throw new Error('Komprimering fejlede');
+  return blob;
+}
+
+window.fotoTilfoej = async function(input) {
+  const filer = Array.from(input.files || []);
+  input.value = ''; // så samme fil kan vælges igen
+  if(!filer.length) return;
+
+  const busy = document.getElementById('fotoBusy');
+  busy.style.display = '';
+
+  for(const file of filer) {
+    if(fotos.length >= FOTO_MAX_ANTAL) {
+      alert('Du kan maks. vedhæfte ' + FOTO_MAX_ANTAL + ' billeder.');
+      break;
+    }
+    if(!file.type.startsWith('image/')) continue;
+    try {
+      const blob = await komprimerBillede(file);
+      fotos.push({ blob, url: URL.createObjectURL(blob), size: blob.size });
+      fotoRender();
+    } catch(e) {
+      console.warn('Billedfejl:', e);
+      alert('Kunne ikke behandle billedet: ' + e.message);
+    }
+  }
+
+  busy.style.display = 'none';
+  fotoRender();
+};
+
+window.fotoFjern = function(i) {
+  if(fotos[i]) URL.revokeObjectURL(fotos[i].url);
+  fotos.splice(i, 1);
+  fotoRender();
+};
+
+function fotoRender() {
+  const grid = document.getElementById('fotoGrid');
+  const antal = document.getElementById('fotoAntal');
+  const hint  = document.getElementById('fotoHint');
+  const fuld  = fotos.length >= FOTO_MAX_ANTAL;
+
+  if(!fotos.length) {
+    grid.style.display = 'none';
+    grid.innerHTML = '';
+    antal.textContent = '';
+  } else {
+    grid.style.display = '';
+    grid.innerHTML = fotos.map((f,i) => `
+      <div class="foto-thumb">
+        <img src="${f.url}" alt="Billede ${i+1}" onclick="lbVis([${JSON.stringify(f.url)}],0)">
+        <button type="button" class="foto-del" onclick="fotoFjern(${i})" aria-label="Fjern billede">✕</button>
+        <div class="foto-size">${Math.round(f.size/1024)} KB</div>
+      </div>`).join('');
+    antal.textContent = '· ' + fotos.length + ' af ' + FOTO_MAX_ANTAL;
+  }
+
+  document.getElementById('fotoKameraBtn').disabled  = fuld;
+  document.getElementById('fotoGalleriBtn').disabled = fuld;
+  hint.textContent = fuld
+    ? 'Maks. antal billeder nået — fjern et for at tilføje flere'
+    : 'Valgfrit · op til ' + FOTO_MAX_ANTAL + ' billeder';
+}
+
+function fotoNulstil() {
+  fotos.forEach(f => URL.revokeObjectURL(f.url));
+  fotos = [];
+  document.getElementById('fotoBusy').style.display = 'none';
+  fotoRender();
+}
+
+// Uploader billeder til Firebase Storage og returnerer et array af download-URL'er
+async function fotoUpload(opgaveId, statusCb) {
+  const urls = [];
+  for(let i = 0; i < fotos.length; i++) {
+    if(statusCb) statusCb(i + 1, fotos.length);
+    const sti = KP + 'indberetninger/' + opgaveId + '/' + (i+1) + '.jpg';
+    const r = sRef(storage, sti);
+    await uploadBytes(r, fotos[i].blob, {
+      contentType: 'image/jpeg',
+      cacheControl: 'public,max-age=31536000',
+      customMetadata: { opgaveId, uid: currentUser?.uid || '' }
+    });
+    urls.push(await getDownloadURL(r));
+  }
+  return urls;
+}
+
+// ===== LIGHTBOX =====
+let lbBilleder = [], lbIndex = 0;
+
+window.lbVis = function(urls, start) {
+  lbBilleder = Array.isArray(urls) ? urls : [urls];
+  lbIndex = start || 0;
+  lbOpdater();
+  document.getElementById('lightbox').style.display = 'flex';
+};
+window.lbLuk = function() {
+  document.getElementById('lightbox').style.display = 'none';
+  document.getElementById('lbImg').src = '';
+};
+window.lbSkift = function(d) {
+  if(!lbBilleder.length) return;
+  lbIndex = (lbIndex + d + lbBilleder.length) % lbBilleder.length;
+  lbOpdater();
+};
+function lbOpdater() {
+  const u = lbBilleder[lbIndex] || '';
+  document.getElementById('lbImg').src = u;
+  document.getElementById('lbOpen').href = u;
+  document.getElementById('lbCount').textContent = (lbIndex+1) + ' / ' + lbBilleder.length;
+}
+document.addEventListener('keydown', e => {
+  if(document.getElementById('lightbox').style.display !== 'flex') return;
+  if(e.key === 'Escape') lbLuk();
+  if(e.key === 'ArrowLeft') lbSkift(-1);
+  if(e.key === 'ArrowRight') lbSkift(1);
+});
+
+// Åbner billeder fra listen (URL'erne hentes først når man klikker — sparer data)
+window.visOpgaveBilleder = function(el) {
+  try {
+    lbVis(JSON.parse(el.dataset.billeder), 0);
+  } catch(e) { console.warn(e); }
+};
+
+// ===== FORM =====
+window.vaelgIndType = function(btn) {
+  selectedType = btn.dataset.type;
+  const labels = {'1':'⚙️ Service','2':'🔧 Reparation','3':'💥 Skade','4':'🛞 Dæk','5':'📝 Andet','6':'🚿 Truckwash','7':'⛽ Tankning','8':'🅿️ Parkering'};
+  document.getElementById('indValgtType').textContent = labels[selectedType] || selectedType;
+  document.getElementById('skadeCard').style.display = selectedType === '3' ? 'block' : 'none';
+  document.getElementById('literRow').style.display = selectedType === '7' ? '' : 'none';
+  const braendstofRow = document.getElementById('braendstofRow'); if(braendstofRow) braendstofRow.style.display = selectedType === '7' ? '' : 'none';
+  const tankstedRow = document.getElementById('tankstedRow'); if(tankstedRow) tankstedRow.style.display = selectedType === '7' ? '' : 'none';
+  document.getElementById('beskrivelseCard').style.display = (selectedType === '7' || selectedType === '8') ? 'none' : '';
+  const pkCard = document.getElementById('parkeringCard'); if(pkCard) pkCard.style.display = selectedType === '8' ? 'block' : 'none';
+  // Billeder: kun ved Service, Reparation, Skade, Dæk og Andet
+  const visFoto = FOTO_TYPER.includes(selectedType);
+  document.getElementById('fotoCard').style.display = visFoto ? 'block' : 'none';
+  if(!visFoto) fotoNulstil();
+  // Update label and title based on type
+  if(selectedType === '6') {
+    document.getElementById('beskrivelseTitel').textContent = '🌍 Vaskeoplysninger';
+    document.getElementById('beskrivelseLabel').textContent = 'Hvilket land er der vasket i? *';
+    document.getElementById('inputDesc').placeholder = 'Fx. Danmark, Tyskland, Sverige...';
+  } else {
+    document.getElementById('beskrivelseTitel').textContent = '📝 Beskrivelse';
+    document.getElementById('beskrivelseLabel').textContent = 'Beskriv hændelsen *';
+    document.getElementById('inputDesc').placeholder = 'Beskriv hvad der er sket eller skal laves...';
+  }
+  document.getElementById('indStep1').style.display = 'none';
+  document.getElementById('indStep2').style.display = '';
+};
+
+window.indGotilTrin1 = function() {
+  document.getElementById('indStep2').style.display = 'none';
+  document.getElementById('indStep1').style.display = '';
+};
+
+window.selectType = window.vaelgIndType;
+
+window.showTab = function(id, el) {
+  document.querySelectorAll('.mob-nav button').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-ny').style.display = id==='ny' ? '' : 'none';
+  document.getElementById('tab-mine').style.display = id==='mine' ? '' : 'none';
+};
+
+window.resetForm = function() {
+  document.getElementById('successScreen').style.display = 'none';
+  document.getElementById('formScreen').style.display = '';
+  // Back to step 1
+  document.getElementById('indStep1').style.display = '';
+  document.getElementById('indStep2').style.display = 'none';
+  // Reset fields
+  document.getElementById('inputDesc').value = '';
+  document.getElementById('inputKm').value = '';
+  document.getElementById('inputSkadesArt').value = '';
+  document.getElementById('selTruck').value = '';
+  document.getElementById('inputDato').value = today();
+  document.getElementById('submitErr').style.display = 'none';
+  document.getElementById('skadeCard').style.display = 'none';
+  const pkCard2 = document.getElementById('parkeringCard'); if(pkCard2) pkCard2.style.display = 'none';
+  const pSted = document.getElementById('inputParkeringsSted'); if(pSted) pSted.value='';
+  const pPris = document.getElementById('inputParkeringsPris'); if(pPris) pPris.value='';
+  document.getElementById('literRow').style.display = 'none';
+  const braendstofRow2 = document.getElementById('braendstofRow'); if(braendstofRow2) braendstofRow2.style.display = 'none';
+  const braendstofEl2 = document.getElementById('inputBraendstof'); if(braendstofEl2) braendstofEl2.value = '';
+  const tankstedRow2 = document.getElementById('tankstedRow'); if(tankstedRow2) tankstedRow2.style.display = 'none';
+  const tankstedEl2 = document.getElementById('inputTanksted'); if(tankstedEl2) tankstedEl2.value = '';
+  document.getElementById('beskrivelseCard').style.display = '';
+  document.getElementById('beskrivelseTitel').textContent = '📝 Beskrivelse';
+  document.getElementById('beskrivelseLabel').textContent = 'Beskriv hændelsen *';
+  document.getElementById('inputDesc').placeholder = 'Beskriv hvad der er sket eller skal laves...';
+  const literEl = document.getElementById('inputLiter'); if(literEl) literEl.value='';
+  fotoNulstil();
+  document.getElementById('fotoCard').style.display = 'none';
+  selectedType = '2';
+};
+
+window.submitIndberetning = async function() {
+  const truck = document.getElementById('selTruck').value;
+  const desc  = document.getElementById('inputDesc').value.trim();
+  const dato  = document.getElementById('inputDato').value;
+  const errEl = document.getElementById('submitErr');
+  errEl.style.display = 'none';
+
+  if(!truck) { errEl.style.display=''; errEl.textContent='Vælg venligst en lastbil'; return; }
+  if(selectedType === '8' && !document.getElementById('inputParkeringsSted').value.trim()) {
+    errEl.style.display=''; errEl.textContent='Angiv parkeringssted'; return;
+  }
+  if(!desc && selectedType !== '7')  { errEl.style.display=''; errEl.textContent='Udfyld venligst en beskrivelse'; return; }
+  if(selectedType === '7' && !document.getElementById('inputBraendstof').value) {
+    errEl.style.display=''; errEl.textContent='Vælg venligst brændstof (Diesel eller AdBlue)'; return;
+  }
+  if(selectedType === '7' && !document.getElementById('inputTanksted').value) {
+    errEl.style.display=''; errEl.textContent='Vælg venligst tanksted (DKV eller UNO-X)'; return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Sender...';
+
+  try {
+    // Find chauffeur ID matching current user
+    let chauffeurId = '';
+    const chSnap = await fetch(firebaseConfig.databaseURL + '/' + KP + 'chauffoerer.json?auth='+(await auth.currentUser.getIdToken()));
+    if(chSnap.ok) {
+      const chData = await chSnap.json() || {};
+      const match = Object.entries(chData).find(([,ch]) => ch.navn === currentUser.navn || ch.email === currentUser.email);
+      if(match) chauffeurId = match[0];
+    }
+
+    const nyOpgave = await push(ref(db,KP+'opgaver'), {
+      truck,
+      dato: dato || today(),
+      type: selectedType,
+      status: 'indberettet',
+      beskrivelse: selectedType==='7'
+        ? (desc || ((document.getElementById('inputBraendstof').value||'Tankning') + ' ' + (document.getElementById('inputLiter').value||'') + ' liter'))
+        : selectedType==='8'
+        ? ('Parkering: ' + (document.getElementById('inputParkeringsSted').value||''))
+        : desc,
+      beloebAnslaaet: selectedType==='8' ? (document.getElementById('inputParkeringsPris').value||'') : '',
+      liter: selectedType==='7' ? (document.getElementById('inputLiter').value||'') : '',
+      braendstofType: selectedType==='7' ? (document.getElementById('inputBraendstof').value||'') : '',
+      km: document.getElementById('inputKm').value || '',
+      beloeb: '',
+      anslaaetBeloeb: '',
+      skadesArt: document.getElementById('inputSkadesArt').value || '',
+      forsikring: '',
+      skadeChauffeur: selectedType === '3' ? chauffeurId : '',
+      udforer: selectedType === '7' ? (document.getElementById('inputTanksted').value || '') : '',
+      oprettetAf: currentUser.navn,
+      indberettetAf: currentUser.uid,
+      chauffeurId,
+      antalBilleder: FOTO_TYPER.includes(selectedType) ? fotos.length : 0,
+      indberettetTid: new Date().toISOString(),
+    });
+
+    // Upload billeder — indberetningen er allerede gemt, så en fejl her
+    // koster ikke selve indberetningen
+    let billedUrls = [];
+    if(FOTO_TYPER.includes(selectedType) && fotos.length) {
+      try {
+        billedUrls = await fotoUpload(nyOpgave.key, (n, ialt) => {
+          btn.textContent = '⏳ Uploader billede ' + n + ' af ' + ialt + '...';
+        });
+        await update(ref(db,KP+'opgaver/' + nyOpgave.key), {
+          billeder: billedUrls,
+          antalBilleder: billedUrls.length
+        });
+      } catch(fotoErr) {
+        console.warn('Billedupload fejlede:', fotoErr);
+        await update(ref(db,KP+'opgaver/' + nyOpgave.key), {
+          antalBilleder: 0,
+          billedFejl: fotoErr.message || 'upload fejlede'
+        });
+        alert('Indberetningen er sendt, men billederne kunne ikke uploades. Vis dem til værkstedet manuelt.');
+      }
+    }
+
+    // Send email notification
+    const typeLabels = {'1':'Service','2':'Reparation','3':'Skade','4':'Dæk','5':'Andet','6':'Truckwash','7':'Tankning','8':'Parkering'};
+    const truckSnap = await fetch(firebaseConfig.databaseURL + '/' + KP + 'trucks/'+truck+'.json?auth='+(await auth.currentUser.getIdToken()));
+    const truckData = truckSnap.ok ? (await truckSnap.json())||{} : {};
+    const lastbilNavn = truckData.vognr || truck;
+
+    try {
+      if(!mailCfg.publicKey || !mailCfg.serviceId || !mailCfg.templateId)
+        throw new Error('Mailopsætning mangler hos kunden');
+      emailjs.init({ publicKey: mailCfg.publicKey });
+      await emailjs.send(mailCfg.serviceId, mailCfg.templateId, {
+        to_email: mailCfg.modtager || '',
+        chauffeur: currentUser.navn,
+        lastbil: lastbilNavn,
+        type: typeLabels[selectedType] || selectedType,
+        beskrivelse: desc,
+        dato: dato || today(),
+        km: document.getElementById('inputKm').value || '—',
+        skadesArt: document.getElementById('inputSkadesArt').value || '—',
+        antal_billeder: billedUrls.length,
+        billeder: billedUrls.length
+          ? billedUrls.map((u,i) => 'Billede ' + (i+1) + ': ' + u).join('\n')
+          : 'Ingen billeder vedhæftet',
+      });
+    } catch(mailErr) {
+      console.warn('Email fejlede:', mailErr);
+      // Don't block the user — indberetning is saved regardless
+    }
+
+    document.getElementById('formScreen').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'flex';
+  } catch(e) {
+    errEl.style.display = '';
+    errEl.textContent = 'Fejl: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📤 Send indberetning';
+  }
+};
+</script>
+
+
+</body></html>

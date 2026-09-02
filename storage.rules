@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// Storage-regler kan ikke slå op i Realtime Database. Derfor kommer kundens ID
+// med i selve login-tokenet som et "custom claim" — se saetKundeClaim.js.
+// Uden den funktion kan ingen uploade billeder eller bilag.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Alt kundemateriale ligger under k/<kunde-id>/
+    match /k/{kundeId}/{alleStier=**} {
+      allow read, write: if request.auth != null
+        && (request.auth.token.ejer == true || request.auth.token.kundeId == kundeId);
+    }
+
+    // Ingen adgang uden for kundemapperne
+    match /{alleAndre=**} {
+      allow read, write: if false;
+    }
+  }
+}

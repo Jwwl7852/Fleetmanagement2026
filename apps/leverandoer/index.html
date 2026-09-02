@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#061824">
+<title>🔧 Leverandørportal</title>
+<style>
+  :root {
+    --sidebar:#061824; --sidebar-2:#0b2531; --sidebar-aktiv:#0e4c57; --cyan:#43cfc4;
+    --bg:#f6f7f9; --surface:#ffffff; --surface2:#f3f6f8;
+    --border:#e4eaee; --border2:#d3dde2;
+    --accent:#0e6e7a; --accent2:#045c6c; --accent-svag:#edf6f5;
+    --green:#157f5f; --yellow:#b47a24; --red:#ca4b4a; --amber:#b7791f;
+    --text:#14232d; --muted:#6b7c86;
+    --radius: 11px; --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:var(--font); min-height:100vh; }
+  button, input { font-family:inherit; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+
+  #loadingScreen { display:flex; flex-direction:column; align-items:center; justify-content:center;
+                   min-height:100vh; gap:16px; color:var(--muted); }
+  #loginScreen { display:none; flex-direction:column; align-items:center; justify-content:center;
+                 min-height:100vh; padding:24px; }
+  .login-box { background:var(--surface); border:1px solid var(--border); border-radius:16px;
+               padding:36px 28px; width:100%; max-width:360px; box-shadow:0 1px 3px rgba(20,35,45,.06); }
+  .login-logo { font-size:42px; text-align:center; margin-bottom:10px; }
+  .login-title { font-size:21px; font-weight:650; text-align:center; margin-bottom:5px; }
+  .login-sub { font-size:13.5px; color:var(--muted); text-align:center; margin-bottom:26px; }
+  .inp { width:100%; background:var(--surface); border:1px solid var(--border2); color:var(--text);
+         padding:13px 14px; border-radius:9px; font-size:16px; outline:none; margin-bottom:14px; }
+  .inp:focus { border-color:var(--accent); }
+  .error-msg { color:var(--red); font-size:13px; text-align:center; margin:8px 0; }
+  .mob-submit { width:100%; padding:15px; background:var(--accent); color:#fff; border:none;
+                border-radius:11px; font-size:15.5px; font-weight:650; cursor:pointer; }
+
+  #app { display:none; min-height:100vh; }
+  .mob-header { background:var(--sidebar); color:#fff; padding:14px 20px; display:flex;
+                align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .mob-header-title { font-size:16px; font-weight:600; }
+  .mob-header-user { font-size:11.5px; color:#93aab4; margin-top:2px; }
+  .mob-logout { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16);
+                color:#cfdde3; padding:6px 12px; border-radius:8px; font-size:12px; cursor:pointer; }
+
+  .mob-nav { display:flex; background:var(--surface); border-bottom:1px solid var(--border);
+             position:sticky; top:54px; z-index:99; }
+  .mob-nav button { flex:1; padding:12px 8px; border:none; background:none; color:var(--muted);
+                    font-size:13px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; }
+  .mob-nav button.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .mob-content { padding:20px 18px; max-width:760px; margin:0 auto; }
+
+  /* Opgavekort — farvet venstrekant bærer status, som i planlægningsbilledet */
+  .task-card { background:var(--surface); border:1px solid var(--border);
+               border-left:3px solid var(--accent); border-radius:var(--radius);
+               padding:16px 18px; margin-bottom:12px; box-shadow:0 1px 2px rgba(20,35,45,.04); }
+  .task-card.urgent { border-left-color:var(--yellow); background:#fffdf8; }
+  .task-top { display:flex; justify-content:space-between; align-items:flex-start;
+              margin-bottom:8px; gap:10px; }
+  .task-truck { font-size:15.5px; font-weight:650; }
+  .task-type-tag { font-size:11px; font-weight:650; padding:3px 9px; border-radius:5px; white-space:nowrap; }
+  .ttag-service { background:#edf6f5; color:#045c6c; }
+  .ttag-repair  { background:#fdf6e7; color:#8a5c17; }
+  .ttag-damage  { background:#fbecec; color:#9c3a39; }
+  .ttag-tyres   { background:#e6f4ef; color:#0f6047; }
+  .ttag-other   { background:#eef1f3; color:#42545f; }
+  .ttag-wash    { background:#e7f5f7; color:#0d6470; }
+  .task-desc { font-size:13.5px; color:var(--muted); margin-bottom:9px; line-height:1.55; }
+  .task-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:var(--muted); margin-bottom:13px; }
+  .task-meta span { display:flex; align-items:center; gap:5px; }
+  .task-status-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .status-badge { font-size:11.5px; font-weight:650; padding:4px 10px; border-radius:5px; }
+  .sb-planlagt { background:#edf6f5; color:#045c6c; }
+  .sb-oprettet { background:#eef1f3; color:#42545f; }
+  .sb-klar { background:#e6f4ef; color:#0f6047; }
+  .btn-klarmeld { background:var(--accent); color:#fff; border:none; padding:10px 17px;
+                  border-radius:9px; font-size:13.5px; font-weight:650; cursor:pointer; }
+  .btn-klarmeld:hover { background:var(--accent2); }
+  .btn-klarmeld:disabled { background:var(--surface2); color:var(--muted); cursor:not-allowed; }
+
+  .empty-state { text-align:center; padding:56px 20px; color:var(--muted); font-size:14px; }
+  .empty-state .empty-icon { font-size:46px; margin-bottom:14px; }
+  .section-label { font-size:11px; color:var(--muted); letter-spacing:.06em; font-weight:650;
+                   margin:22px 0 11px; }
+  .section-label:first-child { margin-top:0; }
+</style>
+</head>
+<body>
+
+<div id="loadingScreen">
+  <div style="font-size:48px;">🔧</div>
+  <div style="font-size:16px;color:#6b7c86;">Forbinder...</div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">🔧</div>
+    <div class="login-title">Leverandørportal</div>
+    <div class="login-sub">Log ind for at se dine opgaver</div>
+    <input class="inp" type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+    <input class="inp" type="password" id="loginPw" placeholder="Adgangskode" onkeydown="if(event.key==='Enter')doLogin()">
+    <div id="loginErr" class="error-msg" style="display:none;"></div>
+    <button class="mob-submit" onclick="doLogin()">Log ind</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="mob-header">
+    <div>
+      <div class="mob-header-title">🔧 <span id="vaerkstedNavn">Leverandørportal</span></div>
+      <div class="mob-header-user" id="headerUser"></div>
+    </div>
+    <button class="mob-logout" onclick="doLogout()">Log ud</button>
+  </div>
+  <div class="mob-nav">
+    <button class="active" onclick="showTab('aktive',this)">📋 Aktive opgaver</button>
+    <button onclick="showTab('afsluttet',this)">✅ Afsluttede</button>
+  </div>
+
+  <div id="tab-aktive" class="mob-content">
+    <div id="aktiveListe"><div class="empty-state"><div class="empty-icon">🔧</div>Henter opgaver...</div></div>
+  </div>
+
+  <div id="tab-afsluttet" class="mob-content" style="display:none;">
+    <div id="afsluttetListe"><div class="empty-state"><div class="empty-icon">✅</div>Ingen afsluttede opgaver endnu</div></div>
+  </div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+/* Firebase-opsætningen ligger i firebase-config.js ved siden af denne fil.
+   Én kilde til sandhed: config/firebase-config.js — kør "npm run config"
+   efter du har rettet den, så alle tre apps får den samme. */
+const firebaseConfig = window.FIREBASE_CONFIG;
+if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'DIN_API_KEY') {
+  document.body.innerHTML =
+    '<div style="font-family:system-ui;max-width:520px;margin:14vh auto;padding:28px;' +
+    'border:1px solid #3d4b64;border-radius:14px;background:#18202f;color:#e8edf5;line-height:1.6">' +
+    '<h1 style="font-size:19px;margin:0 0 10px">Firebase er ikke sat op endnu</h1>' +
+    '<p style="margin:0;color:#8b98ad">Udfyld <code>config/firebase-config.js</code> med projektets ' +
+    'nøgler og kør <code>npm run config</code>. Så henter appen sig selv igen.</p></div>';
+  throw new Error('Firebase-config mangler');
+}
+
+/* --- Flerkunde: kundens data ligger under k/<kunde-id>/ ------------------ */
+let KUNDE_ID = '';
+let KP = '';
+let mailCfg = {};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getDatabase(app);
+const auth = getAuth(app);
+
+let trucks = {}, opgaver = {}, currentUser = null, myVaerkstedId = '', myVaerkstedNavn = '';
+
+const TYPE_LABELS = {'1':'Service','2':'Reparation','3':'Skade','4':'Dæk','5':'Andet','6':'Truckwash'};
+const TYPE_CLASSES = {'1':'service','2':'repair','3':'damage','4':'tyres','5':'other','6':'wash'};
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+// ===== AUTH =====
+window.doLogin = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw    = document.getElementById('loginPw').value;
+  const errEl = document.getElementById('loginErr');
+  errEl.style.display = 'none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+  } catch(e) {
+    errEl.style.display = '';
+    errEl.textContent = 'Forkert email eller adgangskode';
+  }
+};
+
+window.doLogout = async function() {
+  if(confirm('Log ud?')) await signOut(auth);
+};
+
+const authTimeout = setTimeout(() => {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}, 5000);
+
+onAuthStateChanged(auth, async user => {
+  clearTimeout(authTimeout);
+  document.getElementById('loadingScreen').style.display = 'none';
+
+  if(!user) {
+    KUNDE_ID = ''; KP = '';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    return;
+  }
+
+  const afvis = async t => {
+    const el = document.getElementById('loginErr');
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    el.style.display = ''; el.textContent = t;
+    await signOut(auth);
+  };
+
+  let profil = {};
+  try {
+    const token = await user.getIdToken();
+    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json?auth='+token);
+    profil = resp.ok ? (await resp.json())||{} : {};
+  } catch(e) { profil = {}; }
+
+  currentUser = { uid:user.uid, email:user.email,
+                  navn: profil.navn || user.email, role: profil.role || 'leverandoer' };
+
+  if(!profil.kundeId)     return afvis('Din konto er ikke knyttet til en kunde. Kontakt kontoret.');
+  if(!profil.vaerkstedId) return afvis('Din konto er ikke knyttet til et vaerksted. Kontakt kontoret.');
+
+  let kunde = null;
+  try {
+    const s = await get(ref(db,'kunder/'+profil.kundeId));
+    kunde = s.exists() ? s.val() : null;
+  } catch(e) { kunde = null; }
+  if(!kunde) return afvis('Kunden findes ikke. Kontakt kontoret.');
+  if(kunde.status === 'spaerret') return afvis('Adgangen er midlertidigt lukket. Kontakt kontoret.');
+
+  KUNDE_ID = profil.kundeId;
+  KP = 'k/' + KUNDE_ID + '/';
+  myVaerkstedId = profil.vaerkstedId;
+
+  try {
+    const v = await get(ref(db,KP+'vaerksteder/'+myVaerkstedId));
+    myVaerkstedNavn = v.exists() ? (v.val().navn || 'Leverandoer') : 'Leverandoer';
+  } catch(e) { myVaerkstedNavn = 'Leverandoer'; }
+
+  try {
+    const mc = await get(ref(db,KP+'mailConfig'));
+    mailCfg = mc.exists() ? mc.val() : {};
+  } catch(e) { mailCfg = {}; }
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('headerUser').textContent =
+    currentUser.navn + (kunde.navn ? ' · ' + kunde.navn : '');
+  document.getElementById('vaerkstedNavn').textContent = myVaerkstedNavn;
+  startListeners();
+});
+
+function startListeners() {
+  onValue(ref(db,KP+'trucks'), s => { trucks = s.val()||{}; render(); });
+  onValue(ref(db,KP+'opgaver'), s => { opgaver = s.val()||{}; render(); });
+}
+
+window.showTab = function(id, el) {
+  document.querySelectorAll('.mob-nav button').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-aktive').style.display = id==='aktive' ? '' : 'none';
+  document.getElementById('tab-afsluttet').style.display = id==='afsluttet' ? '' : 'none';
+};
+
+function render() {
+  if(!myVaerkstedId) return;
+
+  // Find opgaver where udforer matches this vaerksted's name
+  // Nyere opgaver har vaerkstedets id paa sig. AEldre har kun navnet, saa vi
+  // falder tilbage til navnet — ellers ville gamle opgaver forsvinde.
+  const mine = Object.entries(opgaver).filter(([,o]) =>
+    o.udforerId ? o.udforerId === myVaerkstedId : (o.udforer && o.udforer === myVaerkstedNavn));
+
+  // ACTIVE: not udført, not afsluttet by supplier
+  const aktive = mine.filter(([,o]) => o.status !== 'udført' && o.status !== 'klar_afhentning')
+    .sort((a,b) => (a[1].planlagtDato||a[1].dato||'').localeCompare(b[1].planlagtDato||b[1].dato||''));
+
+  const klarTilAfh = mine.filter(([,o]) => o.status === 'klar_afhentning')
+    .sort((a,b) => (b[1].dato||'').localeCompare(a[1].dato||''));
+
+  const udfoerte = mine.filter(([,o]) => o.status === 'udført')
+    .sort((a,b) => (b[1].dato||'').localeCompare(a[1].dato||''))
+    .slice(0, 20);
+
+  // Render active list (includes klar_afhentning at top)
+  const aktiveListe = document.getElementById('aktiveListe');
+  const allActive = [...klarTilAfh, ...aktive];
+  if(!allActive.length) {
+    aktiveListe.innerHTML = '<div class="empty-state"><div class="empty-icon">🔧</div>Ingen aktive opgaver lige nu</div>';
+  } else {
+    aktiveListe.innerHTML = allActive.map(([id,o]) => renderTaskCard(id, o)).join('');
+  }
+
+  // Render completed list
+  const afsluttetListe = document.getElementById('afsluttetListe');
+  if(!udfoerte.length) {
+    afsluttetListe.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div>Ingen afsluttede opgaver endnu</div>';
+  } else {
+    afsluttetListe.innerHTML = udfoerte.map(([id,o]) => renderTaskCard(id, o, true)).join('');
+  }
+}
+
+function renderTaskCard(id, o, isDone) {
+  const truckData = trucks[o.truck] || {};
+  const typeCls = TYPE_CLASSES[o.type] || 'other';
+  const typeLbl = TYPE_LABELS[o.type] || 'Opgave';
+  const isUrgent = o.planlagtDato && o.planlagtDato <= today() && o.status !== 'klar_afhentning' && o.status !== 'udført';
+  const statusMap = {
+    'oprettet': {cls:'oprettet', txt:'Oprettet'},
+    'planlagt': {cls:'planlagt', txt:'Planlagt'},
+    'indberettet': {cls:'oprettet', txt:'Indberettet'},
+    'klar_afhentning': {cls:'klar', txt:'✓ Klar til afhentning'},
+    'udført': {cls:'klar', txt:'Afsluttet'},
+  };
+  const st = statusMap[o.status] || {cls:'oprettet', txt:o.status};
+
+  const canKlarmeld = !isDone && o.status !== 'klar_afhentning' && o.status !== 'udført';
+  const isAfventer = o.status === 'klar_afhentning';
+
+  return `<div class="task-card ${isUrgent?'urgent':''}">
+    <div class="task-top">
+      <div class="task-truck">🚛 ${truckData.vognr || o.truck || '?'}</div>
+      <span class="task-type-tag ttag-${typeCls}">${typeLbl}</span>
+    </div>
+    <div class="task-desc">${o.beskrivelse || 'Ingen beskrivelse'}</div>
+    <div class="task-meta">
+      ${o.planlagtDato ? `<span>📅 Planlagt: ${o.planlagtDato}</span>` : o.dato ? `<span>📅 ${o.dato}</span>` : ''}
+      ${o.km ? `<span>🛣 ${Number(o.km).toLocaleString('da-DK')} km</span>` : ''}
+    </div>
+    <div class="task-status-row">
+      <span class="status-badge sb-${st.cls}">${st.txt}</span>
+      ${canKlarmeld ? `<button class="btn-klarmeld" onclick="klarmeld('${id}')">✓ Klarmeld til afhentning</button>` : ''}
+      ${isAfventer ? `<span style="font-size:12px;color:var(--muted)">Afventer afhentning</span>` : ''}
+    </div>
+  </div>`;
+}
+
+window.klarmeld = async function(id) {
+  const o = opgaver[id];
+  if(!o) return;
+  if(!confirm('Klarmeld denne opgave til afhentning? Operation modtager en mail.')) return;
+
+  try {
+    await update(ref(db,KP+'opgaver/'+id), { status: 'klar_afhentning', klarmeldtAf: currentUser.navn, klarmeldtTid: new Date().toISOString() });
+
+    // Send email notification
+    const truckData = trucks[o.truck] || {};
+    try {
+      if(!mailCfg.publicKey || !mailCfg.serviceId || !mailCfg.templateId)
+        throw new Error('Mailopsaetning mangler hos kunden');
+      emailjs.init({ publicKey: mailCfg.publicKey });
+      await emailjs.send(mailCfg.serviceId, mailCfg.templateId, {
+        to_email: mailCfg.modtager || '',
+        chauffeur: myVaerkstedNavn + ' (leverandør)',
+        lastbil: truckData.vognr || o.truck,
+        type: 'Klar til afhentning',
+        beskrivelse: o.beskrivelse || '',
+        dato: today(),
+        km: o.km || '—',
+        skadesArt: '—',
+      });
+    } catch(mailErr) {
+      console.warn('Email fejlede:', mailErr);
+    }
+
+    alert('✓ Opgave klarmeldt! Operation er notificeret.');
+  } catch(e) {
+    alert('Fejl: ' + e.message);
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</body>
+</html>

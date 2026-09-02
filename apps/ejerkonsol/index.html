@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#061824">
+<title>Ejerkonsol · Fleetcontrol</title>
+<style>
+  :root{
+    --sidebar:#061824; --sidebar-2:#0b2531; --sidebar-aktiv:#0e4c57; --cyan:#43cfc4;
+    --bg:#f6f7f9; --surface:#ffffff; --surface2:#f3f6f8;
+    --border:#e4eaee; --border2:#d3dde2;
+    --accent:#0e6e7a; --accent2:#045c6c; --accent-svag:#edf6f5;
+    --green:#157f5f; --yellow:#b47a24; --red:#ca4b4a;
+    --rav:#b7791f; --rav-svag:#fdf6e7; --rav-kant:#ecdcb8;
+    --text:#14232d; --muted:#6b7c86; --muted2:#9aa8b1;
+    --font:'Segoe UI',system-ui,-apple-system,sans-serif;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --r:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  button,input,select,textarea{font-family:inherit;font-size:14px}
+  button{cursor:pointer}
+  a{color:var(--accent)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* ---------- login ---------- */
+  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--sidebar)}
+  .login-card{background:var(--surface);border-radius:16px;padding:40px 34px;width:100%;max-width:380px;
+              box-shadow:0 18px 50px rgba(3,18,27,.45)}
+  .login-mark{font-size:11px;letter-spacing:.30em;color:var(--accent);margin-bottom:11px}
+  .login-card h1{font-size:23px;font-weight:600;margin-bottom:5px}
+  .login-card p{color:var(--muted);font-size:13px;margin-bottom:26px}
+
+  /* ---------- formularer ---------- */
+  .fld{margin-bottom:14px}
+  .fld label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px}
+  .inp,select.inp,textarea.inp{width:100%;background:var(--surface);border:1px solid var(--border2);color:var(--text);
+    padding:10px 12px;border-radius:8px;outline:none;transition:border-color .12s}
+  .inp:focus{border-color:var(--accent)}
+  .inp::placeholder{color:var(--muted2)}
+  textarea.inp{resize:vertical;min-height:70px}
+  .fld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .hint{font-size:12px;color:var(--muted2);margin-top:5px}
+
+  .btn{background:var(--surface);border:1px solid var(--border2);color:var(--text);padding:9px 16px;border-radius:8px;
+       font-weight:600;font-size:13.5px;transition:background .12s,border-color .12s}
+  .btn:hover{background:var(--surface2);border-color:var(--muted2)}
+  /* Rav på handlingsknapperne: herfra sletter man kunder og åbner andres data */
+  .btn-primary{background:var(--rav);border-color:var(--rav);color:#fff}
+  .btn-primary:hover{background:#9c6717;border-color:#9c6717}
+  .btn-danger{background:var(--surface);border-color:#e6b9b8;color:var(--red)}
+  .btn-danger:hover{background:#fbecec}
+  .btn-ghost{background:transparent}
+  .btn-sm{padding:6px 11px;font-size:12.5px}
+  .btn-block{width:100%}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+
+  .msg{font-size:13px;margin-top:12px;min-height:18px}
+  .msg.err{color:var(--red)}
+  .msg.ok{color:var(--green)}
+
+  /* ---------- skal med sidebar ---------- */
+  #shell{display:none;min-height:100vh}
+  #shell.vis{display:flex}
+  .side{width:214px;flex-shrink:0;background:var(--sidebar);color:#c3d2d9;display:flex;flex-direction:column;
+        padding:20px 0 16px;position:sticky;top:0;height:100vh}
+  .side-logo{padding:0 18px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+  .side-logo b{display:block;color:#fff;font-size:15px;letter-spacing:.20em;font-weight:500}
+  .side-logo span{font-size:10.5px;color:var(--cyan);letter-spacing:.08em}
+  .side-logo em{display:block;font-style:normal;font-size:12px;color:#7f95a0;margin-top:9px}
+  .side-grp{font-size:10px;letter-spacing:.16em;color:#5d7480;padding:16px 18px 6px}
+  .tabs{display:flex;flex-direction:column}
+  .tabs button{background:none;border:none;color:#c3d2d9;text-align:left;padding:9px 18px;font-size:13.5px;font-weight:500}
+  .tabs button:hover{color:#fff;background:rgba(255,255,255,.05)}
+  .tabs button.on{background:var(--sidebar-aktiv);color:#fff;font-weight:650;box-shadow:inset 3px 0 0 var(--cyan)}
+
+  .side-tal{margin-top:auto;padding:16px 18px;border-top:1px solid rgba(255,255,255,.07);
+            display:flex;flex-direction:column;gap:3px;font-size:12px;color:#7f95a0}
+  .side-tal b{color:#fff;font-weight:650}
+  .side-bund{padding:14px 18px 0;border-top:1px solid rgba(255,255,255,.07);margin-top:14px}
+  .whoami{font-size:12.5px;color:#a9c0c9;margin-bottom:9px;overflow:hidden;text-overflow:ellipsis}
+  .side-bund button{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#cfdde3;
+                    padding:6px 13px;border-radius:7px;font-size:12.5px;font-weight:600}
+  .side-bund button:hover{background:rgba(255,255,255,.13)}
+
+  .hoved{flex:1;min-width:0}
+  main{max-width:1080px;padding:28px 30px 80px}
+  .view{display:none}
+  .view.on{display:block}
+
+  .head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+  .head h2{font-size:21px;font-weight:650;letter-spacing:-.01em}
+  .head .undertekst{font-size:12.5px;color:var(--muted);font-weight:400;display:block;margin-top:2px}
+  .head .spacer{margin-left:auto}
+  .search{background:var(--surface);border:1px solid var(--border2);color:var(--text);padding:8px 13px;
+          border-radius:8px;width:230px;outline:none}
+  .search:focus{border-color:var(--accent)}
+
+  /* ---------- kundetavlen ---------- */
+  .board{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);
+         box-shadow:0 1px 2px rgba(20,35,45,.04)}
+  .krow{display:grid;grid-template-columns:3px 1.6fr 1fr .8fr .9fr auto;gap:16px;align-items:center;
+        padding:0 18px 0 0;border-bottom:1px solid var(--border);transition:background .12s}
+  .krow:last-child{border-bottom:none}
+  .krow:hover{background:var(--surface2)}
+  .kstripe{align-self:stretch;background:var(--muted2)}
+  .kstripe.aktiv{background:var(--green)}
+  .kstripe.proeve{background:var(--yellow)}
+  .kstripe.spaerret{background:var(--red)}
+  .kmain{padding:15px 0 15px 16px;min-width:0}
+  .kname{font-weight:650;font-size:14.5px}
+  .kid{font-family:var(--mono);font-size:11.5px;color:var(--muted2);margin-top:2px}
+  .kcell{font-size:12.5px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .kcell b{display:block;color:var(--text);font-weight:600;font-size:13px}
+  .kactions{display:flex;gap:7px}
+  .chip{display:inline-block;font-size:11px;font-weight:650;padding:2px 8px;border-radius:5px}
+  .chip.aktiv{background:#e6f4ef;color:var(--green)}
+  .chip.proeve{background:var(--rav-svag);color:#8a5c17}
+  .chip.spaerret{background:#fbecec;color:#9c3a39}
+  .board-head{display:grid;grid-template-columns:3px 1.6fr 1fr .8fr .9fr auto;gap:16px;
+              padding:9px 18px 9px 0;border-bottom:1px solid var(--border);background:var(--surface2);
+              font-size:11px;letter-spacing:.04em;color:var(--muted)}
+  .board-head div:nth-child(2){padding-left:16px}
+
+  .empty{padding:52px 24px;text-align:center;color:var(--muted)}
+  .empty b{display:block;color:var(--text);font-size:15px;margin-bottom:6px;font-weight:600}
+
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px;
+         box-shadow:0 1px 2px rgba(20,35,45,.04)}
+  .panel h3{font-size:15px;font-weight:650;margin-bottom:4px}
+  .panel .sub{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:11px;letter-spacing:.04em;color:var(--muted);font-weight:600;padding:8px 10px;
+     border-bottom:1px solid var(--border)}
+  td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+
+  .modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(6,24,36,.62);padding:24px;overflow-y:auto}
+  .modal.open{display:flex;align-items:flex-start;justify-content:center}
+  .modal-box{background:var(--surface);border-radius:14px;width:100%;max-width:540px;margin:auto;padding:26px;
+             box-shadow:0 22px 60px rgba(3,18,27,.32)}
+  .modal-box.wide{max-width:820px}
+  .modal-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px}
+  .modal-top h3{font-size:17px;font-weight:650}
+  .modal-top p{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .modal-x{margin-left:auto;background:none;border:none;color:var(--muted);font-size:20px;line-height:1;padding:2px 6px}
+  .modal-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+
+  .warn{background:#fbecec;border:1px solid #e6b9b8;border-radius:8px;padding:12px 14px;font-size:12.5px;
+        color:#9c3a39;margin-bottom:16px}
+  .note{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;
+        font-size:12.5px;color:var(--muted);margin-bottom:16px}
+  .note b{color:var(--text)}
+
+  .switch{display:flex;align-items:center;gap:9px;padding:9px 0;font-size:13.5px}
+  .switch input{width:17px;height:17px;accent-color:var(--accent)}
+
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:13px;margin-bottom:20px}
+  .kv dt{color:var(--muted)}
+  .kv dd{color:var(--text)}
+  .loading{padding:40px;text-align:center;color:var(--muted);font-size:13px}
+
+  @media(max-width:900px){
+    #shell.vis{flex-direction:column}
+    .side{width:100%;height:auto;position:static;padding-bottom:8px}
+    .tabs{flex-direction:row;overflow-x:auto}
+    .tabs button.on{box-shadow:inset 0 -3px 0 var(--cyan)}
+    .side-grp,.side-tal{display:none}
+    .side-bund{display:flex;align-items:center;gap:12px;margin-top:10px}
+    .whoami{margin:0}
+    main{padding:22px 18px 60px}
+    .krow,.board-head{grid-template-columns:3px 1fr auto}
+    .krow .kcell:nth-of-type(2),.krow .kcell:nth-of-type(3),
+    .board-head div:nth-child(4),.board-head div:nth-child(5){display:none}
+    .fld-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-mark">FLEETCONTROL</div>
+    <h1>Ejerkonsol</h1>
+    <p>Adgang kun for platformejere.</p>
+    <div class="fld">
+      <label for="loginEmail">Email</label>
+      <input class="inp" id="loginEmail" type="email" autocomplete="username" placeholder="dig@fleetcontrol.dk">
+    </div>
+    <div class="fld">
+      <label for="loginPw">Adgangskode</label>
+      <input class="inp" id="loginPw" type="password" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary btn-block" id="loginBtn">Log ind</button>
+    <div class="msg err" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- ================= SHELL ================= -->
+<div id="shell">
+  <aside class="side">
+    <div class="side-logo">
+      <b>VEYRO</b><span>ejerkonsol</span>
+      <em>Fleetcontrol.dk ApS</em>
+    </div>
+    <div class="side-grp">PLATFORM</div>
+    <nav class="tabs">
+      <button class="on" data-view="kunder">Kunder</button>
+      <button data-view="ejere">Ejere</button>
+      <button data-view="opsaetning">Opsætning</button>
+    </nav>
+    <div class="side-tal">
+      <div><b id="cntKunder">0</b> kunder i alt</div>
+      <div><b id="cntAktive">0</b> aktive</div>
+      <div><b id="cntSpaerret">0</b> spærret</div>
+    </div>
+    <div class="side-bund">
+      <div class="whoami" id="whoami"></div>
+      <button id="logoutBtn">Log ud</button>
+    </div>
+  </aside>
+
+  <div class="hoved">
+  <main>
+    <!-- ---- KUNDER ---- -->
+    <div class="view on" id="view-kunder">
+      <div class="head">
+        <div><h2>Kunder</h2><span class="undertekst">Hver kunde har sit eget adskilte dataområde</span></div>
+        <div class="spacer"></div>
+        <input class="search" id="kundeSearch" type="search" placeholder="Søg navn, CVR eller ID">
+        <button class="btn btn-primary" id="nyKundeBtn">Opret kunde</button>
+      </div>
+      <div class="board" id="kundeBoard">
+        <div class="loading">Henter kunder…</div>
+      </div>
+    </div>
+
+    <!-- ---- EJERE ---- -->
+    <div class="view" id="view-ejere">
+      <div class="head"><div><h2>Platformejere</h2><span class="undertekst">Fuld adgang til alle kunders data</span></div></div>
+      <div class="panel">
+        <h3>Hvem har fuld adgang</h3>
+        <p class="sub">Ejere kan se og redigere alle kunders data. Hold listen så kort som muligt.</p>
+        <table><thead><tr><th>Navn</th><th>Email</th><th>Bruger-ID</th><th></th></tr></thead>
+        <tbody id="ejerBody"></tbody></table>
+      </div>
+      <div class="panel">
+        <h3>Tilføj ejer</h3>
+        <p class="sub">Opretter en ny konto og giver den ejeradgang med det samme.</p>
+        <div class="fld-row">
+          <div class="fld"><label for="ejerNavn">Navn</label><input class="inp" id="ejerNavn" placeholder="Dennis"></div>
+          <div class="fld"><label for="ejerEmail">Email</label><input class="inp" id="ejerEmail" type="email" placeholder="dennis@fleetcontrol.dk"></div>
+        </div>
+        <div class="fld"><label for="ejerPw">Midlertidig adgangskode</label><input class="inp" id="ejerPw" type="text" placeholder="Mindst 6 tegn"></div>
+        <button class="btn btn-primary" id="ejerOpretBtn">Opret ejer</button>
+        <div class="msg" id="ejerMsg"></div>
+      </div>
+    </div>
+
+    <!-- ---- OPSÆTNING ---- -->
+    <div class="view" id="view-opsaetning">
+      <div class="head"><div><h2>Opsætning</h2><span class="undertekst">Adresser og datamodel</span></div></div>
+      <div class="panel">
+        <h3>Adresser på apps</h3>
+        <p class="sub">Bruges til "Åbn"-knapperne, så du lander direkte hos den rigtige kunde.</p>
+        <div class="fld"><label for="cfgFm">Kontorapp (FleetManagement)</label><input class="inp" id="cfgFm" placeholder="https://kontor.fleetcontrol.dk"></div>
+        <div class="fld"><label for="cfgInd">Chaufførapp (Indberetning)</label><input class="inp" id="cfgInd" placeholder="https://indberet.fleetcontrol.dk"></div>
+        <button class="btn btn-primary" id="cfgGemBtn">Gem adresser</button>
+        <div class="msg" id="cfgMsg"></div>
+      </div>
+      <div class="panel">
+        <h3>Sådan er data adskilt</h3>
+        <p class="sub">Til reference når du sætter regler op i Firebase.</p>
+        <div class="note">
+          Hver kunde har sit eget ID. Alle kundens data ligger under <b>/k/&lt;kunde-id&gt;/</b> —
+          lastbiler, opgaver, udgifter, service, kontakter og indstillinger.
+          En bruger står i <b>/users/&lt;uid&gt;</b> med præcis ét kunde-ID, og reglerne i
+          <b>database.rules.json</b> tillader kun læsning og skrivning under netop det ID.
+          Ejere står i <b>/platform/ejere/</b> og har adgang overalt.
+        </div>
+      </div>
+    </div>
+  </main>
+  </div>
+</div>
+
+<!-- ================= MODAL: NY / REDIGER KUNDE ================= -->
+<div class="modal" id="mKunde">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div><h3 id="mKundeTitel">Opret kunde</h3><p id="mKundeSub">Kunden får sit eget adskilte dataområde.</p></div>
+      <button class="modal-x" data-close="mKunde">✕</button>
+    </div>
+    <div class="fld-row">
+      <div class="fld"><label for="kNavn">Firmanavn</label><input class="inp" id="kNavn" placeholder="Vognmand Hansen A/S"></div>
+      <div class="fld"><label for="kCvr">CVR-nummer</label><input class="inp" id="kCvr" placeholder="12345678"></div>
+    </div>
+    <div class="fld">
+      <label for="kId">Kunde-ID</label>
+      <input class="inp" id="kId" placeholder="vognmand-hansen">
+      <div class="hint">Små bogstaver, tal og bindestreg. Kan ikke ændres bagefter — det indgår i stien til kundens data.</div>
+    </div>
+    <div class="fld-row">
+      <div class="fld"><label for="kKontakt">Kontaktperson</label><input class="inp" id="kKontakt" placeholder="Peter Hansen"></div>
+      <div class="fld"><label for="kEmail">Email</label><input class="inp" id="kEmail" type="email" placeholder="kontor@hansen.dk"></div>
+    </div>
+    <div class="fld-row">
+      <div class="fld"><label for="kTlf">Telefon</label><input class="inp" id="kTlf" placeholder="12 34 56 78"></div>
+      <div class="fld"><label for="kBy">By</label><input class="inp" id="kBy" placeholder="Viborg"></div>
+    </div>
+    <div class="fld-row">
+      <div class="fld">
+        <label for="kStatus">Status</label>
+        <select class="inp" id="kStatus">
+          <option value="proeve">Prøveperiode</option>
+          <option value="aktiv">Aktiv</option>
+          <option value="spaerret">Spærret</option>
+        </select>
+      </div>
+      <div class="fld"><label for="kUdloeb">Prøveperiode slutter</label><input class="inp" id="kUdloeb" type="date"></div>
+    </div>
+    <div class="fld-row">
+      <div class="fld"><label for="kMaxBrugere">Højst antal brugere</label><input class="inp" id="kMaxBrugere" type="number" min="0" placeholder="Ingen grænse"></div>
+      <div class="fld"><label for="kMaxBiler">Højst antal lastbiler</label><input class="inp" id="kMaxBiler" type="number" min="0" placeholder="Ingen grænse"></div>
+    </div>
+    <div class="fld">
+      <label>Moduler kunden kan bruge</label>
+      <label class="switch"><input type="checkbox" id="kModFlaade" checked> Kontorapp — flådestyring</label>
+      <label class="switch"><input type="checkbox" id="kModInd" checked> Chaufførapp — indberetning</label>
+    </div>
+    <div class="fld"><label for="kNoter">Interne noter</label><textarea class="inp" id="kNoter" placeholder="Aftaler, priser, hvem der er kontakt hos os…"></textarea></div>
+    <div class="msg" id="kMsg"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close="mKunde">Annullér</button>
+      <button class="btn btn-primary" id="kGemBtn">Opret kunde</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: KUNDEDETALJE ================= -->
+<div class="modal" id="mDetalje">
+  <div class="modal-box wide">
+    <div class="modal-top">
+      <div><h3 id="dNavn">—</h3><p id="dSub">—</p></div>
+      <button class="modal-x" data-close="mDetalje">✕</button>
+    </div>
+
+    <dl class="kv" id="dKv"></dl>
+
+    <div class="head" style="margin-bottom:12px">
+      <h3 style="font-size:15px">Brugere hos kunden</h3>
+      <div class="spacer"></div>
+      <button class="btn btn-sm btn-primary" id="dNyBrugerBtn">Opret bruger</button>
+    </div>
+    <table><thead><tr><th>Navn</th><th>Email</th><th>Rolle</th><th>Oprettet</th><th></th></tr></thead>
+    <tbody id="dBrugerBody"></tbody></table>
+
+    <div class="modal-foot" style="justify-content:space-between">
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-danger btn-sm" id="dSletBtn">Slet kunde</button>
+        <button class="btn btn-sm" id="dSpaerBtn">Spær adgang</button>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-sm" id="dRedigerBtn">Redigér</button>
+        <button class="btn btn-sm btn-primary" id="dAabnBtn">Åbn kontorapp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: NY BRUGER ================= -->
+<div class="modal" id="mBruger">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div><h3>Opret bruger</h3><p id="bSub">—</p></div>
+      <button class="modal-x" data-close="mBruger">✕</button>
+    </div>
+    <div class="fld"><label for="bNavn">Navn</label><input class="inp" id="bNavn" placeholder="Peter Hansen"></div>
+    <div class="fld"><label for="bEmail">Email</label><input class="inp" id="bEmail" type="email" placeholder="peter@hansen.dk"></div>
+    <div class="fld"><label for="bPw">Midlertidig adgangskode</label><input class="inp" id="bPw" type="text" placeholder="Mindst 6 tegn"></div>
+    <div class="fld">
+      <label for="bRolle">Rolle</label>
+      <select class="inp" id="bRolle">
+        <option value="admin">Administrator — kan alt hos kunden</option>
+        <option value="user">Bruger — kontoradgang uden brugerstyring</option>
+        <option value="chauffeur">Chauffør — kun indberetningsappen</option>
+      </select>
+    </div>
+    <div class="msg" id="bMsg"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close="mBruger">Annullér</button>
+      <button class="btn btn-primary" id="bOpretBtn">Opret bruger</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: BEKRÆFT SLETNING ================= -->
+<div class="modal" id="mSlet">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div><h3>Slet kunde og alle data</h3><p>Handlingen kan ikke fortrydes.</p></div>
+      <button class="modal-x" data-close="mSlet">✕</button>
+    </div>
+    <div class="warn" id="sletAdvarsel">—</div>
+    <div class="fld">
+      <label for="sletBekraeft">Skriv kundens ID for at bekræfte</label>
+      <input class="inp" id="sletBekraeft" placeholder="kunde-id">
+    </div>
+    <div class="note">Brugernes login-konti bliver ikke slettet automatisk. Fjern dem i Firebase Console under Authentication, hvis de ikke skal kunne logge ind igen.</div>
+    <div class="msg" id="sletMsg"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close="mSlet">Annullér</button>
+      <button class="btn btn-danger" id="sletBtn">Slet permanent</button>
+    </div>
+  </div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, get, set, update, remove, onValue }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+/* Firebase-opsætningen ligger i firebase-config.js ved siden af denne fil.
+   Én kilde til sandhed: config/firebase-config.js — kør "npm run config"
+   efter du har rettet den, så alle tre apps får den samme. */
+const firebaseConfig = window.FIREBASE_CONFIG;
+if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === 'DIN_API_KEY') {
+  document.body.innerHTML =
+    '<div style="font-family:system-ui;max-width:520px;margin:14vh auto;padding:28px;' +
+    'border:1px solid #3d4b64;border-radius:14px;background:#18202f;color:#e8edf5;line-height:1.6">' +
+    '<h1 style="font-size:19px;margin:0 0 10px">Firebase er ikke sat op endnu</h1>' +
+    '<p style="margin:0;color:#8b98ad">Udfyld <code>config/firebase-config.js</code> med projektets ' +
+    'nøgler og kør <code>npm run config</code>. Så henter appen sig selv igen.</p></div>';
+  throw new Error('Firebase-config mangler');
+}
+
+const app  = initializeApp(firebaseConfig);
+const db   = getDatabase(app);
+const auth = getAuth(app);
+
+/* ---------- små hjælpere ---------- */
+const $  = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso  = () => new Date().toISOString().slice(0,10);
+const dkDato = s => {
+  if(!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return '—';
+  const [a,m,d] = s.split('-'); return `${d}.${m}.${a}`;
+};
+function slug(s){
+  return String(s||'').toLowerCase()
+    .replace(/[æä]/g,'ae').replace(/[øö]/g,'oe').replace(/å/g,'aa')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,30);
+}
+function besked(el, tekst, ok){ el.className = 'msg ' + (ok ? 'ok' : 'err'); el.textContent = tekst; }
+function aabn(id){ $(id).classList.add('open'); }
+function luk(id){ $(id).classList.remove('open'); }
+document.querySelectorAll('[data-close]').forEach(b =>
+  b.addEventListener('click', () => luk(b.dataset.close)));
+document.querySelectorAll('.modal').forEach(m =>
+  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); }));
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+});
+
+/* ---------- tilstand ---------- */
+let ejer = null;          // { uid, email, navn }
+let kunder = {};          // kundeId -> kundeobjekt
+let ejere  = {};          // uid -> { navn, email }
+let pfConfig = {};        // { fmUrl, indUrl }
+let valgtKunde = null;    // kundeId der er åbnet i detaljevinduet
+let redigerer = null;     // kundeId når modal er i redigeringstilstand
+
+const STATUS_TEKST = { aktiv:'Aktiv', proeve:'Prøve', spaerret:'Spærret' };
+
+/* =====================================================================
+   Login
+   ===================================================================== */
+$('loginBtn').addEventListener('click', doLogin);
+$('loginPw').addEventListener('keydown', e => { if(e.key === 'Enter') doLogin(); });
+$('loginEmail').addEventListener('keydown', e => { if(e.key === 'Enter') $('loginPw').focus(); });
+
+async function doLogin(){
+  const email = $('loginEmail').value.trim();
+  const pw    = $('loginPw').value;
+  const m     = $('loginMsg');
+  m.textContent = '';
+  if(!email || !pw) return besked(m, 'Udfyld email og adgangskode.');
+  $('loginBtn').disabled = true;
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+  } catch(e) {
+    const c = e.code || '';
+    besked(m,
+      c.includes('invalid-credential') || c.includes('wrong-password') || c.includes('user-not-found')
+        ? 'Forkert email eller adgangskode.'
+      : c.includes('too-many-requests') ? 'For mange forsøg. Vent lidt og prøv igen.'
+      : c.includes('network') ? 'Ingen forbindelse. Tjek dit netværk.'
+      : 'Login mislykkedes: ' + (e.message || c));
+  } finally {
+    $('loginBtn').disabled = false;
+  }
+}
+
+$('logoutBtn').addEventListener('click', () => signOut(auth));
+
+onAuthStateChanged(auth, async user => {
+  if(!user){
+    ejer = null;
+    $('shell').classList.remove('vis');
+    $('login').style.display = 'flex';
+    return;
+  }
+  // Kun platformejere må ind. Reglerne blokerer alligevel, men vi siger det pænt.
+  let profil = null;
+  try {
+    const snap = await get(ref(db, 'platform/ejere/' + user.uid));
+    profil = snap.exists() ? snap.val() : null;
+  } catch(e){ profil = null; }
+
+  if(!profil){
+    besked($('loginMsg'), 'Kontoen har ikke ejeradgang. Log ind i kontorappen i stedet.');
+    await signOut(auth);
+    return;
+  }
+
+  ejer = { uid:user.uid, email:user.email, navn: profil.navn || user.email };
+  $('whoami').textContent = ejer.navn;
+  $('login').style.display = 'none';
+  $('shell').classList.add('vis');
+  start();
+});
+
+/* =====================================================================
+   Datalyttere
+   ===================================================================== */
+function start(){
+  onValue(ref(db, 'kunder'), s => { kunder = s.val() || {}; tegnKunder(); tegnTal(); if(valgtKunde) tegnDetalje(valgtKunde); },
+    e => $('kundeBoard').innerHTML = `<div class="empty"><b>Kunne ikke hente kunder</b>${esc(e.message)}</div>`);
+  onValue(ref(db, 'platform/ejere'), s => { ejere = s.val() || {}; tegnEjere(); });
+  onValue(ref(db, 'platform/config'), s => {
+    pfConfig = s.val() || {};
+    if(document.activeElement !== $('cfgFm'))  $('cfgFm').value  = pfConfig.fmUrl  || '';
+    if(document.activeElement !== $('cfgInd')) $('cfgInd').value = pfConfig.indUrl || '';
+  });
+}
+
+/* ---------- faner ---------- */
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  b.classList.add('on');
+  $('view-' + b.dataset.view).classList.add('on');
+}));
+
+/* =====================================================================
+   Kundetavlen
+   ===================================================================== */
+$('kundeSearch').addEventListener('input', tegnKunder);
+
+function tegnTal(){
+  const v = Object.values(kunder);
+  $('cntKunder').textContent   = v.length;
+  $('cntAktive').textContent   = v.filter(k => k.status === 'aktiv').length;
+  $('cntSpaerret').textContent = v.filter(k => k.status === 'spaerret').length;
+}
+
+function tegnKunder(){
+  const q = $('kundeSearch').value.trim().toLowerCase();
+  const rk = Object.entries(kunder)
+    .filter(([id,k]) => !q || id.includes(q) ||
+      (k.navn||'').toLowerCase().includes(q) || (k.cvr||'').includes(q))
+    .sort((a,b) => (a[1].navn||a[0]).localeCompare(b[1].navn||b[0], 'da'));
+
+  const board = $('kundeBoard');
+  if(!Object.keys(kunder).length){
+    board.innerHTML = `<div class="empty"><b>Ingen kunder endnu</b>
+      Opret den første kunde, så får den sit eget dataområde med det samme.</div>`;
+    return;
+  }
+  if(!rk.length){
+    board.innerHTML = `<div class="empty"><b>Ingen træffere</b>Prøv et andet søgeord.</div>`;
+    return;
+  }
+
+  board.innerHTML =
+    `<div class="board-head"><div></div><div>Kunde</div><div>Kontakt</div><div>Oprettet</div><div>Status</div><div></div></div>` +
+    rk.map(([id,k]) => {
+      const st = k.status || 'proeve';
+      const udloeb = st === 'proeve' && k.proeveUdloeb
+        ? `<div class="hint" style="margin:0">Prøve slutter ${dkDato(k.proeveUdloeb)}</div>` : '';
+      return `<div class="krow">
+        <div class="kstripe ${esc(st)}"></div>
+        <div class="kmain">
+          <div class="kname">${esc(k.navn || id)}</div>
+          <div class="kid">${esc(id)}${k.cvr ? ' · CVR ' + esc(k.cvr) : ''}</div>
+        </div>
+        <div class="kcell"><b>${esc(k.kontakt || '—')}</b>${esc(k.email || '')}</div>
+        <div class="kcell">${dkDato(k.oprettet)}</div>
+        <div class="kcell"><span class="chip ${esc(st)}">${STATUS_TEKST[st] || st}</span>${udloeb}</div>
+        <div class="kactions">
+          <button class="btn btn-sm" data-detalje="${esc(id)}">Åbn</button>
+        </div>
+      </div>`;
+    }).join('');
+
+  board.querySelectorAll('[data-detalje]').forEach(b =>
+    b.addEventListener('click', () => visDetalje(b.dataset.detalje)));
+}
+
+/* =====================================================================
+   Opret / redigér kunde
+   ===================================================================== */
+$('nyKundeBtn').addEventListener('click', () => {
+  redigerer = null;
+  $('mKundeTitel').textContent = 'Opret kunde';
+  $('mKundeSub').textContent   = 'Kunden får sit eget adskilte dataområde.';
+  $('kGemBtn').textContent     = 'Opret kunde';
+  $('kId').disabled = false;
+  ['kNavn','kCvr','kId','kKontakt','kEmail','kTlf','kBy','kUdloeb','kMaxBrugere','kMaxBiler','kNoter']
+    .forEach(f => $(f).value = '');
+  $('kStatus').value = 'proeve';
+  $('kModFlaade').checked = true;
+  $('kModInd').checked = true;
+  $('kMsg').textContent = '';
+  aabn('mKunde');
+  $('kNavn').focus();
+});
+
+// Foreslå et ID mens navnet skrives — men kun så længe brugeren ikke selv har rettet det
+let idRoert = false;
+$('kId').addEventListener('input', () => { idRoert = true; });
+$('kNavn').addEventListener('input', () => {
+  if(!redigerer && !idRoert) $('kId').value = slug($('kNavn').value);
+});
+
+$('kGemBtn').addEventListener('click', gemKunde);
+
+async function gemKunde(){
+  const m = $('kMsg');
+  const navn = $('kNavn').value.trim();
+  const id   = redigerer || $('kId').value.trim();
+
+  if(!navn) return besked(m, 'Firmanavn mangler.');
+  if(!/^[a-z0-9][a-z0-9-]{1,29}$/.test(id))
+    return besked(m, 'Kunde-ID må kun indeholde små bogstaver, tal og bindestreg — og skal starte med bogstav eller tal.');
+  if(!redigerer && kunder[id])
+    return besked(m, 'Der findes allerede en kunde med det ID. Vælg et andet.');
+
+  const data = {
+    navn,
+    cvr:      $('kCvr').value.trim(),
+    kontakt:  $('kKontakt').value.trim(),
+    email:    $('kEmail').value.trim(),
+    tlf:      $('kTlf').value.trim(),
+    by:       $('kBy').value.trim(),
+    status:   $('kStatus').value,
+    proeveUdloeb: $('kUdloeb').value || '',
+    maxBrugere: Number($('kMaxBrugere').value) || 0,
+    maxBiler:   Number($('kMaxBiler').value)   || 0,
+    moduler: { flaade: $('kModFlaade').checked, indberetning: $('kModInd').checked },
+    noter:    $('kNoter').value.trim(),
+    oprettet: redigerer ? (kunder[id]?.oprettet || iso()) : iso(),
+    aendret:  Date.now()
+  };
+
+  $('kGemBtn').disabled = true;
+  try {
+    await update(ref(db, 'kunder/' + id), data);
+    luk('mKunde');
+    if(!redigerer){
+      valgtKunde = id;
+      setTimeout(() => visDetalje(id), 150);
+    }
+  } catch(e){
+    besked(m, 'Kunne ikke gemme: ' + e.message);
+  } finally {
+    $('kGemBtn').disabled = false;
+  }
+}
+
+function redigerKunde(id){
+  const k = kunder[id]; if(!k) return;
+  redigerer = id;
+  $('mKundeTitel').textContent = 'Redigér ' + (k.navn || id);
+  $('mKundeSub').textContent   = 'Kunde-ID kan ikke ændres.';
+  $('kGemBtn').textContent     = 'Gem ændringer';
+  $('kId').value = id; $('kId').disabled = true;
+  $('kNavn').value = k.navn || '';
+  $('kCvr').value = k.cvr || '';
+  $('kKontakt').value = k.kontakt || '';
+  $('kEmail').value = k.email || '';
+  $('kTlf').value = k.tlf || '';
+  $('kBy').value = k.by || '';
+  $('kStatus').value = k.status || 'proeve';
+  $('kUdloeb').value = k.proeveUdloeb || '';
+  $('kMaxBrugere').value = k.maxBrugere || '';
+  $('kMaxBiler').value = k.maxBiler || '';
+  $('kModFlaade').checked = k.moduler?.flaade !== false;
+  $('kModInd').checked    = k.moduler?.indberetning !== false;
+  $('kNoter').value = k.noter || '';
+  $('kMsg').textContent = '';
+  luk('mDetalje');
+  aabn('mKunde');
+}
+
+/* =====================================================================
+   Kundedetalje
+   ===================================================================== */
+async function visDetalje(id){
+  valgtKunde = id;
+  tegnDetalje(id);
+  aabn('mDetalje');
+  hentBrugere(id);
+  hentTaellinger(id);
+}
+
+function tegnDetalje(id){
+  const k = kunder[id]; if(!k) return;
+  const st = k.status || 'proeve';
+  $('dNavn').textContent = k.navn || id;
+  $('dSub').textContent  = id + (k.cvr ? ' · CVR ' + k.cvr : '');
+  $('dKv').innerHTML = `
+    <dt>Status</dt><dd><span class="chip ${esc(st)}">${STATUS_TEKST[st] || st}</span></dd>
+    <dt>Kontakt</dt><dd>${esc(k.kontakt || '—')}${k.email ? ' · ' + esc(k.email) : ''}${k.tlf ? ' · ' + esc(k.tlf) : ''}</dd>
+    <dt>Oprettet</dt><dd>${dkDato(k.oprettet)}</dd>
+    ${st === 'proeve' ? `<dt>Prøve slutter</dt><dd>${dkDato(k.proeveUdloeb)}</dd>` : ''}
+    <dt>Moduler</dt><dd>${[k.moduler?.flaade !== false ? 'Kontorapp' : null,
+                           k.moduler?.indberetning !== false ? 'Chaufførapp' : null]
+                          .filter(Boolean).join(' · ') || 'Ingen'}</dd>
+    <dt>Grænser</dt><dd>${k.maxBrugere ? k.maxBrugere + ' brugere' : 'Ubegrænset antal brugere'} · ${k.maxBiler ? k.maxBiler + ' lastbiler' : 'ubegrænset antal lastbiler'}</dd>
+    <dt>Data</dt><dd id="dTaellinger">Henter…</dd>
+    ${k.noter ? `<dt>Noter</dt><dd>${esc(k.noter)}</dd>` : ''}`;
+  $('dSpaerBtn').textContent = st === 'spaerret' ? 'Ophæv spærring' : 'Spær adgang';
+}
+
+async function hentTaellinger(id){
+  const felter = [['trucks','lastbiler'],['opgaver','opgaver'],['udgifter','udgifter'],['chauffoerer','chauffører']];
+  try {
+    const dele = [];
+    for(const [sti,navn] of felter){
+      const s = await get(ref(db, `k/${id}/${sti}`));
+      dele.push(`${s.exists() ? Object.keys(s.val()).length : 0} ${navn}`);
+    }
+    const el = $('dTaellinger'); if(el) el.textContent = dele.join(' · ');
+  } catch(e){
+    const el = $('dTaellinger'); if(el) el.textContent = 'Kunne ikke hentes';
+  }
+}
+
+async function hentBrugere(id){
+  const body = $('dBrugerBody');
+  body.innerHTML = `<tr><td colspan="5" style="color:var(--muted)">Henter brugere…</td></tr>`;
+  let b = {};
+  try {
+    const s = await get(ref(db, `k/${id}/brugere`));
+    b = s.exists() ? s.val() : {};
+  } catch(e){
+    body.innerHTML = `<tr><td colspan="5" style="color:var(--red)">Kunne ikke hente brugere: ${esc(e.message)}</td></tr>`;
+    return;
+  }
+  const rk = Object.entries(b).sort((a,b2) => (a[1].navn||'').localeCompare(b2[1].navn||'', 'da'));
+  if(!rk.length){
+    body.innerHTML = `<tr><td colspan="5" style="color:var(--muted)">Ingen brugere endnu. Opret kundens første administrator herover.</td></tr>`;
+    return;
+  }
+  const rolleTekst = { admin:'Administrator', user:'Bruger', chauffeur:'Chauffør' };
+  body.innerHTML = rk.map(([uid,u]) => `<tr>
+    <td><strong>${esc(u.navn || '—')}</strong></td>
+    <td style="color:var(--muted)">${esc(u.email || '—')}</td>
+    <td>${rolleTekst[u.role] || esc(u.role || '—')}</td>
+    <td style="color:var(--muted)">${dkDato(u.oprettet)}</td>
+    <td style="text-align:right;white-space:nowrap">
+      <button class="btn btn-sm btn-ghost" data-reset="${esc(u.email||'')}">Send nyt kodeord</button>
+      <button class="btn btn-sm btn-danger" data-fjern="${esc(uid)}">Fjern</button>
+    </td></tr>`).join('');
+
+  body.querySelectorAll('[data-reset]').forEach(x => x.addEventListener('click', () => nulstilKode(x.dataset.reset)));
+  body.querySelectorAll('[data-fjern]').forEach(x => x.addEventListener('click', () => fjernBruger(id, x.dataset.fjern)));
+}
+
+async function nulstilKode(email){
+  if(!email) return alert('Brugeren har ingen email.');
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert('Der er sendt et link til ' + email + '.');
+  } catch(e){ alert('Kunne ikke sende link: ' + e.message); }
+}
+
+async function fjernBruger(kundeId, uid){
+  if(!confirm('Fjern brugerens adgang til kunden? Login-kontoen bliver stående i Firebase Authentication.')) return;
+  try {
+    await remove(ref(db, `k/${kundeId}/brugere/${uid}`));
+    await remove(ref(db, `users/${uid}`));
+    hentBrugere(kundeId);
+  } catch(e){ alert('Kunne ikke fjerne bruger: ' + e.message); }
+}
+
+$('dRedigerBtn').addEventListener('click', () => redigerKunde(valgtKunde));
+
+$('dSpaerBtn').addEventListener('click', async () => {
+  const k = kunder[valgtKunde]; if(!k) return;
+  const nyStatus = k.status === 'spaerret' ? 'aktiv' : 'spaerret';
+  if(nyStatus === 'spaerret' &&
+     !confirm('Spær adgangen for ' + (k.navn||valgtKunde) + '? Kundens brugere kan ikke logge ind, før du ophæver spærringen. Data bliver bevaret.')) return;
+  try {
+    await update(ref(db, 'kunder/' + valgtKunde), { status: nyStatus, aendret: Date.now() });
+  } catch(e){ alert('Kunne ikke ændre status: ' + e.message); }
+});
+
+$('dAabnBtn').addEventListener('click', () => {
+  const url = (pfConfig.fmUrl || '').trim();
+  if(!url) return alert('Adressen på kontorappen mangler. Udfyld den under Opsætning.');
+  window.open(url.replace(/\/+$/,'') + '/?kunde=' + encodeURIComponent(valgtKunde), '_blank', 'noopener');
+});
+
+/* =====================================================================
+   Opret bruger hos en kunde
+   ===================================================================== */
+$('dNyBrugerBtn').addEventListener('click', () => {
+  $('bSub').textContent = 'Hos ' + (kunder[valgtKunde]?.navn || valgtKunde);
+  ['bNavn','bEmail','bPw'].forEach(f => $(f).value = '');
+  $('bRolle').value = 'admin';
+  $('bMsg').textContent = '';
+  aabn('mBruger');
+  $('bNavn').focus();
+});
+
+$('bOpretBtn').addEventListener('click', () => opretBruger(valgtKunde));
+
+/* Opretter kontoen via Identity Toolkits REST-endpoint i stedet for klient-SDK'et.
+   Klient-SDK'ets createUser ville logge OS ind som den nye bruger — det her lader
+   ejeren blive siddende i sin egen session. */
+async function opretKonto(email, pw){
+  const res = await fetch(
+    'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + firebaseConfig.apiKey,
+    { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password: pw, returnSecureToken: false }) });
+  const data = await res.json();
+  if(data.error){
+    const c = data.error.message || '';
+    throw new Error(
+      c === 'EMAIL_EXISTS' ? 'Emailen er allerede i brug.'
+      : c.startsWith('WEAK_PASSWORD') ? 'Adgangskoden er for svag — brug mindst 6 tegn.'
+      : c === 'INVALID_EMAIL' ? 'Emailen ser ikke rigtig ud.'
+      : c);
+  }
+  return data.localId;
+}
+
+async function opretBruger(kundeId){
+  const m = $('bMsg');
+  const navn  = $('bNavn').value.trim();
+  const email = $('bEmail').value.trim();
+  const pw    = $('bPw').value;
+  const role  = $('bRolle').value;
+  if(!navn || !email || !pw) return besked(m, 'Udfyld navn, email og adgangskode.');
+  if(pw.length < 6)          return besked(m, 'Adgangskoden skal være mindst 6 tegn.');
+
+  const graense = kunder[kundeId]?.maxBrugere || 0;
+  if(graense){
+    const s = await get(ref(db, `k/${kundeId}/brugere`));
+    const antal = s.exists() ? Object.keys(s.val()).length : 0;
+    if(antal >= graense) return besked(m, `Kunden må højst have ${graense} brugere. Hæv grænsen først.`);
+  }
+
+  $('bOpretBtn').disabled = true;
+  try {
+    const uid = await opretKonto(email, pw);
+    const profil = { navn, email, role, kundeId, oprettet: iso() };
+    await set(ref(db, 'users/' + uid), profil);
+    await set(ref(db, `k/${kundeId}/brugere/${uid}`), profil);
+
+    // Chauffører skal også findes i kundens chaufførkartotek, ellers kan
+    // kontorappen ikke koble indberetninger til dem.
+    if(role === 'chauffeur'){
+      const chId = 'u_' + uid.slice(0, 12);
+      await set(ref(db, `k/${kundeId}/chauffoerer/${chId}`),
+        { navn, email, tlf:'', korekort:'', ansat: iso(), status:'aktiv', userId: uid });
+      await update(ref(db, 'users/' + uid), { chauffeurId: chId });
+      await update(ref(db, `k/${kundeId}/brugere/${uid}`), { chauffeurId: chId });
+    }
+
+    besked(m, navn + ' kan nu logge ind.', true);
+    ['bNavn','bEmail','bPw'].forEach(f => $(f).value = '');
+    hentBrugere(kundeId);
+    setTimeout(() => luk('mBruger'), 1400);
+  } catch(e){
+    besked(m, e.message);
+  } finally {
+    $('bOpretBtn').disabled = false;
+  }
+}
+
+/* =====================================================================
+   Slet kunde
+   ===================================================================== */
+$('dSletBtn').addEventListener('click', () => {
+  const k = kunder[valgtKunde]; if(!k) return;
+  $('sletAdvarsel').innerHTML =
+    `Alt under <b>/k/${esc(valgtKunde)}/</b> forsvinder: lastbiler, opgaver, udgifter, service, kontakter og indstillinger for <b>${esc(k.navn || valgtKunde)}</b>.`;
+  $('sletBekraeft').value = '';
+  $('sletMsg').textContent = '';
+  luk('mDetalje');
+  aabn('mSlet');
+  $('sletBekraeft').focus();
+});
+
+$('sletBtn').addEventListener('click', async () => {
+  const id = valgtKunde;
+  const m  = $('sletMsg');
+  if($('sletBekraeft').value.trim() !== id)
+    return besked(m, 'Det indtastede ID passer ikke. Skriv "' + id + '".');
+  $('sletBtn').disabled = true;
+  try {
+    const s = await get(ref(db, `k/${id}/brugere`));
+    if(s.exists()){
+      for(const uid of Object.keys(s.val())) await remove(ref(db, 'users/' + uid));
+    }
+    await remove(ref(db, 'k/' + id));
+    await remove(ref(db, 'kunder/' + id));
+    valgtKunde = null;
+    luk('mSlet');
+  } catch(e){
+    besked(m, 'Kunne ikke slette: ' + e.message);
+  } finally {
+    $('sletBtn').disabled = false;
+  }
+});
+
+/* =====================================================================
+   Ejere
+   ===================================================================== */
+function tegnEjere(){
+  const rk = Object.entries(ejere).sort((a,b) => (a[1].navn||'').localeCompare(b[1].navn||'', 'da'));
+  $('ejerBody').innerHTML = rk.length ? rk.map(([uid,e]) => `<tr>
+    <td><strong>${esc(e.navn || '—')}</strong></td>
+    <td style="color:var(--muted)">${esc(e.email || '—')}</td>
+    <td style="font-family:var(--mono);font-size:11.5px;color:var(--muted2)">${esc(uid)}</td>
+    <td style="text-align:right">${uid === ejer?.uid
+      ? '<span style="color:var(--muted2);font-size:12px">Dig</span>'
+      : `<button class="btn btn-sm btn-danger" data-ejerfjern="${esc(uid)}">Fjern adgang</button>`}</td>
+    </tr>`).join('')
+    : `<tr><td colspan="4" style="color:var(--muted)">Ingen ejere registreret.</td></tr>`;
+
+  $('ejerBody').querySelectorAll('[data-ejerfjern]').forEach(b =>
+    b.addEventListener('click', async () => {
+      if(!confirm('Fjern ejeradgangen? Kontoen kan derefter ikke se kundernes data.')) return;
+      try { await remove(ref(db, 'platform/ejere/' + b.dataset.ejerfjern)); }
+      catch(e){ alert('Kunne ikke fjerne: ' + e.message); }
+    }));
+}
+
+$('ejerOpretBtn').addEventListener('click', async () => {
+  const m = $('ejerMsg');
+  const navn = $('ejerNavn').value.trim();
+  const email = $('ejerEmail').value.trim();
+  const pw = $('ejerPw').value;
+  if(!navn || !email || !pw) return besked(m, 'Udfyld navn, email og adgangskode.');
+  if(pw.length < 6) return besked(m, 'Adgangskoden skal være mindst 6 tegn.');
+  $('ejerOpretBtn').disabled = true;
+  try {
+    const uid = await opretKonto(email, pw);
+    await set(ref(db, 'platform/ejere/' + uid), { navn, email, oprettet: iso() });
+    await set(ref(db, 'users/' + uid), { navn, email, role:'owner', oprettet: iso() });
+    besked(m, navn + ' har nu ejeradgang.', true);
+    ['ejerNavn','ejerEmail','ejerPw'].forEach(f => $(f).value = '');
+  } catch(e){
+    besked(m, e.message);
+  } finally {
+    $('ejerOpretBtn').disabled = false;
+  }
+});
+
+/* =====================================================================
+   Opsætning
+   ===================================================================== */
+$('cfgGemBtn').addEventListener('click', async () => {
+  const m = $('cfgMsg');
+  try {
+    await update(ref(db, 'platform/config'), {
+      fmUrl:  $('cfgFm').value.trim(),
+      indUrl: $('cfgInd').value.trim()
+    });
+    besked(m, 'Adresserne er gemt.', true);
+    setTimeout(() => { m.textContent = ''; }, 2500);
+  } catch(e){ besked(m, 'Kunne ikke gemme: ' + e.message); }
+});
+</script>
+</body>
+</html>

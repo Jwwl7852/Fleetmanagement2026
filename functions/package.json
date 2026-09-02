@@ -1,0 +1,13 @@
+{
+  "name": "fleetcontrol-functions",
+  "description": "Skriver kundens ID ind i login-tokenet, så Storage kan holde kunderne adskilt",
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.1.0",
+    "firebase-functions": "^4.9.0"
+  },
+  "private": true
+}

@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Synk Firebase-config",
+      "type": "shell",
+      "command": "npm run config",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Kør tjek",
+      "type": "shell",
+      "command": "npm test",
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Deploy regler til Firebase",
+      "type": "shell",
+      "command": "npm run deploy:rules",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start ejerkonsol lokalt",
+      "type": "shell",
+      "command": "npm start",
+      "problemMatcher": [],
+      "isBackground": true
+    }
+  ]
+}

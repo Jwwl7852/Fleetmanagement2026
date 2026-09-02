@@ -1,0 +1,18 @@
+{
+  "name": "fleetcontrol-platform",
+  "version": "1.0.0",
+  "description": "Flerkunde-platform: ejerkonsol, kontorapp og chaufførapp",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "config": "node scripts/synk-config.mjs",
+    "test": "node scripts/tjek.mjs",
+    "start": "npx --yes serve apps/ejerkonsol -p 5000",
+    "start:kontor": "npx --yes serve apps/kontor -p 5001",
+    "start:chauffoer": "npx --yes serve apps/chauffoer -p 5002",
+    "start:leverandoer": "npx --yes serve apps/leverandoer -p 5003",
+    "deploy:rules": "firebase deploy --only database,storage",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:firebase": "firebase deploy --only database,storage,functions"
+  }
+}

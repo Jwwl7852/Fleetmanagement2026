@@ -1,0 +1,19 @@
+# Chaufførappen — indberetning fra mobilen
+# Sæt "Base directory" til apps/chauffoer i Netlify, så bliver denne fil læst.
+
+[build]
+  publish = "."
+  command = "node ../../scripts/synk-config.mjs"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Alt peger på index.html, så dybe links ikke giver 404
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
