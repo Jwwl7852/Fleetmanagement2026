@@ -13,6 +13,9 @@
         ],
         "chauffoer": [
           "fleetmanagement-chauffoer"
+        ],
+        "leverandoer": [
+          "fleetmanagement-leverandoer"
         ]
       }
     }

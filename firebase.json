@@ -14,6 +14,11 @@
       "target": "chauffoer",
       "public": "apps/chauffoer",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    },
+    {
+      "target": "leverandoer",
+      "public": "apps/leverandoer",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
     }
   ],
   "database": {
