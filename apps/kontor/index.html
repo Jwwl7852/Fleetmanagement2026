@@ -48,10 +48,7 @@
   #connStatus { position: fixed; top: 8px; right: 14px; font-size: 11px; color: var(--muted); z-index: 9998; display: flex; align-items: center; gap: 5px; }
   #connDot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
   #connDot.online { background: var(--green); }
-  header { background: var(--surface); border-bottom: 1px solid var(--border); height: 112px; }
-  .header-inner { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 20px; height: 112px; }
-  header h1 { font-size: 54px; font-weight: 700; letter-spacing: -1px; }
-  header h1 span { color: var(--accent); }
+  .page-topbits { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
   .badge { background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; border-radius: 99px; padding: 2px 7px; margin-left: 4px; }
   nav { background: var(--surface); border-bottom: 1px solid var(--border); }
   .nav-inner { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; gap: 2px; overflow-x: auto; }
@@ -359,11 +356,6 @@
   :root.light .tag.indberettet, :root.light .tag.planlagt   { background:#fdf6e7; color:#8a5c17; }
   :root.light .tag.udført                                   { background:#e6f4ef; color:#0f6047; }
 
-  /* Topbjælken er mørk i begge temaer — den er appens identitet */
-  header { background: var(--sidebar); border-bottom: none; height: 70px; }
-  .header-inner { height: 70px; padding: 0 26px; gap: 16px; }
-  #headerLogo { height: 34px !important; }
-
   /* Venstre sidebar-navigation, opdelt i to grupper */
   #appShell { display: flex; align-items: stretch; }
   .side-nav { width: 250px; flex-shrink: 0; background: var(--sidebar-2); display: flex;
@@ -522,12 +514,10 @@
   <button onclick="skiftKunde()">Skift kunde</button>
 </div>
 
-<header>
-<div class="header-inner">
-  <img id="headerLogo" src="" alt="" style="display:none;height:76px;max-width:200px;object-fit:contain;border-radius:6px;">
+<div class="page-topbits">
+  <img id="headerLogo" src="" alt="" style="display:none;height:56px;max-width:200px;object-fit:contain;border-radius:6px;">
   <span id="headerAlerts"></span>
 </div>
-</header>
 
 <main>
 
