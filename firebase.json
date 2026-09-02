@@ -1,8 +1,21 @@
 {
-  "hosting": {
-    "public": "apps/ejerkonsol",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
-  },
+  "hosting": [
+    {
+      "target": "ejerkonsol",
+      "public": "apps/ejerkonsol",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    },
+    {
+      "target": "kontor",
+      "public": "apps/kontor",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    },
+    {
+      "target": "chauffoer",
+      "public": "apps/chauffoer",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    }
+  ],
   "database": {
     "rules": "database.rules.json"
   },

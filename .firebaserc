@@ -1,5 +1,21 @@
 {
   "projects": {
     "default": "fleetmanagement-2026"
-  }
+  },
+  "targets": {
+    "fleetmanagement-2026": {
+      "hosting": {
+        "ejerkonsol": [
+          "fleetmanagement-2026"
+        ],
+        "kontor": [
+          "fleetmanagement-kontor"
+        ],
+        "chauffoer": [
+          "fleetmanagement-chauffoer"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
