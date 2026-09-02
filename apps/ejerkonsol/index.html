@@ -284,7 +284,7 @@
         <p class="sub">Til reference når du sætter regler op i Firebase.</p>
         <div class="note">
           Hver kunde har sit eget ID. Alle kundens data ligger under <b>/k/&lt;kunde-id&gt;/</b> —
-          lastbiler, opgaver, udgifter, service, kontakter og indstillinger.
+          enheder, opgaver, udgifter, service, kontakter og indstillinger.
           En bruger står i <b>/users/&lt;uid&gt;</b> med præcis ét kunde-ID, og reglerne i
           <b>database.rules.json</b> tillader kun læsning og skrivning under netop det ID.
           Ejere står i <b>/platform/ejere/</b> og har adgang overalt.
@@ -332,7 +332,7 @@
     </div>
     <div class="fld-row">
       <div class="fld"><label for="kMaxBrugere">Højst antal brugere</label><input class="inp" id="kMaxBrugere" type="number" min="0" placeholder="Ingen grænse"></div>
-      <div class="fld"><label for="kMaxBiler">Højst antal lastbiler</label><input class="inp" id="kMaxBiler" type="number" min="0" placeholder="Ingen grænse"></div>
+      <div class="fld"><label for="kMaxBiler">Højst antal enheder</label><input class="inp" id="kMaxBiler" type="number" min="0" placeholder="Ingen grænse"></div>
     </div>
     <div class="fld">
       <label>Moduler kunden kan bruge</label>
@@ -747,14 +747,14 @@ function tegnDetalje(id){
     <dt>Moduler</dt><dd>${[k.moduler?.flaade !== false ? 'Kontorapp' : null,
                            k.moduler?.indberetning !== false ? 'Chaufførapp' : null]
                           .filter(Boolean).join(' · ') || 'Ingen'}</dd>
-    <dt>Grænser</dt><dd>${k.maxBrugere ? k.maxBrugere + ' brugere' : 'Ubegrænset antal brugere'} · ${k.maxBiler ? k.maxBiler + ' lastbiler' : 'ubegrænset antal lastbiler'}</dd>
+    <dt>Grænser</dt><dd>${k.maxBrugere ? k.maxBrugere + ' brugere' : 'Ubegrænset antal brugere'} · ${k.maxBiler ? k.maxBiler + ' enheder' : 'ubegrænset antal enheder'}</dd>
     <dt>Data</dt><dd id="dTaellinger">Henter…</dd>
     ${k.noter ? `<dt>Noter</dt><dd>${esc(k.noter)}</dd>` : ''}`;
   $('dSpaerBtn').textContent = st === 'spaerret' ? 'Ophæv spærring' : 'Spær adgang';
 }
 
 async function hentTaellinger(id){
-  const felter = [['trucks','lastbiler'],['opgaver','opgaver'],['udgifter','udgifter'],['chauffoerer','chauffører']];
+  const felter = [['trucks','enheder'],['opgaver','opgaver'],['udgifter','udgifter'],['chauffoerer','chauffører']];
   try {
     const dele = [];
     for(const [sti,navn] of felter){
@@ -939,7 +939,7 @@ async function opretBruger(kundeId){
 $('dSletBtn').addEventListener('click', () => {
   const k = kunder[valgtKunde]; if(!k) return;
   $('sletAdvarsel').innerHTML =
-    `Alt under <b>/k/${esc(valgtKunde)}/</b> forsvinder: lastbiler, opgaver, udgifter, service, kontakter og indstillinger for <b>${esc(k.navn || valgtKunde)}</b>.`;
+    `Alt under <b>/k/${esc(valgtKunde)}/</b> forsvinder: enheder, opgaver, udgifter, service, kontakter og indstillinger for <b>${esc(k.navn || valgtKunde)}</b>.`;
   $('sletBekraeft').value = '';
   $('sletMsg').textContent = '';
   luk('mDetalje');

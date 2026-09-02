@@ -305,12 +305,12 @@
           ← Skift type &nbsp;·&nbsp; <strong id="indValgtType" style="color:var(--text)"></strong>
         </button>
 
-        <!-- LASTBIL -->
+        <!-- ENHED -->
         <div class="mob-card">
-          <div class="mob-card-title">🚛 Lastbil</div>
+          <div class="mob-card-title">🚛 Enhed</div>
           <div class="form-row">
             <label>Vognr. *</label>
-            <select id="selTruck"><option value="">— Vælg lastbil —</option></select>
+            <select id="selTruck"><option value="">— Vælg enhed —</option></select>
           </div>
           <div class="form-row">
             <label>Dato *</label>
@@ -607,7 +607,7 @@ function startListeners() {
   onValue(ref(db,KP+'trucks'), s => {
     trucks = s.val()||{};
     const sel = document.getElementById('selTruck');
-    sel.innerHTML = '<option value="">— Vælg lastbil —</option>';
+    sel.innerHTML = '<option value="">— Vælg enhed —</option>';
     Object.entries(trucks)
       .filter(([,t]) => (t.status||'aktiv') !== 'inaktiv')
       .sort((a,b) => (a[1].vognr||'').localeCompare(b[1].vognr||''))
@@ -920,7 +920,7 @@ window.submitIndberetning = async function() {
   const errEl = document.getElementById('submitErr');
   errEl.style.display = 'none';
 
-  if(!truck) { errEl.style.display=''; errEl.textContent='Vælg venligst en lastbil'; return; }
+  if(!truck) { errEl.style.display=''; errEl.textContent='Vælg venligst en enhed'; return; }
   if(selectedType === '8' && !document.getElementById('inputParkeringsSted').value.trim()) {
     errEl.style.display=''; errEl.textContent='Angiv parkeringssted'; return;
   }
@@ -999,7 +999,7 @@ window.submitIndberetning = async function() {
     const typeLabels = {'1':'Service','2':'Reparation','3':'Skade','4':'Dæk','5':'Andet','6':'Truckwash','7':'Tankning','8':'Parkering'};
     const truckSnap = await get(ref(db, KP+'trucks/'+truck));
     const truckData = truckSnap.exists() ? truckSnap.val() : {};
-    const lastbilNavn = truckData.vognr || truck;
+    const enhedNavn = truckData.vognr || truck;
 
     try {
       if(!mailCfg.publicKey || !mailCfg.serviceId || !mailCfg.templateId)
@@ -1008,7 +1008,7 @@ window.submitIndberetning = async function() {
       await emailjs.send(mailCfg.serviceId, mailCfg.templateId, {
         to_email: mailCfg.modtager || '',
         chauffeur: currentUser.navn,
-        lastbil: lastbilNavn,
+        enhed: enhedNavn,
         type: typeLabels[selectedType] || selectedType,
         beskrivelse: desc,
         dato: dato || today(),

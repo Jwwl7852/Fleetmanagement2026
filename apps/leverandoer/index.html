@@ -365,7 +365,7 @@ window.klarmeld = async function(id) {
       await emailjs.send(mailCfg.serviceId, mailCfg.templateId, {
         to_email: mailCfg.modtager || '',
         chauffeur: myVaerkstedNavn + ' (leverandør)',
-        lastbil: truckData.vognr || o.truck,
+        enhed: truckData.vognr || o.truck,
         type: 'Klar til afhentning',
         beskrivelse: o.beskrivelse || '',
         dato: today(),

@@ -488,7 +488,7 @@
   <button onclick="showTab(&#39;biler&#39;,this)" data-t="nav_trucks" class="active">📦 Enheder</button>
   <button onclick="showTab(&#39;statistik&#39;,this)" data-t="nav_stats" class="">📈 Statistik</button>
   <button onclick="showTab(&#39;kontakter&#39;,this)" data-t="nav_contacts" class="">📋 Kontakter</button>
-  <button id="navBrugerAdmin" onclick="showTab(&#39;brugeradmin&#39;,this)" style="">👥 Brugere</button>
+  <button id="navBrugerAdmin" onclick="showTab(&#39;brugeradmin&#39;,this)" data-t="nav_users" style="">👥 Brugere</button>
   <button onclick="showTab(&#39;opsaetning&#39;,this)" data-t="nav_setup" class="">⚙️ Opsætning</button>
 </div>
 </nav>
@@ -509,7 +509,7 @@
   <div class="card">
     <h3 data-t="recent_title">🕒 Seneste aktivitet</h3>
     <div class="tbl-wrap"><table>
-      <thead><tr><th data-t="col_truck">Lastbil</th><th data-t="col_desc">Beskrivelse</th><th data-t="col_type">Type</th><th data-t="col_amount">Beløb</th><th data-t="col_date">Dato</th></tr></thead>
+      <thead><tr><th data-t="col_truck">Enhed</th><th data-t="col_desc">Beskrivelse</th><th data-t="col_type">Type</th><th data-t="col_amount">Beløb</th><th data-t="col_date">Dato</th></tr></thead>
       <tbody id="recentBody"></tbody>
     </table></div>
   </div>
@@ -526,7 +526,7 @@
   </div>
   <div class="filter-row">
     <input type="text" id="filterOpgaverSearch" data-t="search_ph" data-t-attr="placeholder" placeholder="🔍 Søg..." oninput="renderOpgaver()">
-    <select id="filterOpgaverBil" onchange="renderOpgaver()"><option value="">Alle lastbiler</option></select>
+    <select id="filterOpgaverBil" onchange="renderOpgaver()"><option value="">Alle enheder</option></select>
     <select id="filterOpgaverChauffør" onchange="renderOpgaver()"><option value="">Alle chauffører</option></select>
     <select id="filterOpgaverType" onchange="renderOpgaver()">
       <option value="" data-t="all_types">Alle typer</option><option value="1">service</option><option value="2">reparation</option><option value="3">skade</option><option value="4">dæk</option><option value="5">andet</option><option value="6">truckwash</option><option value="7">tankning</option><option value="8">parkering</option>
@@ -536,7 +536,7 @@
     </select>
   </div>
   <div class="tbl-wrap"><table>
-    <thead><tr><th data-t="col_date">Dato</th><th data-t="col_truck">Lastbil</th><th data-t="col_type">Type</th><th data-t="col_desc">Beskrivelse</th><th data-t="col_driver">Chauffør</th><th data-t="col_performer">Værksted</th><th data-t="col_km">Km</th><th data-t="lbl_est_amount">Anslået beløb (kr)</th><th data-t="lbl_planned_date">Planlagt dato</th><th data-t="col_status">Status</th><th data-t="col_insurance">Forsikring</th><th data-t="col_photo">Foto</th><th></th></tr></thead>
+    <thead><tr><th data-t="col_date">Dato</th><th data-t="col_truck">Enhed</th><th data-t="col_type">Type</th><th data-t="col_desc">Beskrivelse</th><th data-t="col_driver">Chauffør</th><th data-t="col_performer">Værksted</th><th data-t="col_km">Km</th><th data-t="lbl_est_amount">Anslået beløb (kr)</th><th data-t="lbl_planned_date">Planlagt dato</th><th data-t="col_status">Status</th><th data-t="col_insurance">Forsikring</th><th data-t="col_photo">Foto</th><th></th></tr></thead>
     <tbody id="opgaverBody"></tbody>
   </table></div>
 </div>
@@ -552,14 +552,14 @@
   </div>
   <div class="filter-row">
     <input type="text" id="filterUdgifterSearch" data-t="search_ph" data-t-attr="placeholder" placeholder="🔍 Søg..." oninput="renderUdgifter()">
-    <select id="filterUdgifterBil" onchange="renderUdgifter()"><option value="">Alle lastbiler</option></select>
+    <select id="filterUdgifterBil" onchange="renderUdgifter()"><option value="">Alle enheder</option></select>
     <select id="filterUdgifterKat" onchange="renderUdgifter()">
       <option value="" data-t="all_cats">Alle kategorier</option>
       <option value="1">Fuel</option><option value="2">Service</option><option value="3">Repair</option><option value="4">Tyres</option><option value="5">Damage</option><option value="6">Other</option>
     </select>
   </div>
   <div class="tbl-wrap"><table>
-    <thead><tr><th data-t="col_date">Dato</th><th data-t="col_truck">Lastbil</th><th data-t="col_category">Kategori</th><th data-t="col_desc">Beskrivelse</th><th data-t="lbl_est_amount">Anslået beløb (kr)</th><th data-t="lbl_invoiced">Faktureret beløb (kr)</th><th data-t="lbl_diff">Difference</th><th data-t="col_performer">Værksted</th><th>Bilag</th><th></th></tr></thead>
+    <thead><tr><th data-t="col_date">Dato</th><th data-t="col_truck">Enhed</th><th data-t="col_category">Kategori</th><th data-t="col_desc">Beskrivelse</th><th data-t="lbl_est_amount">Anslået beløb (kr)</th><th data-t="lbl_invoiced">Faktureret beløb (kr)</th><th data-t="lbl_diff">Difference</th><th data-t="col_performer">Værksted</th><th>Bilag</th><th></th></tr></thead>
     <tbody id="udgifterBody"></tbody>
   </table></div>
 </div>
@@ -602,12 +602,12 @@
         <button class="btn btn-primary btn-sm" onclick="saveCatNotify()">💾 Gem advisering</button>
         <span id="catNotiStatus" style="font-size:12px;color:var(--muted);"></span>
       </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:8px;">Der sendes én mail pr. lastbil, når servicedatoen er inden for det angivne antal dage. Kræver at mail-opsætning er udfyldt i Opsætning.</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;">Der sendes én mail pr. enhed, når servicedatoen er inden for det angivne antal dage. Kræver at mail-opsætning er udfyldt i Opsætning.</div>
     </div>
 
     <div class="tbl-wrap"><table>
       <thead><tr>
-        <th data-t="col_truck">Lastbil</th>
+        <th data-t="col_truck">Enhed</th>
         <th data-t="col_next_date">Næste servicedato</th>
         <th data-t="col_interval">Interval (mdr)</th>
         <th data-t="col_last_done">Sidst udført</th>
@@ -621,7 +621,7 @@
 
 </div>
 
-<!-- ===== LASTBILER ===== -->
+<!-- ===== ENHEDER ===== -->
 <div id="tab-biler" class="tab active">
   <div class="section-header">
     <h3 data-t="trucks_title">📦 Alle enheder</h3>
@@ -643,9 +643,9 @@
       <input type="date" id="statTil" onchange="renderStatDashboard()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:7px;font-size:13px;outline:none;">
       <button class="btn btn-ghost btn-sm" onclick="clearStatPeriode()">Ryd</button>
       <select id="statStatusFilter" onchange="renderStatDashboard()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:7px;font-size:13px;outline:none;">
-        <option value="aktive" data-t="stat_active">Aktive lastbiler</option>
-        <option value="alle" data-t="stat_all">Alle lastbiler</option>
-        <option value="inaktive" data-t="stat_inactive">Inaktive lastbiler</option>
+        <option value="aktive" data-t="stat_active">Aktive enheder</option>
+        <option value="alle" data-t="stat_all">Alle enheder</option>
+        <option value="inaktive" data-t="stat_inactive">Inaktive enheder</option>
       </select>
       <button class="btn btn-primary btn-sm" onclick="openPrintModal()" style="margin-left:auto" data-t="btn_print_stat">🖨 Print statistik</button>
     </div>
@@ -681,8 +681,8 @@
       <div class="stat-dash-card" onclick="openStatDetail(&#39;bil&#39;)" data-group="bil">
         <div class="stat-dash-inner">
           <div class="stat-dash-left">
-            <div class="stat-dash-icon">🚛</div>
-            <div class="stat-dash-title" data-t="trucks_stat_title">🚛 Udgifter pr. lastbil</div>
+            <div class="stat-dash-icon">📦</div>
+            <div class="stat-dash-title" data-t="trucks_stat_title">📦 Udgifter pr. enhed</div>
             <div class="stat-dash-summary" id="dashSummaryBil"></div>
           </div>
           <div class="stat-dash-list" id="dashListBil"></div>
@@ -743,7 +743,7 @@
       <div id="detailBil" style="">
         <div class="bil-udgifter-grid" id="bilUdgifterGrid"></div>
         <div class="tbl-wrap"><table>
-          <thead><tr><th data-t="col_truck">Lastbil</th><th data-t="col_reg">Reg.nr.</th><th data-t="col_exp_count">Antal udgifter</th><th data-t="col_total_exp">Samlede udgifter</th><th data-t="col_dmg_count">Antal skader</th><th data-t="col_dmg_cost">Skadeomkostninger</th></tr></thead>
+          <thead><tr><th data-t="col_truck">Enhed</th><th data-t="col_reg">Reg.nr.</th><th data-t="col_exp_count">Antal udgifter</th><th data-t="col_total_exp">Samlede udgifter</th><th data-t="col_dmg_count">Antal skader</th><th data-t="col_dmg_cost">Skadeomkostninger</th></tr></thead>
           <tbody id="bilUdgifterBody"></tbody>
         </table></div>
       </div>
@@ -766,7 +766,7 @@
     </div>
   </div>
 
-  <!-- ===== LASTBIL — FORBRUG OVER TID (52 UGER) ===== -->
+  <!-- ===== ENHED — FORBRUG OVER TID (52 UGER) ===== -->
   <div id="truckTrendPanel" style="display:none;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
       <button class="btn btn-ghost btn-sm" onclick="closeTruckTrend()" data-t="stat_back_to_stats">← Tilbage til statistik</button>
@@ -804,7 +804,7 @@
       </label>
       <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;">
         <input type="checkbox" id="printChkBil" checked="" style="width:16px;height:16px;accent-color:var(--accent);">
-        <span data-t="print_truck_lbl">🚛 Udgifter pr. lastbil</span>
+        <span data-t="print_truck_lbl">📦 Udgifter pr. enhed</span>
       </label>
       <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;">
         <input type="checkbox" id="printChkChauff" checked="" style="width:16px;height:16px;accent-color:var(--accent);">
@@ -954,7 +954,7 @@
 <!-- ===== OPSÆTNING ===== -->
 <div id="tab-opsaetning" class="tab">
   <div class="card">
-    <h3 data-t="setup_trucks">🚛 Rediger lastbiler</h3>
+    <h3 data-t="setup_trucks">📦 Rediger enheder</h3>
     <div class="tbl-wrap">
       <table class="setup-table">
         <thead><tr><th data-t="col_vehicle_no">Vognr.</th><th data-t="col_reg">Reg.nr.</th><th data-t="col_year">Årgang</th><th data-t="col_purchase">Købspris (kr)</th><th data-t="col_status">Status</th><th></th></tr></thead>
@@ -1065,7 +1065,7 @@
   <div id="resetZone" style="display:none;">
   <div class="reset-zone">
     <h4 data-t="reset_title">⚠️ Nulstil al data</h4>
-    <p data-t="reset_desc">Dette sletter alle lastbiler, chauffører, opgaver og udgifter permanent. Kan ikke fortrydes.</p>
+    <p data-t="reset_desc">Dette sletter alle enheder, chauffører, opgaver og udgifter permanent. Kan ikke fortrydes.</p>
     <button class="btn btn-danger" data-t="reset_btn" onclick="resetAll()">🗑 Nulstil alt</button>
   </div>
 </div>
@@ -1079,7 +1079,7 @@
   <div class="modal">
     <h2 data-t="m_new_task">🔧 Registrér opgave</h2>
     <div class="form-grid">
-      <div class="form-group"><label data-t="lbl_truck">Lastbil *</label><select id="oTruck"></select></div>
+      <div class="form-group"><label data-t="lbl_truck">Enhed *</label><select id="oTruck"></select></div>
       <div class="form-group"><label data-t="lbl_date">Dato</label><input type="date" id="oDate"></div>
       <div class="form-group"><label data-t="lbl_type">Type *</label>
         <select id="oType" onchange="toggleSkadeFields()">
@@ -1127,7 +1127,7 @@
   <div class="modal">
     <h2 data-t="m_new_expense">💰 Registrér udgift</h2>
     <div class="form-grid">
-      <div class="form-group"><label data-t="lbl_truck">Lastbil *</label><select id="uTruck"></select></div>
+      <div class="form-group"><label data-t="lbl_truck">Enhed *</label><select id="uTruck"></select></div>
       <div class="form-group"><label data-t="lbl_date">Dato</label><input type="date" id="uDate"></div>
       <div class="form-group"><label data-t="lbl_category">lbl_category</label>
         <select id="uKat">
@@ -1154,7 +1154,7 @@
     <h2 data-t="m_plan_service">📅 Planlæg service</h2>
     <input type="hidden" id="sTypeId">
     <div class="form-grid">
-      <div class="form-group"><label data-t="col_truck">Lastbil</label><select id="sTruck"></select></div>
+      <div class="form-group"><label data-t="col_truck">Enhed</label><select id="sTruck"></select></div>
       <div class="form-group"><label data-t="col_svc_type">Servicetype</label><select id="sSvcType"></select></div>
       <div class="form-group"><label data-t="lbl_next_date">Næste servicedato</label><input type="date" id="sNextDate"></div>
       <div class="form-group"><label data-t="lbl_interval">Interval (måneder)</label><input type="number" id="sInterval" placeholder="6" min="1"></div>
@@ -1245,7 +1245,7 @@
     <h2 data-t="m_edit_task">✏️ Rediger opgave</h2>
     <input type="hidden" id="editOpgaveId" value="">
     <div class="form-grid">
-      <div class="form-group"><label data-t="col_truck">Lastbil</label><select id="editOTruck"></select></div>
+      <div class="form-group"><label data-t="col_truck">Enhed</label><select id="editOTruck"></select></div>
       <div class="form-group"><label data-t="lbl_date">Dato</label><input type="date" id="editODate"></div>
       <div class="form-group"><label data-t="col_type">Type</label>
         <select id="editOType" onchange="toggleEditSkadeFields()">
@@ -1297,7 +1297,7 @@
     <h2 data-t="m_edit_expense">✏️ Rediger udgift</h2>
     <input type="hidden" id="editUdgiftId" value="">
     <div class="form-grid">
-      <div class="form-group"><label data-t="col_truck">Lastbil</label><select id="editUTruck"></select></div>
+      <div class="form-group"><label data-t="col_truck">Enhed</label><select id="editUTruck"></select></div>
       <div class="form-group"><label data-t="lbl_date">Dato</label><input type="date" id="editUDate"></div>
       <div class="form-group"><label data-t="lbl_category">lbl_category</label>
         <select id="editUKat">
@@ -1356,25 +1356,25 @@
     // nav
     theme_light:'☀️',theme_dark:'🌙',
     nav_overview:'📊 Overblik',nav_tasks:'🔧 Opgaver',nav_expenses:'💰 Udgifter',
-    nav_service:'📅 Service',nav_trucks:'📦 Enheder',nav_stats:'📈 Statistik',nav_contacts:'📋 Kontakter',nav_setup:'⚙️ Opsætning',
+    nav_service:'📅 Service',nav_trucks:'📦 Enheder',nav_stats:'📈 Statistik',nav_contacts:'📋 Kontakter',nav_users:'👥 Brugere',nav_setup:'⚙️ Opsætning',
     nav_drivers_contacts:'👤 Chauffører',nav_workshop_contacts:'🔧 Værksteder',lbl_email:'Email',contact_filter_all:'Alle kontakter',
     // conn
     connecting:'Forbinder...',connected:'Forbundet',conn_error:'Fejl: ',
     // kpi
-    kpi_active:'Aktive lastbiler',kpi_expenses:'Udgifter i år',kpi_drivers:'Chauffører',
-    kpi_costliest_repair:'💰 Dyreste bil — reparationer',kpi_costliest_fuel:'⛽ Km/l — bedste & dårligste',
+    kpi_active:'Aktive enheder',kpi_expenses:'Udgifter i år',kpi_drivers:'Chauffører',
+    kpi_costliest_repair:'💰 Dyreste enhed — reparationer',kpi_costliest_fuel:'⛽ Km/l — bedste & dårligste',
     km_brand:'Brændstof',km_rep:'Reparation',
-    stat_truck_trend_title:'📈 Forbrug over tid (52 uger)',stat_back_to_stats:'← Tilbage til statistik',stat_week:'Uge',stat_total_period:'I alt i perioden',stat_click_truck_hint:'Klik på en lastbil for at se forbrug uge for uge',
+    stat_truck_trend_title:'📈 Forbrug over tid (52 uger)',stat_back_to_stats:'← Tilbage til statistik',stat_week:'Uge',stat_total_period:'I alt i perioden',stat_click_truck_hint:'Klik på en enhed for at se forbrug uge for uge',
     kpi_open_dmg:'Åbne skader',kpi_dmg_this_year:'Skader i år',kpi_damage_free:'Skadefri dage',kpi_overdue:'Forfaldne serviceeftersyn',kpi_soon:'Snart til service (30 dage)',
     // profit
     profit_title:'💹 Rentabilitetsberegner',
     profit_rev_km:'Omsætning pr. km (kr)',profit_margin_km:'Overskud pr. km (kr)',
-    profit_km_fleet:'Km til break-even — hele flåden',profit_km_truck:'Km til break-even — pr. lastbil (gns.)',
-    profit_rev_fleet:'Omsætning ved break-even — hele flåden',profit_rev_truck:'Omsætning ved break-even — pr. lastbil (gns.)',
+    profit_km_fleet:'Km til break-even — hele flåden',profit_km_truck:'Km til break-even — pr. enhed (gns.)',
+    profit_rev_fleet:'Omsætning ved break-even — hele flåden',profit_rev_truck:'Omsætning ved break-even — pr. enhed (gns.)',
     profit_based:'Baseret på',profit_per_km:'kr/km i overskud',profit_enter_margin:'Indtast overskud pr. km',
-    profit_spread:'Fordelt på',profit_active_trucks:'aktive biler',profit_enter_rev:'Indtast omsætning pr. km',
+    profit_spread:'Fordelt på',profit_active_trucks:'aktive enheder',profit_enter_rev:'Indtast omsætning pr. km',
     // general cols
-    col_truck:'Lastbil',col_desc:'Beskrivelse',col_type:'Type',col_amount:'Beløb',col_date:'Dato',
+    col_truck:'Enhed',col_desc:'Beskrivelse',col_type:'Type',col_amount:'Beløb',col_date:'Dato',
     col_category:'Kategori',col_status:'Status',col_driver:'Chauffør',col_performer:'Værksted',
     col_km:'Km',col_insurance:'Forsikring',col_reg:'Reg.nr.',col_year:'Årgang',col_purchase:'Købspris (kr)',
     col_name:'Navn',col_phone:'Telefon',col_license:'Kørekortklasse',col_employed:'Ansat siden',
@@ -1385,7 +1385,7 @@
     recent_title:'🕒 Seneste aktivitet',no_entries:'Ingen poster endnu',
     // tasks
     tasks_title:'🔧 Alle opgaver',new_task:'+ Ny opgave',
-    all_trucks:'Alle lastbiler',all_drivers:'Alle chauffører',all_types:'Alle typer',all_statuses:'Alle statusser',
+    all_trucks:'Alle enheder',all_drivers:'Alle chauffører',all_types:'Alle typer',all_statuses:'Alle statusser',
     no_tasks:'Ingen opgaver',col_photo:'Foto',lbl_photos:'📷 Billeder fra chauffør',
     // expenses
     expenses_title:'💰 Alle udgifter',new_expense:'+ Ny udgift',
@@ -1405,12 +1405,12 @@
     detail_tasks:'Seneste opgaver',detail_expenses:'Seneste udgifter',detail_none:'Ingen',
     // stat
     stat_period:'📅 Periode',stat_from:'Fra',stat_to:'Til',stat_clear:'Ryd periode',
-    stat_active:'Aktive lastbiler',stat_all:'Alle lastbiler',stat_inactive:'Inaktive lastbiler',
-    btn_print_stat:'🖨 Print statistik',print_choose:'Vælg hvad der skal printes',print_type_lbl:'📂 Udgifter opdelt pr. type',print_truck_lbl:'🚛 Udgifter pr. lastbil',print_driver_lbl:'👤 Chaufførernes skadeoversigt',print_workshop_lbl:'🔧 Udgifter pr. værksted',
+    stat_active:'Aktive enheder',stat_all:'Alle enheder',stat_inactive:'Inaktive enheder',
+    btn_print_stat:'🖨 Print statistik',print_choose:'Vælg hvad der skal printes',print_type_lbl:'📂 Udgifter opdelt pr. type',print_truck_lbl:'📦 Udgifter pr. enhed',print_driver_lbl:'👤 Chaufførernes skadeoversigt',print_workshop_lbl:'🔧 Udgifter pr. værksted',
     showing_all:'Viser alle udgifter',from_lbl:'Fra og med: ',to_lbl:'Op til og med: ',period_lbl:'Periode: ',
     no_data:' · Ingen data',entries:'poster',total_lbl:'Total',
     type_title:'📂 Udgifter opdelt pr. type',no_exp_period:'Ingen udgifter i den valgte periode',
-    trucks_stat_title:'🚛 Udgifter pr. lastbil',
+    trucks_stat_title:'📦 Udgifter pr. enhed',
     no_trucks_stat:'Ingen enheder oprettet.',no_trucks_body:'Ingen enheder',
     no_damage:'Ingen skader',bill_expenses:'udgifter',
     workshop_stat_title:'🔧 Udgifter pr. udfører',no_performers:'Ingen udfører registreret',lbl_contact:'Kontaktperson',lbl_performer_free:'eller skriv frit',all_performers:'Alle værksteder',m_new_workshop:'🔧 Tilføj værksted',
@@ -1420,16 +1420,16 @@
     driver_cost:'Skadeomkostninger',driver_latest:'Seneste skade',
     grand_total_dmg:'samlet skadeomkostning',open_lbl:'åbne',
     // setup
-    setup_trucks:'🚛 Rediger lastbiler',setup_drivers:'👤 Chauffører',setup_workshops:'🔧 Værksteder / Udfører',
+    setup_trucks:'📦 Rediger enheder',setup_drivers:'👤 Chauffører',setup_workshops:'🔧 Værksteder / Udfører',
     add_truck_btn:'+ Tilføj enhed',add_driver_btn:'+ Tilføj chauffør',add_workshop_btn:'+ Tilføj værksted',
     no_trucks_setup:'Ingen enheder oprettet',no_drivers_setup:'Ingen chauffører oprettet endnu',no_workshops:'Ingen værksteder oprettet endnu',
     s_active:'aktiv',s_inactive:'inaktiv',
     setup_logo:'🖼 Firmalogo',logo_none:'Ingen logo',logo_upload:'📁 Upload logo',logo_remove:'🗑 Fjern logo',logo_hint:'PNG, JPG eller SVG. Vises i øverste venstre hjørne.',
     reset_title:'⚠️ Nulstil al data',
-    reset_desc:'Dette sletter alle lastbiler, chauffører, opgaver og udgifter permanent. Kan ikke fortrydes.',
+    reset_desc:'Dette sletter alle enheder, chauffører, opgaver og udgifter permanent. Kan ikke fortrydes.',
     reset_btn:'🗑 Nulstil alt',
     // modals
-    m_new_task:'🔧 Registrér opgave',lbl_truck:'Lastbil *',lbl_date:'Dato',lbl_type:'Type *',
+    m_new_task:'🔧 Registrér opgave',lbl_truck:'Enhed *',lbl_date:'Dato',lbl_type:'Type *',
     lbl_status:'Status',lbl_desc:'Beskrivelse',lbl_performer:'Værksted',
     lbl_km:'Km ved opgaven',lbl_liter:'Antal liter tanket',lbl_fueltype:'Brændstoftype',lbl_km_per_liter:'⛽ Km pr. liter',km_per_liter_title:'⛽ Km pr. liter (brændstoføkonomi)',lbl_amount:'Beløb (kr)',lbl_est_amount:'Anslået beløb (kr)',lbl_invoiced:'Faktureret beløb (kr)',lbl_diff:'Difference',lbl_created_by:'Oprettet af',lbl_planned_date:'Planlagt dato',btn_print_tasks:'🖨 Print oversigt',
     lbl_resp_driver:'Ansvarlig chauffør *',lbl_req_dmg:'— påkrævet ved skade',
@@ -1451,7 +1451,7 @@
     lbl_dmg_nature:'Skadens art',lbl_ins_short:'Forsikring',
     m_edit_expense:'✏️ Rediger udgift',
     // alerts
-    a_select_truck:'Vælg en lastbil',a_select_driver:'Du skal vælge en ansvarlig chauffør ved skader',
+    a_select_truck:'Vælg en enhed',a_select_driver:'Du skal vælge en ansvarlig chauffør ved skader',
     a_vehicle_no:'Vognummer er påkrævet',a_name:'Navn er påkrævet',
     a_del_prefix:'Slet ',a_confirm1:'Er du sikker? Dette sletter AL data permanent!',
     a_confirm2:'Anden bekræftelse: Slet virkelig alt?',
@@ -1460,31 +1460,31 @@
     print_title:'🖨 Print oversigt',print_opt_period:'Valgfri periode (lad stå tom for alle data)',
     print_from:'Fra',print_to:'Til',btn_print:'🖨 Udskriv',
     print_all:'Alle data',print_h_type:'Udgifter opdelt pr. type',
-    print_h_truck:'Udgifter pr. lastbil',print_h_driver:'Chaufførernes skadeoversigt',
+    print_h_truck:'Udgifter pr. enhed',print_h_driver:'Chaufførernes skadeoversigt',
     print_app:'FleetControl',print_printed:'Udskrevet',
     // misc
     overdue_badge:'forfaldne',all_data:'Alle data',
-    csv_date:'Dato',csv_truck:'Lastbil',csv_cat:'Kategori',csv_desc:'Beskrivelse',csv_amt:'Beløb',csv_perf:'Værksted',
+    csv_date:'Dato',csv_truck:'Enhed',csv_cat:'Kategori',csv_desc:'Beskrivelse',csv_amt:'Beløb',csv_perf:'Værksted',
   };
 
   const EN = {
     theme_light:'☀️',theme_dark:'🌙',
     nav_overview:'📊 Overview',nav_tasks:'🔧 Tasks',nav_expenses:'💰 Expenses',
-    nav_service:'📅 Service',nav_trucks:'📦 Units',nav_stats:'📈 Statistics',nav_contacts:'📋 Contacts',nav_setup:'⚙️ Settings',
+    nav_service:'📅 Service',nav_trucks:'📦 Units',nav_stats:'📈 Statistics',nav_contacts:'📋 Contacts',nav_users:'👥 Users',nav_setup:'⚙️ Settings',
     nav_drivers_contacts:'👤 Drivers',nav_workshop_contacts:'🔧 Workshops',lbl_email:'Email',contact_filter_all:'All contacts',
     connecting:'Connecting...',connected:'Connected',conn_error:'Error: ',
-    kpi_active:'Active trucks',kpi_expenses:'Expenses this year',kpi_drivers:'Drivers',
-    kpi_costliest_repair:'💰 Costliest truck — repairs',kpi_costliest_fuel:'⛽ Km/l — best & worst',
+    kpi_active:'Active units',kpi_expenses:'Expenses this year',kpi_drivers:'Drivers',
+    kpi_costliest_repair:'💰 Costliest unit — repairs',kpi_costliest_fuel:'⛽ Km/l — best & worst',
     km_brand:'Fuel',km_rep:'Repair',
-    stat_truck_trend_title:'📈 Spending over time (52 weeks)',stat_back_to_stats:'← Back to statistics',stat_week:'Week',stat_total_period:'Total for period',stat_click_truck_hint:'Click a truck to see week-by-week spending',
+    stat_truck_trend_title:'📈 Spending over time (52 weeks)',stat_back_to_stats:'← Back to statistics',stat_week:'Week',stat_total_period:'Total for period',stat_click_truck_hint:'Click a unit to see week-by-week spending',
     kpi_open_dmg:'Open damages',kpi_dmg_this_year:'Damages this year',kpi_damage_free:'Damage-free days',kpi_overdue:'Overdue service',kpi_soon:'Due for service (30 days)',
     profit_title:'💹 Profitability Calculator',
     profit_rev_km:'Revenue per km',profit_margin_km:'Profit per km',
-    profit_km_fleet:'Km to break-even — entire fleet',profit_km_truck:'Km to break-even — per truck (avg.)',
-    profit_rev_fleet:'Revenue at break-even — entire fleet',profit_rev_truck:'Revenue at break-even — per truck (avg.)',
+    profit_km_fleet:'Km to break-even — entire fleet',profit_km_truck:'Km to break-even — per unit (avg.)',
+    profit_rev_fleet:'Revenue at break-even — entire fleet',profit_rev_truck:'Revenue at break-even — per unit (avg.)',
     profit_based:'Based on',profit_per_km:'per km profit',profit_enter_margin:'Enter profit per km',
-    profit_spread:'Spread across',profit_active_trucks:'active trucks',profit_enter_rev:'Enter revenue per km',
-    col_truck:'Truck',col_desc:'Description',col_type:'Type',col_amount:'Amount',col_date:'Date',
+    profit_spread:'Spread across',profit_active_trucks:'active units',profit_enter_rev:'Enter revenue per km',
+    col_truck:'Unit',col_desc:'Description',col_type:'Type',col_amount:'Amount',col_date:'Date',
     col_category:'Category',col_status:'Status',col_driver:'Driver',col_performer:'Workshop',
     col_km:'Km',col_insurance:'Insurance',col_reg:'Reg. no.',col_year:'Year',col_purchase:'Purchase price',
     col_name:'Name',col_phone:'Phone',col_license:'Licence class',col_employed:'Employed since',
@@ -1493,7 +1493,7 @@
     col_share_pct:'Share %',col_count:'Count',col_total:'Total',
     recent_title:'🕒 Recent activity',no_entries:'No entries yet',
     tasks_title:'🔧 All tasks',new_task:'+ New task',
-    all_trucks:'All trucks',all_drivers:'All drivers',all_types:'All types',all_statuses:'All statuses',
+    all_trucks:'All units',all_drivers:'All drivers',all_types:'All types',all_statuses:'All statuses',
     no_tasks:'No tasks',col_photo:'Photo',lbl_photos:'📷 Photos from driver',
     expenses_title:'💰 All expenses',new_expense:'+ New expense',
     all_cats:'All categories',no_expenses:'No expenses',
@@ -1509,12 +1509,12 @@
     no_reg:'No reg. no.',lbl_expenses:'Expenses',lbl_tasks:'Tasks',
     detail_tasks:'Recent tasks',detail_expenses:'Recent expenses',detail_none:'None',
     stat_period:'📅 Period',stat_from:'From',stat_to:'To',stat_clear:'Clear period',
-    stat_active:'Active trucks',stat_all:'All trucks',stat_inactive:'Inactive trucks',
-    btn_print_stat:'🖨 Print statistics',print_choose:'Select what to print',print_type_lbl:'📂 Expenses by type',print_truck_lbl:'🚛 Expenses by truck',print_driver_lbl:'👤 Driver damage overview',print_workshop_lbl:'🔧 Expenses by workshop',
+    stat_active:'Active units',stat_all:'All units',stat_inactive:'Inactive units',
+    btn_print_stat:'🖨 Print statistics',print_choose:'Select what to print',print_type_lbl:'📂 Expenses by type',print_truck_lbl:'📦 Expenses by unit',print_driver_lbl:'👤 Driver damage overview',print_workshop_lbl:'🔧 Expenses by workshop',
     showing_all:'Showing all expenses',from_lbl:'From: ',to_lbl:'Up to: ',period_lbl:'Period: ',
     no_data:' · No data',entries:'entries',total_lbl:'Total',
     type_title:'📂 Expenses by category',no_exp_period:'No expenses in the selected period',
-    trucks_stat_title:'🚛 Expenses by truck',
+    trucks_stat_title:'📦 Expenses by unit',
     no_trucks_stat:'No units added.',no_trucks_body:'No units',
     no_damage:'No damages',bill_expenses:'expenses',
     workshop_stat_title:'🔧 Expenses by performer',no_performers:'No performers registered',lbl_contact:'Contact person',lbl_performer_free:'or type freely',all_performers:'All workshops',m_new_workshop:'🔧 Add workshop',
@@ -1523,15 +1523,15 @@
     driver_class:'Class ',driver_total:'Damages total',driver_open:'Open damages',
     driver_cost:'Damage costs',driver_latest:'Latest damage',
     grand_total_dmg:'total damage cost',open_lbl:'open',
-    setup_trucks:'🚛 Edit trucks',setup_drivers:'👤 Drivers',setup_workshops:'🔧 Workshops / Performers',
+    setup_trucks:'📦 Edit units',setup_drivers:'👤 Drivers',setup_workshops:'🔧 Workshops / Performers',
     add_truck_btn:'+ Add unit',add_driver_btn:'+ Add driver',add_workshop_btn:'+ Add workshop',
     no_trucks_setup:'No units added',no_drivers_setup:'No drivers added yet',no_workshops:'No workshops added yet',
     s_active:'active',s_inactive:'inactive',
     setup_logo:'🖼 Company logo',logo_none:'No logo',logo_upload:'📁 Upload logo',logo_remove:'🗑 Remove logo',logo_hint:'PNG, JPG or SVG. Shown in the top left corner.',
     reset_title:'⚠️ Reset all data',
-    reset_desc:'This permanently deletes all trucks, drivers, tasks and expenses. Cannot be undone.',
+    reset_desc:'This permanently deletes all units, drivers, tasks and expenses. Cannot be undone.',
     reset_btn:'🗑 Reset everything',
-    m_new_task:'🔧 Register task',lbl_truck:'Truck *',lbl_date:'Date',lbl_type:'Type *',
+    m_new_task:'🔧 Register task',lbl_truck:'Unit *',lbl_date:'Date',lbl_type:'Type *',
     lbl_status:'Status',lbl_desc:'Description',lbl_performer:'Workshop',
     lbl_km:'Km at task',lbl_liter:'Litres filled',lbl_fueltype:'Fuel type',lbl_km_per_liter:'⛽ Km per litre',km_per_liter_title:'⛽ Km per litre (fuel economy)',lbl_amount:'Amount',lbl_est_amount:'Estimated amount',lbl_invoiced:'Invoiced amount',lbl_diff:'Difference',lbl_created_by:'Created by',lbl_planned_date:'Planned date',btn_print_tasks:'🖨 Print overview',
     lbl_resp_driver:'Responsible driver *',lbl_req_dmg:'— required for damages',
@@ -1545,14 +1545,14 @@
     lbl_interval:'Interval (months)',lbl_next_km:'Next service km',
     lbl_current_km:'Current km',lbl_last_done:'Last performed',btn_save:'Save',
     m_new_truck:'📦 Add unit',lbl_vehicle_no:'Vehicle number *',
-    ph_vehicle:'e.g. Truck 6',lbl_reg:'Reg. no.',lbl_year:'Year',lbl_purchase:'Purchase price',btn_add:'Add',
+    ph_vehicle:'e.g. Unit 6',lbl_reg:'Reg. no.',lbl_year:'Year',lbl_purchase:'Purchase price',btn_add:'Add',
     m_new_driver:'👤 Add driver',lbl_full_name:'Name *',ph_full_name:'First and last name',
     lbl_phone:'Phone',lbl_license:'Licence class',lbl_employed:'Employed since',btn_add_driver:'Add',
     btn_close:'Close',
     m_edit_task:'✏️ Edit task',btn_delete:'🗑 Delete',btn_save_changes:'Save changes',
     lbl_dmg_nature:'Damage type',lbl_ins_short:'Insurance',
     m_edit_expense:'✏️ Edit expense',
-    a_select_truck:'Please select a truck',a_select_driver:'You must select a responsible driver for damages',
+    a_select_truck:'Please select a unit',a_select_driver:'You must select a responsible driver for damages',
     a_vehicle_no:'Vehicle number is required',a_name:'Name is required',
     a_del_prefix:'Delete ',a_confirm1:'Are you sure? This permanently deletes ALL data!',
     a_confirm2:'Second confirmation: Really delete everything?',
@@ -1560,10 +1560,10 @@
     print_title:'🖨 Print overview',print_opt_period:'Optional period (leave blank for all data)',
     print_from:'From',print_to:'To',btn_print:'🖨 Print',
     print_all:'All data',print_h_type:'Expenses by category',
-    print_h_truck:'Expenses by truck',print_h_driver:'Driver damage overview',
+    print_h_truck:'Expenses by unit',print_h_driver:'Driver damage overview',
     print_app:'FleetControl',print_printed:'Printed',
     overdue_badge:'overdue',all_data:'All data',
-    csv_date:'Date',csv_truck:'Truck',csv_cat:'Category',csv_desc:'Description',csv_amt:'Amount',csv_perf:'Workshop',
+    csv_date:'Date',csv_truck:'Unit',csv_cat:'Category',csv_desc:'Description',csv_amt:'Amount',csv_perf:'Workshop',
   };
 
   window.T = function(key) {
@@ -1864,7 +1864,7 @@ function populateDropdowns() {
     const el = document.getElementById(id); if(!el) return;
     const isFilter = id.startsWith('filter');
     const prev = el.value;
-    el.innerHTML = isFilter ? '<option value="">Alle lastbiler</option>' : '';
+    el.innerHTML = isFilter ? '<option value="">Alle enheder</option>' : '';
     tids.forEach(tid => {
       const t = trucks[tid];
       if(!isFilter && normStatus(t.status) === 'inaktiv') return;
@@ -2037,9 +2037,9 @@ window.renderProfit = function() {
       <div class="ps">${ovskKm>0?totalFmt+' kr ÷ '+ovskKm.toLocaleString('da-DK')+' kr/km':T('profit_enter_margin')}</div>
     </div>
     <div class="profit-box">
-      <div class="pl">${window.LANG==='en'?'Km to break-even — per truck (avg.)':'Km til break-even — pr. lastbil (gns.)'}</div>
+      <div class="pl">${window.LANG==='en'?'Km to break-even — per unit (avg.)':'Km til break-even — pr. enhed (gns.)'}</div>
       <div class="pv">${fmt(kmBil)}${kmBil!==null?' km':''}</div>
-      <div class="ps">${ovskKm>0?fmt(kmFlåde)+' km ÷ '+aktive+' '+(window.LANG==='en'?'active trucks':'aktive biler'):'—'}</div>
+      <div class="ps">${ovskKm>0?fmt(kmFlåde)+' km ÷ '+aktive+' '+(window.LANG==='en'?'active units':'aktive enheder'):'—'}</div>
     </div>
     <div class="profit-box">
       <div class="pl">${window.LANG==='en'?'Revenue at break-even — entire fleet':'Omsætning ved break-even — hele flåden'}</div>
@@ -2047,7 +2047,7 @@ window.renderProfit = function() {
       <div class="ps">${omsKm>0?fmt(kmFlåde)+' km × '+omsKm.toLocaleString('da-DK')+' kr/km':T('profit_enter_rev')}</div>
     </div>
     <div class="profit-box">
-      <div class="pl">${window.LANG==='en'?'Revenue at break-even — per truck (avg.)':'Omsætning ved break-even — pr. lastbil (gns.)'}</div>
+      <div class="pl">${window.LANG==='en'?'Revenue at break-even — per unit (avg.)':'Omsætning ved break-even — pr. enhed (gns.)'}</div>
       <div class="pv" style="font-size:17px">${kr2(omsBil)}</div>
       <div class="ps">${omsKm>0?fmt(kmBil)+' km × '+omsKm.toLocaleString('da-DK')+' kr/km':'—'}</div>
     </div>
@@ -2197,7 +2197,7 @@ function svcStatus(s) {
   return '<span class="service-status ok">'+T('svc_ok')+'</span>';
 }
 
-// Bygger den sorterede liste af lastbiler for en given servicetype,
+// Bygger den sorterede liste af enheder for en given servicetype,
 // filtreret efter aktiv/inaktiv-filteret, sorteret efter nærmeste dato først.
 function svcTypeRows(typeId) {
   const serviceFilter = document.getElementById('serviceStatusFilter')?.value || 'aktive';
@@ -2243,13 +2243,13 @@ window.openServiceDetail = function(typeId) {
   document.getElementById('serviceDetailPanel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// Tabel i detaljepanelet: én række pr. lastbil for den valgte servicetype
+// Tabel i detaljepanelet: én række pr. enhed for den valgte servicetype
 function renderServiceDetail(typeId) {
   const body = document.getElementById('serviceDetailBody');
   if(!body) return;
   const rows = svcTypeRows(typeId);
   if(!rows.length) {
-    body.innerHTML = `<tr><td colspan="6" class="empty">${window.LANG==='en'?'No trucks':'Ingen lastbiler'}</td></tr>`;
+    body.innerHTML = `<tr><td colspan="6" class="empty">${window.LANG==='en'?'No units':'Ingen enheder'}</td></tr>`;
     return;
   }
   body.innerHTML = rows.map(({tid, s}) => {
@@ -2345,7 +2345,7 @@ function renderService() {
 
     return `<div class="cat-card ${ringClass}" data-typeid="${typeId}" onclick="openServiceDetail('${typeId}')">
       <div class="cat-title">🔧 ${navn}</div>
-      <div class="cat-sub">${dated.length} ${window.LANG==='en'?'planned':'planlagt'} · ${rows.length} ${window.LANG==='en'?'trucks':'lastbiler'}</div>
+      <div class="cat-sub">${dated.length} ${window.LANG==='en'?'planned':'planlagt'} · ${rows.length} ${window.LANG==='en'?'units':'enheder'}</div>
       <div class="cat-lines">${linesHtml}</div>
       ${notiHtml}
     </div>`;
@@ -2411,7 +2411,7 @@ window.sendTestMail = async function() {
 };
 
 // ===== SERVICE-ADVISERING =====
-// Kører ved hver render, men sender kun én gang pr. servicedato pr. lastbil.
+// Kører ved hver render, men sender kun én gang pr. servicedato pr. enhed.
 let _notiCheckRunning = false;
 async function checkServiceNotifications() {
   if(_notiCheckRunning) return;
@@ -2437,7 +2437,7 @@ async function checkServiceNotifications() {
         const naar = dd < 0 ? (Math.abs(dd)+' dage siden (OVERSKREDET)')
                    : dd===0 ? 'i dag' : ('om '+dd+' dage');
         const subject = `Serviceadvisering: ${navn} – ${truckName(tid)}`;
-        const message = `Service "${navn}" for lastbil ${truckName(tid)}`
+        const message = `Service "${navn}" for enhed ${truckName(tid)}`
           + (trucks[tid]?.regnr?` (${trucks[tid].regnr})`:'')
           + ` forfalder ${naar}.\n\nServicedato: ${s.nextDate}\n\nDenne besked er sendt automatisk fra FleetControl.`;
         try {
@@ -2485,11 +2485,11 @@ window.openServiceModal = function(tid, typeId) {
   openModal('modalService');
 }
 
-// ===== LASTBILER TAB =====
+// ===== ENHEDER TAB =====
 function renderTrucks() {
   const grid = document.getElementById('truckGrid');
   const ids = Object.keys(trucks).sort((a,b)=>(trucks[a].vognr||'').localeCompare(trucks[b].vognr||''));
-  if(!ids.length){grid.innerHTML='<p style="color:var(--muted)">Ingen enheder oprettet endnu.</p>';return;}
+  if(!ids.length){grid.innerHTML=`<p style="color:var(--muted)">${T('no_trucks_yet')}</p>`;return;}
   grid.innerHTML = ids.map(id=>{
     const t=trucks[id];
     const udgBil=Object.values(udgifter).filter(u=>u.truck===id).reduce((s,u)=>s+Number(u.beloeb||0),0);
@@ -2511,7 +2511,7 @@ window.openBilDetail = function(id){
   const tOpg=Object.entries(opgaver).filter(([,o])=>o.truck===id).sort((a,b)=>(b[1].dato||'').localeCompare(a[1].dato||''));
   const tUdg=Object.entries(udgifter).filter(([,u])=>u.truck===id).sort((a,b)=>(b[1].dato||'').localeCompare(a[1].dato||''));
   const total=tUdg.reduce((s,[,u])=>s+Number(u.beloeb||0),0);
-  document.getElementById('detailTitle').textContent='🚛 '+( t.vognr||id);
+  document.getElementById('detailTitle').textContent='📦 '+( t.vognr||id);
   document.getElementById('detailContent').innerHTML=`
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
       <div class="profit-box"><div class="pl">Reg.nr.</div><div class="pv" style="font-size:15px">${t.regnr||'—'}</div></div>
@@ -2637,7 +2637,7 @@ window.renderStatDashboard = function() {
   filtUdg.forEach(u => { byBil[u.truck]=(byBil[u.truck]||0)+Number(u.beloeb||0); });
   const topBil = Object.entries(byBil).sort((a,b)=>b[1]-a[1]);
   document.getElementById('dashSummaryBil').innerHTML =
-    `<span class="big">${Object.keys(trucks).filter(id=>normStatus(trucks[id].status)!=='inaktiv').length} lastbiler</span><span>${filtUdg.length} udgifter</span>`;
+    `<span class="big">${Object.keys(trucks).filter(id=>normStatus(trucks[id].status)!=='inaktiv').length} enheder</span><span>${filtUdg.length} udgifter</span>`;
   document.getElementById('dashListBil').innerHTML =
     dashList(topBil, id=>truckName(id), v=>Number(v).toLocaleString('da-DK')+' kr', 'Ingen udgifter');
 
@@ -2729,7 +2729,7 @@ function renderKmPerLiter(fra, til, statFilter) {
   metaEl.textContent = (window.LANG==='en'
     ? `${count} measured legs · ${totalKm.toLocaleString('da-DK')} km · ${totalLiter.toLocaleString('da-DK',{maximumFractionDigits:2})} litres`
     : `${count} målte strækninger · ${totalKm.toLocaleString('da-DK')} km · ${totalLiter.toLocaleString('da-DK',{maximumFractionDigits:2})} liter`);
-  // Pr. lastbil, bedste økonomi først
+  // Pr. enhed, bedste økonomi først
   const rows = Object.entries(perTruck)
     .map(([tid,d]) => [tid, d.liter>0 ? d.km/d.liter : 0])
     .filter(r => r[1] > 0)
@@ -2762,7 +2762,7 @@ window.openStatDetail = function(group) {
   });
   const titles = {
     type: '📂 Udgifter opdelt pr. type',
-    bil: '🚛 Udgifter pr. lastbil',
+    bil: '📦 Udgifter pr. enhed',
     vaerksted: '🔧 Udgifter pr. værksted',
     chauffeur: '👤 Skader pr. chauffør'
   };
@@ -2904,7 +2904,7 @@ window.renderBilOversigt = function() {
   const bilBody = document.getElementById('bilUdgifterBody');
 
   if(!tids.length){
-    bilGrid.innerHTML='<p style="color:var(--muted)">Ingen enheder oprettet.</p>';
+    bilGrid.innerHTML=`<p style="color:var(--muted)">${T('no_trucks_stat')}</p>`;
     bilBody.innerHTML=`<tr><td colspan="6" class="empty">${T('no_trucks_body')}</td></tr>`;
     return;
   }
@@ -2938,7 +2938,7 @@ window.renderBilOversigt = function() {
     </tr>`).join('') + `<tr style="border-top:2px solid var(--border)"><td colspan="3"><strong>${T('col_total')}</strong></td><td><strong>${kr(totalAlle)}</strong></td><td colspan="2"></td></tr>`;
 }
 
-// ===== LASTBIL — FORBRUG OVER TID (52 UGER) =====
+// ===== ENHED — FORBRUG OVER TID (52 UGER) =====
 let _trendTruckId = null;
 
 // Returnér ISO-ugestart (mandag) for en dato, som 'YYYY-MM-DD'
@@ -3011,7 +3011,7 @@ function renderTruckTrend(tid) {
   document.getElementById('truckTrendChart').innerHTML = buildTrendSVG(weeks);
 }
 
-// ===== LASTBIL — KM/L OVER TID (52 UGER) =====
+// ===== ENHED — KM/L OVER TID (52 UGER) =====
 // Åbn km/l-kurve. Kan kaldes fra Overblik, så vi skifter først til Statistik-fanen.
 window.openTruckKmlTrend = function(tid) {
   // Skift til Statistik-fanen
@@ -3387,7 +3387,7 @@ window.printOpgaver = function() {
   ${list.length ? `<table>
     <thead><tr>
       <th>${window.LANG==='en'?'Date':'Dato'}</th>
-      <th>${window.LANG==='en'?'Truck':'Lastbil'}</th>
+      <th>${window.LANG==='en'?'Unit':'Enhed'}</th>
       <th>${window.LANG==='en'?'Type':'Type'}</th>
       <th>${window.LANG==='en'?'Description':'Beskrivelse'}</th>
       <th>${window.LANG==='en'?'Workshop':'Værksted'}</th>
@@ -3683,7 +3683,7 @@ window.doPrint = function() {
     }).sort((a,b)=>b.totalUdg-a.totalUdg);
     const grandTotal = bilStats.reduce((s,b)=>s+b.totalUdg,0);
     html += sec(T('print_h_truck'), `
-      <table><thead><tr><th>Lastbil</th><th>Reg.nr.</th><th style="text-align:right">Antal udgifter</th><th style="text-align:right">Samlede udgifter</th><th style="text-align:right">Antal skader</th><th style="text-align:right">Skadeomkostninger</th></tr></thead>
+      <table><thead><tr><th>Enhed</th><th>Reg.nr.</th><th style="text-align:right">Antal udgifter</th><th style="text-align:right">Samlede udgifter</th><th style="text-align:right">Antal skader</th><th style="text-align:right">Skadeomkostninger</th></tr></thead>
       <tbody>${bilStats.map(b=>`<tr><td>${b.t.vognr||'—'}</td><td>${b.t.regnr||'—'}</td><td style="text-align:right">${b.antalUdg}</td><td style="text-align:right">${Number(b.totalUdg).toLocaleString('da-DK')} kr</td><td style="text-align:right">${b.antalSkader}</td><td style="text-align:right">${Number(b.skadeKr).toLocaleString('da-DK')} kr</td></tr>`).join('')}</tbody>
       <tfoot><tr><td colspan="3"><strong>${T('col_total')}</strong></td><td style="text-align:right"><strong>${Number(grandTotal).toLocaleString('da-DK')} kr</strong></td><td colspan="2"></td></tr></tfoot>
       </table>`);
@@ -3783,7 +3783,7 @@ function renderSetup() {
       </select></td>
       <td><button class="btn btn-danger btn-sm" onclick="deleteTruck('${id}')">🗑</button></td>
     </tr>`;
-  }).join('') : `<tr><td colspan="6" class="empty">${T('no_trucks_body')} oprettet</td></tr>`;
+  }).join('') : `<tr><td colspan="6" class="empty">${T('no_trucks_setup')}</td></tr>`;
 }
 
 window.renderKontakter = function() {
@@ -4031,7 +4031,7 @@ window.saveUdgift = async function() {
 window.saveService = async function() {
   const tid    = document.getElementById('sTruck').value;
   const typeId = document.getElementById('sSvcType').value;
-  if(!tid || !typeId) return alert(window.LANG==='en'?'Select truck and service type':'Vælg lastbil og servicetype');
+  if(!tid || !typeId) return alert(window.LANG==='en'?'Select unit and service type':'Vælg enhed og servicetype');
   showSync();
   await update(ref(db,KP+'service/'+tid+'/'+typeId), {
     nextDate: document.getElementById('sNextDate').value,
