@@ -3,7 +3,7 @@
 <html lang="da"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FleetManagement</title>
+<title>FleetControl</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   :root {
@@ -392,8 +392,8 @@
 <div id="loginScreen" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:0;">
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,.4);">
     <div style="text-align:center;margin-bottom:28px;">
-      <div style="font-size:36px;margin-bottom:8px;">🚛</div>
-      <h1 style="font-size:22px;font-weight:700;margin:0">FleetManagement</h1>
+      <img src="veyro-logo.jpg" alt="Veyro Systems" style="height:32px;border-radius:5px;margin-bottom:12px;">
+      <h1 style="font-size:22px;font-weight:700;margin:0">FleetControl</h1>
       <p style="color:var(--muted);font-size:13px;margin-top:6px;">Log ind for at fortsætte</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px;">
@@ -432,7 +432,7 @@
   </div>
 
   <div style="margin-top:20px;background:#061824;border-radius:8px;padding:8px 14px;">
-    <img src="veyro-logo.png" alt="Veyro Systems" style="height:22px;display:block">
+    <img src="veyro-logo.jpg" alt="Veyro Systems" style="height:22px;display:block">
   </div>
 </div>
 
@@ -467,8 +467,9 @@
 
 <header>
 <div class="header-inner">
+  <img class="app-logo" src="veyro-logo.jpg" alt="Veyro Systems" style="height:32px;border-radius:5px;">
   <img id="headerLogo" src="" alt="" style="display:none;height:76px;max-width:200px;object-fit:contain;border-radius:6px;">
-  <h1>🚛 <span>Fleet</span>Management</h1>
+  <h1><span>Fleet</span>Control</h1>
   <span id="kundeNavn" style="font-size:13px;color:var(--muted);white-space:nowrap;"></span>
   <span id="headerAlerts"></span>
   <button id="themeBtn" onclick="toggleTheme()" style="margin-left:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">☀️</button>
@@ -484,7 +485,7 @@
   <button onclick="showTab(&#39;opgaver&#39;,this)" data-t="nav_tasks" class="">🔧 Opgaver<span id="badgeOpgaver" class="badge" style=""></span></button>
   <button onclick="showTab(&#39;udgifter&#39;,this)" data-t="nav_expenses" class="">💰 Udgifter</button>
   <button onclick="showTab(&#39;service&#39;,this)" data-t="nav_service" class="">📅 Service</button>
-  <button onclick="showTab(&#39;biler&#39;,this)" data-t="nav_trucks" class="active">🚛 Lastbiler</button>
+  <button onclick="showTab(&#39;biler&#39;,this)" data-t="nav_trucks" class="active">📦 Enheder</button>
   <button onclick="showTab(&#39;statistik&#39;,this)" data-t="nav_stats" class="">📈 Statistik</button>
   <button onclick="showTab(&#39;kontakter&#39;,this)" data-t="nav_contacts" class="">📋 Kontakter</button>
   <button id="navBrugerAdmin" onclick="showTab(&#39;brugeradmin&#39;,this)" style="">👥 Brugere</button>
@@ -623,8 +624,8 @@
 <!-- ===== LASTBILER ===== -->
 <div id="tab-biler" class="tab active">
   <div class="section-header">
-    <h3 data-t="trucks_title">🚛 Alle lastbiler</h3>
-    <button class="btn btn-primary" data-t="add_truck" onclick="openModal(&#39;modalNyBil&#39;)">+ Tilføj lastbil</button>
+    <h3 data-t="trucks_title">📦 Alle enheder</h3>
+    <button class="btn btn-primary" data-t="add_truck" onclick="openModal(&#39;modalNyBil&#39;)">+ Tilføj enhed</button>
   </div>
   <div class="truck-grid" id="truckGrid"></div>
 </div>
@@ -961,7 +962,7 @@
       </table>
     </div>
     <div style="margin-top:12px">
-      <button class="btn btn-primary btn-sm" data-t="add_truck_btn" onclick="openModal(&#39;modalNyBil&#39;)">+ Tilføj lastbil</button>
+      <button class="btn btn-primary btn-sm" data-t="add_truck_btn" onclick="openModal(&#39;modalNyBil&#39;)">+ Tilføj enhed</button>
     </div>
   </div>
 
@@ -1169,7 +1170,7 @@
 <!-- NY BIL -->
 <div class="modal-overlay" id="modalNyBil">
   <div class="modal">
-    <h2 data-t="m_new_truck">🚛 Tilføj lastbil</h2>
+    <h2 data-t="m_new_truck">📦 Tilføj enhed</h2>
     <div class="form-grid">
       <div class="form-group"><label data-t="lbl_vehicle_no">Vognummer *</label><input type="text" id="nbVognr"></div>
       <div class="form-group"><label data-t="lbl_reg">Reg.nr.</label><input type="text" id="nbRegnr"></div>
@@ -1355,7 +1356,7 @@
     // nav
     theme_light:'☀️',theme_dark:'🌙',
     nav_overview:'📊 Overblik',nav_tasks:'🔧 Opgaver',nav_expenses:'💰 Udgifter',
-    nav_service:'📅 Service',nav_trucks:'🚛 Lastbiler',nav_stats:'📈 Statistik',nav_contacts:'📋 Kontakter',nav_setup:'⚙️ Opsætning',
+    nav_service:'📅 Service',nav_trucks:'📦 Enheder',nav_stats:'📈 Statistik',nav_contacts:'📋 Kontakter',nav_setup:'⚙️ Opsætning',
     nav_drivers_contacts:'👤 Chauffører',nav_workshop_contacts:'🔧 Værksteder',lbl_email:'Email',contact_filter_all:'Alle kontakter',
     // conn
     connecting:'Forbinder...',connected:'Forbundet',conn_error:'Fejl: ',
@@ -1397,9 +1398,9 @@
     svc_ok:'✓ OK',svc_overdue:'⚠ Forfalden',svc_soon:'⏰ Snart',svc_mark_done:'Udført',
     btn_plan:'Planlæg',overdue_banner:'forfaldne serviceeftersyn',soon_banner:'snart forfaldne (inden 30 dage)',
     open_svc_tasks:'🔧 Åbne service/reparationsopgaver',no_open_tasks:'Ingen åbne opgaver',
-    no_trucks_yet:'Ingen lastbiler oprettet endnu.',
+    no_trucks_yet:'Ingen enheder oprettet endnu.',
     // trucks
-    trucks_title:'🚛 Alle lastbiler',add_truck:'+ Tilføj lastbil',
+    trucks_title:'📦 Alle enheder',add_truck:'+ Tilføj enhed',
     no_reg:'Ingen reg.nr.',lbl_expenses:'Udgifter',lbl_tasks:'Opgaver',
     detail_tasks:'Seneste opgaver',detail_expenses:'Seneste udgifter',detail_none:'Ingen',
     // stat
@@ -1410,7 +1411,7 @@
     no_data:' · Ingen data',entries:'poster',total_lbl:'Total',
     type_title:'📂 Udgifter opdelt pr. type',no_exp_period:'Ingen udgifter i den valgte periode',
     trucks_stat_title:'🚛 Udgifter pr. lastbil',
-    no_trucks_stat:'Ingen lastbiler oprettet.',no_trucks_body:'Ingen lastbiler',
+    no_trucks_stat:'Ingen enheder oprettet.',no_trucks_body:'Ingen enheder',
     no_damage:'Ingen skader',bill_expenses:'udgifter',
     workshop_stat_title:'🔧 Udgifter pr. udfører',no_performers:'Ingen udfører registreret',lbl_contact:'Kontaktperson',lbl_performer_free:'eller skriv frit',all_performers:'Alle værksteder',m_new_workshop:'🔧 Tilføj værksted',
     driver_stat_title:'👤 Chauffører — skadeoversigt',
@@ -1420,8 +1421,8 @@
     grand_total_dmg:'samlet skadeomkostning',open_lbl:'åbne',
     // setup
     setup_trucks:'🚛 Rediger lastbiler',setup_drivers:'👤 Chauffører',setup_workshops:'🔧 Værksteder / Udfører',
-    add_truck_btn:'+ Tilføj lastbil',add_driver_btn:'+ Tilføj chauffør',add_workshop_btn:'+ Tilføj værksted',
-    no_trucks_setup:'Ingen lastbiler oprettet',no_drivers_setup:'Ingen chauffører oprettet endnu',no_workshops:'Ingen værksteder oprettet endnu',
+    add_truck_btn:'+ Tilføj enhed',add_driver_btn:'+ Tilføj chauffør',add_workshop_btn:'+ Tilføj værksted',
+    no_trucks_setup:'Ingen enheder oprettet',no_drivers_setup:'Ingen chauffører oprettet endnu',no_workshops:'Ingen værksteder oprettet endnu',
     s_active:'aktiv',s_inactive:'inaktiv',
     setup_logo:'🖼 Firmalogo',logo_none:'Ingen logo',logo_upload:'📁 Upload logo',logo_remove:'🗑 Fjern logo',logo_hint:'PNG, JPG eller SVG. Vises i øverste venstre hjørne.',
     reset_title:'⚠️ Nulstil al data',
@@ -1441,7 +1442,7 @@
     m_plan_service:'📅 Planlæg service',lbl_next_date:'Næste servicedato',
     lbl_interval:'Interval (måneder)',lbl_next_km:'Næste service km',
     lbl_current_km:'Aktuel km',lbl_last_done:'Sidst udført',btn_save:'Gem',
-    m_new_truck:'🚛 Tilføj lastbil',lbl_vehicle_no:'Vognummer *',
+    m_new_truck:'📦 Tilføj enhed',lbl_vehicle_no:'Vognummer *',
     ph_vehicle:'fx Vogn 6',lbl_reg:'Reg.nr.',lbl_year:'Årgang',lbl_purchase:'Købspris (kr)',btn_add:'Tilføj',
     m_new_driver:'👤 Tilføj chauffør',lbl_full_name:'Navn *',ph_full_name:'For- og efternavn',
     lbl_phone:'Telefon',lbl_license:'Kørekortklasse',lbl_employed:'Ansat siden',btn_add_driver:'Tilføj',
@@ -1460,7 +1461,7 @@
     print_from:'Fra',print_to:'Til',btn_print:'🖨 Udskriv',
     print_all:'Alle data',print_h_type:'Udgifter opdelt pr. type',
     print_h_truck:'Udgifter pr. lastbil',print_h_driver:'Chaufførernes skadeoversigt',
-    print_app:'🚛 FleetManagement',print_printed:'Udskrevet',
+    print_app:'FleetControl',print_printed:'Udskrevet',
     // misc
     overdue_badge:'forfaldne',all_data:'Alle data',
     csv_date:'Dato',csv_truck:'Lastbil',csv_cat:'Kategori',csv_desc:'Beskrivelse',csv_amt:'Beløb',csv_perf:'Værksted',
@@ -1469,7 +1470,7 @@
   const EN = {
     theme_light:'☀️',theme_dark:'🌙',
     nav_overview:'📊 Overview',nav_tasks:'🔧 Tasks',nav_expenses:'💰 Expenses',
-    nav_service:'📅 Service',nav_trucks:'🚛 Trucks',nav_stats:'📈 Statistics',nav_contacts:'📋 Contacts',nav_setup:'⚙️ Settings',
+    nav_service:'📅 Service',nav_trucks:'📦 Units',nav_stats:'📈 Statistics',nav_contacts:'📋 Contacts',nav_setup:'⚙️ Settings',
     nav_drivers_contacts:'👤 Drivers',nav_workshop_contacts:'🔧 Workshops',lbl_email:'Email',contact_filter_all:'All contacts',
     connecting:'Connecting...',connected:'Connected',conn_error:'Error: ',
     kpi_active:'Active trucks',kpi_expenses:'Expenses this year',kpi_drivers:'Drivers',
@@ -1503,8 +1504,8 @@
     svc_ok:'✓ OK',svc_overdue:'⚠ Overdue',svc_soon:'⏰ Soon',svc_mark_done:'Done',
     btn_plan:'Schedule',overdue_banner:'overdue service checks',soon_banner:'due within 30 days',
     open_svc_tasks:'🔧 Open service/repair tasks',no_open_tasks:'No open tasks',
-    no_trucks_yet:'No trucks added yet.',
-    trucks_title:'🚛 All trucks',add_truck:'+ Add truck',
+    no_trucks_yet:'No units added yet.',
+    trucks_title:'📦 All units',add_truck:'+ Add unit',
     no_reg:'No reg. no.',lbl_expenses:'Expenses',lbl_tasks:'Tasks',
     detail_tasks:'Recent tasks',detail_expenses:'Recent expenses',detail_none:'None',
     stat_period:'📅 Period',stat_from:'From',stat_to:'To',stat_clear:'Clear period',
@@ -1514,7 +1515,7 @@
     no_data:' · No data',entries:'entries',total_lbl:'Total',
     type_title:'📂 Expenses by category',no_exp_period:'No expenses in the selected period',
     trucks_stat_title:'🚛 Expenses by truck',
-    no_trucks_stat:'No trucks added.',no_trucks_body:'No trucks',
+    no_trucks_stat:'No units added.',no_trucks_body:'No units',
     no_damage:'No damages',bill_expenses:'expenses',
     workshop_stat_title:'🔧 Expenses by performer',no_performers:'No performers registered',lbl_contact:'Contact person',lbl_performer_free:'or type freely',all_performers:'All workshops',m_new_workshop:'🔧 Add workshop',
     driver_stat_title:'👤 Drivers — damage overview',
@@ -1523,8 +1524,8 @@
     driver_cost:'Damage costs',driver_latest:'Latest damage',
     grand_total_dmg:'total damage cost',open_lbl:'open',
     setup_trucks:'🚛 Edit trucks',setup_drivers:'👤 Drivers',setup_workshops:'🔧 Workshops / Performers',
-    add_truck_btn:'+ Add truck',add_driver_btn:'+ Add driver',add_workshop_btn:'+ Add workshop',
-    no_trucks_setup:'No trucks added',no_drivers_setup:'No drivers added yet',no_workshops:'No workshops added yet',
+    add_truck_btn:'+ Add unit',add_driver_btn:'+ Add driver',add_workshop_btn:'+ Add workshop',
+    no_trucks_setup:'No units added',no_drivers_setup:'No drivers added yet',no_workshops:'No workshops added yet',
     s_active:'active',s_inactive:'inactive',
     setup_logo:'🖼 Company logo',logo_none:'No logo',logo_upload:'📁 Upload logo',logo_remove:'🗑 Remove logo',logo_hint:'PNG, JPG or SVG. Shown in the top left corner.',
     reset_title:'⚠️ Reset all data',
@@ -1543,7 +1544,7 @@
     m_plan_service:'📅 Plan service',lbl_next_date:'Next service date',
     lbl_interval:'Interval (months)',lbl_next_km:'Next service km',
     lbl_current_km:'Current km',lbl_last_done:'Last performed',btn_save:'Save',
-    m_new_truck:'🚛 Add truck',lbl_vehicle_no:'Vehicle number *',
+    m_new_truck:'📦 Add unit',lbl_vehicle_no:'Vehicle number *',
     ph_vehicle:'e.g. Truck 6',lbl_reg:'Reg. no.',lbl_year:'Year',lbl_purchase:'Purchase price',btn_add:'Add',
     m_new_driver:'👤 Add driver',lbl_full_name:'Name *',ph_full_name:'First and last name',
     lbl_phone:'Phone',lbl_license:'Licence class',lbl_employed:'Employed since',btn_add_driver:'Add',
@@ -1560,7 +1561,7 @@
     print_from:'From',print_to:'To',btn_print:'🖨 Print',
     print_all:'All data',print_h_type:'Expenses by category',
     print_h_truck:'Expenses by truck',print_h_driver:'Driver damage overview',
-    print_app:'🚛 Fleet Management',print_printed:'Printed',
+    print_app:'FleetControl',print_printed:'Printed',
     overdue_badge:'overdue',all_data:'All data',
     csv_date:'Date',csv_truck:'Truck',csv_cat:'Category',csv_desc:'Description',csv_amt:'Amount',csv_perf:'Workshop',
   };
@@ -2401,7 +2402,7 @@ window.sendTestMail = async function() {
   if(!to) return;
   if(st){ st.style.color='var(--muted)'; st.textContent = window.LANG==='en'?'Sending…':'Sender…'; }
   try {
-    await sendServiceMail({ to, subject:'FleetManagement – testmail', message:'Dette er en testmail fra FleetManagement. Mail-opsætningen virker! ✅' });
+    await sendServiceMail({ to, subject:'FleetControl – testmail', message:'Dette er en testmail fra FleetControl. Mail-opsætningen virker! ✅' });
     if(st){ st.style.color='var(--green)'; st.textContent = window.LANG==='en'?'✓ Test sent':'✓ Testmail sendt'; }
   } catch(e) {
     if(st){ st.style.color='var(--red)'; st.textContent = (window.LANG==='en'?'Error: ':'Fejl: ')+(e?.text||e?.message||e); }
@@ -2438,7 +2439,7 @@ async function checkServiceNotifications() {
         const subject = `Serviceadvisering: ${navn} – ${truckName(tid)}`;
         const message = `Service "${navn}" for lastbil ${truckName(tid)}`
           + (trucks[tid]?.regnr?` (${trucks[tid].regnr})`:'')
-          + ` forfalder ${naar}.\n\nServicedato: ${s.nextDate}\n\nDenne besked er sendt automatisk fra FleetManagement.`;
+          + ` forfalder ${naar}.\n\nServicedato: ${s.nextDate}\n\nDenne besked er sendt automatisk fra FleetControl.`;
         try {
           await sendServiceMail({ to: email, subject, message });
           await update(ref(db,KP+'service/'+tid+'/'+typeId+'/notified'), { [sentKey]: today() });
@@ -2488,7 +2489,7 @@ window.openServiceModal = function(tid, typeId) {
 function renderTrucks() {
   const grid = document.getElementById('truckGrid');
   const ids = Object.keys(trucks).sort((a,b)=>(trucks[a].vognr||'').localeCompare(trucks[b].vognr||''));
-  if(!ids.length){grid.innerHTML='<p style="color:var(--muted)">Ingen lastbiler oprettet endnu.</p>';return;}
+  if(!ids.length){grid.innerHTML='<p style="color:var(--muted)">Ingen enheder oprettet endnu.</p>';return;}
   grid.innerHTML = ids.map(id=>{
     const t=trucks[id];
     const udgBil=Object.values(udgifter).filter(u=>u.truck===id).reduce((s,u)=>s+Number(u.beloeb||0),0);
@@ -2903,7 +2904,7 @@ window.renderBilOversigt = function() {
   const bilBody = document.getElementById('bilUdgifterBody');
 
   if(!tids.length){
-    bilGrid.innerHTML='<p style="color:var(--muted)">Ingen lastbiler oprettet.</p>';
+    bilGrid.innerHTML='<p style="color:var(--muted)">Ingen enheder oprettet.</p>';
     bilBody.innerHTML=`<tr><td colspan="6" class="empty">${T('no_trucks_body')}</td></tr>`;
     return;
   }
@@ -3379,7 +3380,7 @@ window.printOpgaver = function() {
     @page { margin:12mm; }
   </style></head><body>
   <div class="print-header">
-    <div><h1>🚛 FleetManagement</h1></div>
+    <div><h1>FleetControl</h1></div>
     <div class="meta">${window.LANG==='en'?'Task overview — Created & Planned':'Opgaveoversigt — Oprettede & Planlagte'}<br>${window.LANG==='en'?'Printed':'Udskrevet'}: ${printDate}</div>
   </div>
   <h3>${window.LANG==='en'?'Tasks: created & planned':'Opgaver: oprettede & planlagte'} (${list.length})</h3>
@@ -3741,7 +3742,7 @@ window.doPrint = function() {
   if(!html) { alert(window.LANG==='en'?'Please select at least one section':'Vælg mindst én sektion'); return; }
 
   const printWin = window.open('','_blank','width=900,height=700');
-  printWin.document.write(`<!DOCTYPE html><html lang="da"><head><meta charset="UTF-8"><title>FleetManagement — Udskrift</title>
+  printWin.document.write(`<!DOCTYPE html><html lang="da"><head><meta charset="UTF-8"><title>FleetControl — Udskrift</title>
   <style>
     body { font-family: 'Segoe UI', sans-serif; font-size: 12px; color: #000; padding: 20px; }
     .print-header { display: flex; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 18px; }
@@ -3755,7 +3756,7 @@ window.doPrint = function() {
     @page { margin: 15mm; }
   </style></head><body>
   <div class="print-header">
-    <div><h1>🚛 FleetManagement</h1></div>
+    <div><h1>FleetControl</h1></div>
     <div class="meta">Periode: ${periodeLabel}<br>${T('print_printed')}: ${printDate}</div>
   </div>
   ${html}
