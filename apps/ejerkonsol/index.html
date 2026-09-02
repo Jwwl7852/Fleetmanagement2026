@@ -389,7 +389,12 @@
         <option value="admin">Administrator — kan alt hos kunden</option>
         <option value="user">Bruger — kontoradgang uden brugerstyring</option>
         <option value="chauffeur">Chauffør — kun indberetningsappen</option>
+        <option value="leverandoer">Leverandør — kun leverandørportalen</option>
       </select>
+    </div>
+    <div class="fld" id="bVaerkstedFld" style="display:none;">
+      <label for="bVaerksted">Værksted</label>
+      <select class="inp" id="bVaerksted"></select>
     </div>
     <div class="msg" id="bMsg"></div>
     <div class="modal-foot">
@@ -772,7 +777,7 @@ async function hentBrugere(id){
     body.innerHTML = `<tr><td colspan="5" style="color:var(--muted)">Ingen brugere endnu. Opret kundens første administrator herover.</td></tr>`;
     return;
   }
-  const rolleTekst = { admin:'Administrator', user:'Bruger', chauffeur:'Chauffør' };
+  const rolleTekst = { admin:'Administrator', user:'Bruger', chauffeur:'Chauffør', leverandoer:'Leverandør' };
   body.innerHTML = rk.map(([uid,u]) => `<tr>
     <td><strong>${esc(u.navn || '—')}</strong></td>
     <td style="color:var(--muted)">${esc(u.email || '—')}</td>
@@ -829,9 +834,28 @@ $('dNyBrugerBtn').addEventListener('click', () => {
   $('bSub').textContent = 'Hos ' + (kunder[valgtKunde]?.navn || valgtKunde);
   ['bNavn','bEmail','bPw'].forEach(f => $(f).value = '');
   $('bRolle').value = 'admin';
+  $('bVaerkstedFld').style.display = 'none';
   $('bMsg').textContent = '';
   aabn('mBruger');
   $('bNavn').focus();
+});
+
+$('bRolle').addEventListener('change', async () => {
+  if($('bRolle').value !== 'leverandoer'){ $('bVaerkstedFld').style.display = 'none'; return; }
+  $('bVaerkstedFld').style.display = '';
+  const sel = $('bVaerksted');
+  sel.innerHTML = `<option value="">Henter værksteder…</option>`;
+  try {
+    const s = await get(ref(db, `k/${valgtKunde}/vaerksteder`));
+    const v = s.exists() ? s.val() : {};
+    const ids = Object.keys(v).filter(id => v[id].aktiv !== false)
+      .sort((a,b) => (v[a].navn||'').localeCompare(v[b].navn||''));
+    sel.innerHTML = ids.length
+      ? ids.map(id => `<option value="${id}">${esc(v[id].navn||id)}</option>`).join('')
+      : `<option value="">Kunden har ingen værksteder endnu</option>`;
+  } catch(e){
+    sel.innerHTML = `<option value="">Kunne ikke hente værksteder</option>`;
+  }
 });
 
 $('bOpretBtn').addEventListener('click', () => opretBruger(valgtKunde));
@@ -862,8 +886,10 @@ async function opretBruger(kundeId){
   const email = $('bEmail').value.trim();
   const pw    = $('bPw').value;
   const role  = $('bRolle').value;
+  const vaerkstedId = role === 'leverandoer' ? $('bVaerksted').value : '';
   if(!navn || !email || !pw) return besked(m, 'Udfyld navn, email og adgangskode.');
   if(pw.length < 6)          return besked(m, 'Adgangskoden skal være mindst 6 tegn.');
+  if(role === 'leverandoer' && !vaerkstedId) return besked(m, 'Vælg et værksted.');
 
   const graense = kunder[kundeId]?.maxBrugere || 0;
   if(graense){
@@ -876,6 +902,7 @@ async function opretBruger(kundeId){
   try {
     const uid = await opretKonto(email, pw);
     const profil = { navn, email, role, kundeId, oprettet: iso() };
+    if(role === 'leverandoer') profil.vaerkstedId = vaerkstedId;
     await set(ref(db, 'users/' + uid), profil);
     await set(ref(db, `k/${kundeId}/brugere/${uid}`), profil);
 

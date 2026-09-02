@@ -891,7 +891,7 @@
     <!-- STEP 1: Vælg persontype -->
     <div id="nyBrugerStep1">
       <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Hvilken type bruger vil du oprette?</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
         <button onclick="vaelgBrugerType(&#39;chauffeur&#39;)" style="padding:24px 16px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-size:15px;font-weight:600;transition:border-color .15s;" onmouseover="this.style.borderColor=&#39;var(--accent)&#39;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;">
           <div style="font-size:32px;margin-bottom:8px;">🚛</div>
           Chauffør
@@ -901,6 +901,11 @@
           <div style="font-size:32px;margin-bottom:8px;">🏢</div>
           Driften
           <div style="font-size:11px;color:var(--muted);font-weight:400;margin-top:6px;">Adgang til flådesystemet</div>
+        </button>
+        <button onclick="vaelgBrugerType(&#39;leverandoer&#39;)" style="padding:24px 16px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-size:15px;font-weight:600;transition:border-color .15s;" onmouseover="this.style.borderColor=&#39;var(--accent)&#39;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;">
+          <div style="font-size:32px;margin-bottom:8px;">🔧</div>
+          Leverandør
+          <div style="font-size:11px;color:var(--muted);font-weight:400;margin-top:6px;">Adgang til leverandørportalen</div>
         </button>
       </div>
       <div class="modal-footer" style="margin-top:20px;">
@@ -924,6 +929,11 @@
             <option value="user">Bruger — kan se og redigere data</option>
             <option value="admin">Admin — fuld adgang inkl. brugerstyring</option>
           </select>
+        </div>
+        <!-- Værksted — kun vist for Leverandør -->
+        <div class="form-group full" id="nyBrugerVaerkstedWrap" style="display:none;">
+          <label>Værksted *</label>
+          <select id="nyBrugerVaerksted" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:14px;outline:none;"></select>
         </div>
       </div>
       <div id="nyBrugerMsg" style="font-size:12px;margin-top:8px;color:var(--red);"></div>
@@ -1654,6 +1664,9 @@ const storage = getStorage(app);
 // Alias window.T for use inside this ES module
 const T = (...args) => window.T(...args);
 
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 let trucks = {}, opgaver = {}, udgifter = {}, serviceData = {}, chauffoerer = {}, vaerksteder = {}, serviceTyper = {}, mailConfig = {};
 
 const syncBar = document.getElementById('syncBar');
@@ -1719,7 +1732,8 @@ onAuthStateChanged(auth, async user => {
   let profil = {};
   try {
     const token = await user.getIdToken();
-    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json?auth='+token);
+    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json',
+      { headers: { Authorization: 'Bearer ' + token } });
     profil = resp.ok ? (await resp.json()) || {} : {};
   } catch(e) { profil = {}; }
 
@@ -2055,14 +2069,14 @@ window.renderOpgaver = function() {
       <td>${o.dato||'—'}</td>
       <td>${truckName(o.truck)}</td>
       <td><span class="tag t${normType(o.type||'5')}">${typeLabel(normType(o.type||'5'))}</span></td>
-      <td>${o.beskrivelse||'—'}</td>
-      <td>${o.status==='indberettet'?(o.oprettetAf||'—'):normType(o.type)==='3'?'<strong>'+(chauffeurName(o.skadeChauffeur)||'—')+'</strong>':'—'}</td>
-      <td>${o.udforer||'—'}</td>
+      <td>${esc(o.beskrivelse)||'—'}</td>
+      <td>${o.status==='indberettet'?(esc(o.oprettetAf)||'—'):normType(o.type)==='3'?'<strong>'+(esc(chauffeurName(o.skadeChauffeur))||'—')+'</strong>':'—'}</td>
+      <td>${esc(o.udforer)||'—'}</td>
       <td>${o.km?Number(o.km).toLocaleString('da-DK')+' km':'—'}</td>
       <td>${o.beloeb?kr(o.beloeb):'—'}</td>
-      <td>${o.planlagtDato?'<span style="color:var(--yellow)">📅 '+o.planlagtDato+'</span>':'—'}</td>
+      <td>${o.planlagtDato?'<span style="color:var(--yellow)">📅 '+esc(o.planlagtDato)+'</span>':'—'}</td>
       <td><span class="tag ${o.status||'oprettet'}">${o.status||'oprettet'}</span></td>
-      <td>${normType(o.type)==='3'?(o.forsikring||'—'):'—'}</td>
+      <td>${normType(o.type)==='3'?(esc(o.forsikring)||'—'):'—'}</td>
       <td>${fotoCelle(o)}</td>
       <td><button class="btn-icon" onclick="editOpgave('${o.id}')">✏️</button></td>
     </tr>`).join('') : `<tr><td colspan="13" class="empty">${T('no_tasks')}</td></tr>`;
@@ -3443,9 +3457,19 @@ window.vaelgBrugerType = function(type) {
   document.getElementById('nyBrugerStep1').style.display = 'none';
   document.getElementById('nyBrugerStep2').style.display = '';
   const label = document.getElementById('nyBrugerTypeLabel');
+  document.getElementById('nyBrugerRoleWrap').style.display = 'none';
+  document.getElementById('nyBrugerVaerkstedWrap').style.display = 'none';
   if(type === 'chauffeur') {
     label.textContent = '🚛 Chauffør';
-    document.getElementById('nyBrugerRoleWrap').style.display = 'none';
+  } else if(type === 'leverandoer') {
+    label.textContent = '🔧 Leverandør';
+    document.getElementById('nyBrugerVaerkstedWrap').style.display = '';
+    const sel = document.getElementById('nyBrugerVaerksted');
+    const vids = Object.keys(vaerksteder).filter(id => vaerksteder[id].aktiv !== false)
+      .sort((a,b) => (vaerksteder[a].navn||'').localeCompare(vaerksteder[b].navn||''));
+    sel.innerHTML = vids.length
+      ? vids.map(id => `<option value="${id}">${esc(vaerksteder[id].navn||id)}</option>`).join('')
+      : `<option value="">Opret et værksted under Opsætning først</option>`;
   } else {
     label.textContent = '🏢 Driften';
     document.getElementById('nyBrugerRoleWrap').style.display = '';
@@ -3466,6 +3490,7 @@ window.openModal = function(id) {
   if(id === 'modalNyBruger') {
     document.getElementById('nyBrugerStep1').style.display = '';
     document.getElementById('nyBrugerStep2').style.display = 'none';
+    document.getElementById('nyBrugerVaerkstedWrap').style.display = 'none';
     ['nyBrugerNavn','nyBrugerEmail','nyBrugerPw'].forEach(f=>document.getElementById(f).value='');
     document.getElementById('nyBrugerMsg').textContent = '';
     _nyBrugerType = '';
@@ -3478,12 +3503,14 @@ window.opretBruger = async function() {
   const navn  = document.getElementById('nyBrugerNavn').value.trim();
   const email = document.getElementById('nyBrugerEmail').value.trim();
   const pw    = document.getElementById('nyBrugerPw').value;
-  // Chauffører er altid 'chauffeur' role, driften er admin/user
-  const role  = _nyBrugerType === 'chauffeur' ? 'chauffeur' : document.getElementById('nyBrugerRole').value;
+  // Chauffører er altid 'chauffeur' role, leverandører er altid 'leverandoer', driften er admin/user
+  const role  = _nyBrugerType === 'chauffeur' ? 'chauffeur' : _nyBrugerType === 'leverandoer' ? 'leverandoer' : document.getElementById('nyBrugerRole').value;
+  const vaerkstedId = _nyBrugerType === 'leverandoer' ? document.getElementById('nyBrugerVaerksted').value : '';
   const msg   = document.getElementById('nyBrugerMsg');
   msg.style.color = 'var(--red)';
   if(!navn||!email||!pw) return (msg.textContent='Udfyld alle felter');
   if(pw.length < 6)      return (msg.textContent='Adgangskode skal være mindst 6 tegn');
+  if(_nyBrugerType === 'leverandoer' && !vaerkstedId) return (msg.textContent='Vælg et værksted');
   try {
     // Use Firebase REST API so admin stays logged in (no client SDK sign-in side effect)
     const apiKey = firebaseConfig.apiKey;
@@ -3500,6 +3527,7 @@ window.opretBruger = async function() {
     }
     // Save user profile in database
     const profil = { navn, email, role, kundeId: KUNDE_ID, oprettet: today() };
+    if(role === 'leverandoer') profil.vaerkstedId = vaerkstedId;
     await set(ref(db,'users/'+data.localId), profil);
     await set(ref(db,KP+'brugere/'+data.localId), profil);
     // Auto-create chauffeur entry for chauffeur type
@@ -3567,12 +3595,13 @@ function buildBrugerRows(users) {
     const me = window._currentUser;
     if(me) entries.push([me.uid, {navn:me.navn, email:me.email, role:me.role, oprettet:'—'}]);
   }
+  const rolleTekst = { admin:'Admin', user:'Bruger', chauffeur:'Chauffør', leverandoer:'Leverandør' };
   const rows = entries.map(([uid,u]) => {
     const isSelf = uid === window._currentUser?.uid;
     return `<tr>
-      <td><strong>${u.navn||'—'}</strong></td>
-      <td style="color:var(--muted);font-size:12px">${u.email||'—'}</td>
-      <td><span class="tag ${u.role==='admin'?'t3':'t1'}">${u.role==='admin'?'Admin':'Bruger'}</span></td>
+      <td><strong>${esc(u.navn)||'—'}</strong></td>
+      <td style="color:var(--muted);font-size:12px">${esc(u.email)||'—'}</td>
+      <td><span class="tag ${u.role==='admin'?'t3':'t1'}">${rolleTekst[u.role] || esc(u.role) || '—'}</span></td>
       <td style="color:var(--muted);font-size:12px">${u.oprettet||'—'}</td>
       <td>${u.email?`<button class="btn btn-ghost btn-sm" onclick="resetPassword('${u.email}')">📧 Reset kodeord</button>`:'—'}</td>
       <td>${!isSelf?`<button class="btn btn-danger btn-sm" onclick="sletBruger('${uid}')">🗑</button>`:'<span style="color:var(--muted);font-size:11px">Dig selv</span>'}</td>

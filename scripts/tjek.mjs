@@ -24,7 +24,7 @@ for (const app of apps) {
 // 2. Ingen app må have en datasti uden kundepræfiks
 for (const app of ['kontor', 'chauffoer', 'leverandoer']) {
   const html = readFileSync(join(rod, 'apps', app, 'index.html'), 'utf8');
-  const bare = [...html.matchAll(/ref\(db,'(?!users|kunder|platform)[^']*'/g)].map(m => m[0]);
+  const bare = [...html.matchAll(/ref\(\s*db\s*,\s*(['"`])(?!users|kunder|platform)/g)].map(m => m[0]);
   if (bare.length) fejlet(app + ': datastier uden kundepræfiks: ' + bare.join(', '));
   else ok(app + ': alle datastier er bundet til en kunde');
 }

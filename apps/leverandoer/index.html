@@ -132,7 +132,7 @@
 <script src="firebase-config.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, update, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 /* Firebase-opsætningen ligger i firebase-config.js ved siden af denne fil.
@@ -159,6 +159,9 @@ const db   = getDatabase(app);
 const auth = getAuth(app);
 
 let trucks = {}, opgaver = {}, currentUser = null, myVaerkstedId = '', myVaerkstedNavn = '';
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const TYPE_LABELS = {'1':'Service','2':'Reparation','3':'Skade','4':'Dæk','5':'Andet','6':'Truckwash'};
 const TYPE_CLASSES = {'1':'service','2':'repair','3':'damage','4':'tyres','5':'other','6':'wash'};
@@ -210,7 +213,8 @@ onAuthStateChanged(auth, async user => {
   let profil = {};
   try {
     const token = await user.getIdToken();
-    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json?auth='+token);
+    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json',
+      { headers: { Authorization: 'Bearer ' + token } });
     profil = resp.ok ? (await resp.json())||{} : {};
   } catch(e) { profil = {}; }
 
@@ -252,7 +256,11 @@ onAuthStateChanged(auth, async user => {
 
 function startListeners() {
   onValue(ref(db,KP+'trucks'), s => { trucks = s.val()||{}; render(); });
-  onValue(ref(db,KP+'opgaver'), s => { opgaver = s.val()||{}; render(); });
+  // Serverens regler tillader kun læsning af opgaver forespurgt med denne
+  // forespørgsel — så andre værksteders opgaver kan ikke hentes ved at åbne
+  // databasen direkte. Ældre opgaver uden udforerId ses derfor ikke her.
+  onValue(query(ref(db,KP+'opgaver'), orderByChild('udforerId'), equalTo(myVaerkstedId)),
+    s => { opgaver = s.val()||{}; render(); });
 }
 
 window.showTab = function(id, el) {
@@ -265,11 +273,9 @@ window.showTab = function(id, el) {
 function render() {
   if(!myVaerkstedId) return;
 
-  // Find opgaver where udforer matches this vaerksted's name
-  // Nyere opgaver har vaerkstedets id paa sig. AEldre har kun navnet, saa vi
-  // falder tilbage til navnet — ellers ville gamle opgaver forsvinde.
-  const mine = Object.entries(opgaver).filter(([,o]) =>
-    o.udforerId ? o.udforerId === myVaerkstedId : (o.udforer && o.udforer === myVaerkstedNavn));
+  // startListeners() henter allerede kun opgaver hvor udforerId === myVaerkstedId
+  // (håndhævet af databasereglerne), så alt i `opgaver` hører til dette værksted.
+  const mine = Object.entries(opgaver);
 
   // ACTIVE: not udført, not afsluttet by supplier
   const aktive = mine.filter(([,o]) => o.status !== 'udført' && o.status !== 'klar_afhentning')
@@ -319,10 +325,10 @@ function renderTaskCard(id, o, isDone) {
 
   return `<div class="task-card ${isUrgent?'urgent':''}">
     <div class="task-top">
-      <div class="task-truck">🚛 ${truckData.vognr || o.truck || '?'}</div>
+      <div class="task-truck">🚛 ${esc(truckData.vognr) || esc(o.truck) || '?'}</div>
       <span class="task-type-tag ttag-${typeCls}">${typeLbl}</span>
     </div>
-    <div class="task-desc">${o.beskrivelse || 'Ingen beskrivelse'}</div>
+    <div class="task-desc">${esc(o.beskrivelse) || 'Ingen beskrivelse'}</div>
     <div class="task-meta">
       ${o.planlagtDato ? `<span>📅 Planlagt: ${o.planlagtDato}</span>` : o.dato ? `<span>📅 ${o.dato}</span>` : ''}
       ${o.km ? `<span>🛣 ${Number(o.km).toLocaleString('da-DK')} km</span>` : ''}

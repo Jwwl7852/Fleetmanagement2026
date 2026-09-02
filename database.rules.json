@@ -29,7 +29,7 @@
           ".validate": "newData.isString() && root.child('kunder').child(newData.val()).exists()"
         },
         "role": {
-          ".validate": "newData.val() === 'admin' || newData.val() === 'user' || newData.val() === 'chauffeur' || newData.val() === 'leverandoer' || newData.val() === 'owner'"
+          ".validate": "newData.val() === 'admin' || newData.val() === 'user' || newData.val() === 'chauffeur' || newData.val() === 'leverandoer' || (newData.val() === 'owner' && root.child('platform/ejere').child(auth.uid).exists())"
         }
       }
     },
@@ -68,8 +68,9 @@
           ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))"
         },
         "opgaver": {
-          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur' || root.child('users').child(auth.uid).child('role').val() === 'leverandoer') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".read": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret' && ((root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur') || (root.child('users').child(auth.uid).child('role').val() === 'leverandoer' && query.orderByChild === 'udforerId' && query.equalTo === root.child('users').child(auth.uid).child('vaerkstedId').val()))))",
           ".write": "auth != null && (root.child('platform/ejere').child(auth.uid).exists() || (root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'user' || root.child('users').child(auth.uid).child('role').val() === 'chauffeur') && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret'))",
+          ".indexOn": ["udforerId"],
           "$opgaveId": {
             ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'leverandoer' && root.child('users').child(auth.uid).child('kundeId').val() === $kundeId && root.child('kunder').child($kundeId).child('status').val() !== 'spaerret' && data.exists() && newData.exists() && data.child('udforerId').val() === root.child('users').child(auth.uid).child('vaerkstedId').val() && newData.child('udforerId').val() === root.child('users').child(auth.uid).child('vaerkstedId').val()"
           }

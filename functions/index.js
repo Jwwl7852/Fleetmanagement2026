@@ -24,17 +24,21 @@ exports.saetKundeClaim = functions
     const uid = context.params.uid;
     const profil = change.after.exists() ? change.after.val() : null;
 
-    if (!profil) {
-      await admin.auth().setCustomUserClaims(uid, null);
-      return null;
+    try {
+      if (!profil) {
+        await admin.auth().setCustomUserClaims(uid, null);
+        return null;
+      }
+
+      const ejerSnap = await admin.database().ref('/platform/ejere/' + uid).once('value');
+
+      await admin.auth().setCustomUserClaims(uid, {
+        kundeId: profil.kundeId || null,
+        ejer: ejerSnap.exists(),
+      });
+    } catch (err) {
+      functions.logger.error('saetKundeClaim: kunne ikke sætte claims for uid ' + uid, err);
     }
-
-    const ejerSnap = await admin.database().ref('/platform/ejere/' + uid).once('value');
-
-    await admin.auth().setCustomUserClaims(uid, {
-      kundeId: profil.kundeId || null,
-      ejer: ejerSnap.exists(),
-    });
     return null;
   });
 
@@ -44,12 +48,16 @@ exports.saetEjerClaim = functions
   .database.ref('/platform/ejere/{uid}')
   .onWrite(async (change, context) => {
     const uid = context.params.uid;
-    const profilSnap = await admin.database().ref('/users/' + uid).once('value');
-    const profil = profilSnap.val() || {};
+    try {
+      const profilSnap = await admin.database().ref('/users/' + uid).once('value');
+      const profil = profilSnap.val() || {};
 
-    await admin.auth().setCustomUserClaims(uid, {
-      kundeId: profil.kundeId || null,
-      ejer: change.after.exists(),
-    });
+      await admin.auth().setCustomUserClaims(uid, {
+        kundeId: profil.kundeId || null,
+        ejer: change.after.exists(),
+      });
+    } catch (err) {
+      functions.logger.error('saetEjerClaim: kunne ikke sætte claims for uid ' + uid, err);
+    }
     return null;
   });

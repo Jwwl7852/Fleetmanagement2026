@@ -460,6 +460,9 @@ const storage = getStorage(app);
 
 let trucks = {}, chauffoerer = {}, currentUser = null, selectedType = '2';
 
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 // ===== BILLED-KONFIGURATION =====
 const FOTO_MAX_ANTAL   = 4;      // max antal billeder pr. indberetning
 const FOTO_MAX_KANT    = 1600;   // længste kant i px efter komprimering
@@ -550,7 +553,8 @@ onAuthStateChanged(auth, async user => {
       user.getIdToken(),
       new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')), 3000))
     ]);
-    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json?auth='+token);
+    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json',
+      { headers: { Authorization: 'Bearer ' + token } });
     profil = resp.ok ? (await resp.json())||{} : {};
   } catch(e) { profil = {}; }
 
@@ -656,11 +660,11 @@ function loadMineIndberetninger() {
       return `<div class="report-item" style="${isUdfOrt?'opacity:0.6':''}">
         <div class="report-dot ${status}"></div>
         <div class="report-info">
-          <div class="report-title">${typeLabels[o.type]||'Opgave'} — ${truckData.vognr||o.truck||'?'}</div>
-          <div class="report-meta">${o.dato||'—'} · ${o.beskrivelse||'Ingen beskrivelse'}</div>
-          <div class="report-meta" style="margin-top:2px;font-size:11px;">👤 ${o.oprettetAf||'Ukendt'}</div>
+          <div class="report-title">${typeLabels[o.type]||'Opgave'} — ${esc(truckData.vognr)||esc(o.truck)||'?'}</div>
+          <div class="report-meta">${o.dato||'—'} · ${esc(o.beskrivelse)||'Ingen beskrivelse'}</div>
+          <div class="report-meta" style="margin-top:2px;font-size:11px;">👤 ${esc(o.oprettetAf)||'Ukendt'}</div>
           ${o.planlagtDato?`<div class="report-meta" style="margin-top:2px;font-size:11px;color:#60a5fa;">📅 Planlagt: ${o.planlagtDato}</div>`:''}
-          ${o.udforer?`<div class="report-meta" style="margin-top:2px;font-size:11px;color:#60a5fa;">🔧 Værksted: ${o.udforer}</div>`:''}
+          ${o.udforer?`<div class="report-meta" style="margin-top:2px;font-size:11px;color:#60a5fa;">🔧 Værksted: ${esc(o.udforer)}</div>`:''}
           ${(o.billeder&&o.billeder.length)?`<button type="button" class="foto-badge" data-billeder='${JSON.stringify(o.billeder).replace(/'/g,"&#39;")}' onclick="visOpgaveBilleder(this)">📷 ${o.billeder.length} billede${o.billeder.length===1?'':'r'}</button>`:''}
           ${isUdfOrt&&daysLeft!==null?`<div class="report-meta" style="color:var(--muted);font-size:10px;">Skjules om ${daysLeft} dag${daysLeft===1?'':'e'}</div>`:''}
         </div>
@@ -928,7 +932,8 @@ window.submitIndberetning = async function() {
   try {
     // Find chauffeur ID matching current user
     let chauffeurId = '';
-    const chSnap = await fetch(firebaseConfig.databaseURL + '/' + KP + 'chauffoerer.json?auth='+(await auth.currentUser.getIdToken()));
+    const chSnap = await fetch(firebaseConfig.databaseURL + '/' + KP + 'chauffoerer.json',
+      { headers: { Authorization: 'Bearer ' + (await auth.currentUser.getIdToken()) } });
     if(chSnap.ok) {
       const chData = await chSnap.json() || {};
       const match = Object.entries(chData).find(([,ch]) => ch.navn === currentUser.navn || ch.email === currentUser.email);
@@ -986,7 +991,8 @@ window.submitIndberetning = async function() {
 
     // Send email notification
     const typeLabels = {'1':'Service','2':'Reparation','3':'Skade','4':'Dæk','5':'Andet','6':'Truckwash','7':'Tankning','8':'Parkering'};
-    const truckSnap = await fetch(firebaseConfig.databaseURL + '/' + KP + 'trucks/'+truck+'.json?auth='+(await auth.currentUser.getIdToken()));
+    const truckSnap = await fetch(firebaseConfig.databaseURL + '/' + KP + 'trucks/'+truck+'.json',
+      { headers: { Authorization: 'Bearer ' + (await auth.currentUser.getIdToken()) } });
     const truckData = truckSnap.ok ? (await truckSnap.json())||{} : {};
     const lastbilNavn = truckData.vognr || truck;
 
