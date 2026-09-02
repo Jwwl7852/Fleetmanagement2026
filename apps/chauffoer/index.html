@@ -52,7 +52,7 @@
               padding:6px 10px; border-radius:8px; font-size:14px; cursor:pointer; margin-right:8px; }
 
   .mob-nav { display:flex; background:var(--surface); border-bottom:1px solid var(--border);
-             position:sticky; top:52px; z-index:99; }
+             position:sticky; top:86px; z-index:99; }
   .mob-nav button { flex:1; padding:12px 8px; border:none; background:none; color:var(--muted);
                     font-size:13px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; }
   .mob-nav button.active { color:var(--accent); border-bottom-color:var(--accent); }
@@ -197,7 +197,7 @@
 
 <div id="loginScreen" style="display:none;">
   <div class="login-box">
-    <div class="login-logo">🚛</div>
+    <div style="text-align:center;margin-bottom:10px"><img src="veyro-logo.jpg" alt="Veyro Systems" style="height:64px;width:auto;border-radius:5px;"></div>
     <div class="login-title">Flådestyring</div>
     <div class="login-sub">Chauffør indberetning</div>
     <div class="input-group">
@@ -226,18 +226,13 @@
     <button onclick="showLoginForm()" style="width:100%;background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:12px;margin-top:4px;">← Tilbage til login</button>
   </div>
 
-  <div style="text-align:center;margin-top:20px;">
-    <div style="display:inline-block;background:#061824;border-radius:8px;padding:8px 14px;">
-      <img src="veyro-logo.jpg" alt="Veyro Systems" style="height:22px;display:block">
-    </div>
-  </div>
 </div>
 
 <!-- APP -->
 <div id="app" style="display:none;">
   <div class="mob-header">
     <div style="display:flex;align-items:center;gap:10px">
-      <img src="veyro-logo.jpg" alt="Veyro Systems" style="height:20px;border-radius:4px;">
+      <img src="veyro-logo.jpg" alt="Veyro Systems" style="height:60px;width:auto;border-radius:4px;">
       <div>
         <div class="mob-header-title">Indberetning</div>
         <div class="mob-header-user" id="headerUser"></div>

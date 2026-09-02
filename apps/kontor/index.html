@@ -349,8 +349,8 @@
   :root.light .tag.udført                                   { background:#e6f4ef; color:#0f6047; }
 
   /* Topbjælken er mørk i begge temaer — den er appens identitet */
-  header { background: var(--sidebar); border-bottom: none; height: 66px; }
-  .header-inner { height: 66px; padding: 0 26px; gap: 16px; }
+  header { background: var(--sidebar); border-bottom: none; height: 108px; }
+  .header-inner { height: 108px; padding: 0 26px; gap: 16px; }
   header h1 { font-size: 17px; font-weight: 500; letter-spacing: .16em; color: #fff; }
   header h1 span { color: #fff; }
   #headerLogo { height: 34px !important; }
@@ -392,7 +392,7 @@
 <div id="loginScreen" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:0;">
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,.4);">
     <div style="text-align:center;margin-bottom:28px;">
-      <img src="veyro-logo.jpg" alt="Veyro Systems" style="height:32px;border-radius:5px;margin-bottom:12px;">
+      <img src="veyro-logo.jpg" alt="Veyro Systems" style="height:64px;width:auto;border-radius:5px;margin-bottom:12px;">
       <h1 style="font-size:22px;font-weight:700;margin:0">FleetControl</h1>
       <p style="color:var(--muted);font-size:13px;margin-top:6px;">Log ind for at fortsætte</p>
     </div>
@@ -430,10 +430,6 @@
       <button onclick="showLoginForm()" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px;">← Tilbage til login</button>
     </div>
   </div>
-
-  <div style="margin-top:20px;background:#061824;border-radius:8px;padding:8px 14px;">
-    <img src="veyro-logo.jpg" alt="Veyro Systems" style="height:22px;display:block">
-  </div>
 </div>
 
 <!-- KUNDEVÆLGER — vises kun for platformejere -->
@@ -467,7 +463,7 @@
 
 <header>
 <div class="header-inner">
-  <img class="app-logo" src="veyro-logo.jpg" alt="Veyro Systems" style="height:32px;border-radius:5px;">
+  <img class="app-logo" src="veyro-logo.jpg" alt="Veyro Systems" style="height:96px;width:auto;border-radius:5px;">
   <img id="headerLogo" src="" alt="" style="display:none;height:76px;max-width:200px;object-fit:contain;border-radius:6px;">
   <h1><span>Fleet</span>Control</h1>
   <span id="kundeNavn" style="font-size:13px;color:var(--muted);white-space:nowrap;"></span>
@@ -970,7 +966,7 @@
     <h3 data-t="setup_drivers">👤 Chauffører</h3>
     <div class="tbl-wrap">
       <table class="setup-table">
-        <thead><tr><th data-t="col_name">Navn</th><th data-t="lbl_phone">Telefon</th><th data-t="lbl_mobile">lbl_mobile</th><th data-t="lbl_email">Email</th><th data-t="lbl_address">lbl_address</th><th data-t="col_license">Kørekortklasse</th><th data-t="col_status">Status</th><th></th></tr></thead>
+        <thead><tr><th data-t="col_name">Navn</th><th data-t="lbl_phone">Telefon</th><th data-t="lbl_mobile">Mobil</th><th data-t="lbl_email">Email</th><th data-t="lbl_address">Adresse</th><th data-t="col_license">Kørekortklasse</th><th data-t="col_status">Status</th><th></th></tr></thead>
         <tbody id="chauffeurSetupBody"></tbody>
       </table>
     </div>
@@ -1006,7 +1002,7 @@
     <h3 data-t="setup_workshops">🔧 Værksteder / Udfører</h3>
     <div class="tbl-wrap">
       <table class="setup-table">
-        <thead><tr><th data-t="col_name">Navn</th><th data-t="col_phone">Telefon</th><th data-t="lbl_mobile">lbl_mobile</th><th data-t="lbl_email">Email</th><th data-t="lbl_contact">Kontaktperson</th><th data-t="lbl_address">lbl_address</th><th data-t="col_status">Status</th><th></th></tr></thead>
+        <thead><tr><th data-t="col_name">Navn</th><th data-t="col_phone">Telefon</th><th data-t="lbl_mobile">Mobil</th><th data-t="lbl_email">Email</th><th data-t="lbl_contact">Kontaktperson</th><th data-t="lbl_address">Adresse</th><th data-t="col_status">Status</th><th></th></tr></thead>
         <tbody id="vaerkstedSetupBody"></tbody>
       </table>
     </div>
@@ -1192,11 +1188,11 @@
     <div class="form-grid">
       <div class="form-group full"><label data-t="lbl_full_name">Navn *</label><input type="text" id="ncNavn" data-t="ph_full_name" data-t-attr="placeholder" placeholder="For- og efternavn"></div>
       <div class="form-group"><label data-t="lbl_phone">Telefon</label><input type="text" id="ncTlf" placeholder="+45 12 34 56 78"></div>
-      <div class="form-group"><label data-t="lbl_mobile">lbl_mobile</label><input type="text" id="ncMobil" placeholder="+45 12 34 56 78"></div>
+      <div class="form-group"><label data-t="lbl_mobile">Mobil</label><input type="text" id="ncMobil" placeholder="+45 12 34 56 78"></div>
       <div class="form-group"><label data-t="lbl_email">Email</label><input type="email" id="ncEmail" placeholder="navn@firma.dk"></div>
       <div class="form-group"><label data-t="lbl_license">Kørekortklasse</label><input type="text" id="ncKorekort" placeholder="CE"></div>
       <div class="form-group"><label data-t="lbl_employed">Ansat siden</label><input type="date" id="ncAnsat"></div>
-      <div class="form-group full"><label data-t="lbl_address">lbl_address</label><input type="text" id="ncAdresse" placeholder="Vejnavn og husnummer"></div>
+      <div class="form-group full"><label data-t="lbl_address">Adresse</label><input type="text" id="ncAdresse" placeholder="Vejnavn og husnummer"></div>
       <div class="form-group"><label data-t="lbl_zip">lbl_zip</label><input type="text" id="ncPostnr" placeholder="2100" maxlength="4"></div>
       <div class="form-group"><label data-t="lbl_city">lbl_city</label><input type="text" id="ncBy" placeholder="København"></div>
       <div class="form-group"><label data-t="col_status">Status</label><select id="ncStatus"><option value="aktiv" data-t="s_active">aktiv</option><option value="inaktiv" data-t="s_inactive">inaktiv</option></select></div>
@@ -1215,10 +1211,10 @@
     <div class="form-grid">
       <div class="form-group full"><label data-t="col_name">Navn</label><input type="text" id="nvNavn" placeholder="Værkstedets navn"></div>
       <div class="form-group"><label data-t="col_phone">Telefon</label><input type="text" id="nvTlf" placeholder="+45 12 34 56 78"></div>
-      <div class="form-group"><label data-t="lbl_mobile">lbl_mobile</label><input type="text" id="nvMobil" placeholder="+45 12 34 56 78"></div>
+      <div class="form-group"><label data-t="lbl_mobile">Mobil</label><input type="text" id="nvMobil" placeholder="+45 12 34 56 78"></div>
       <div class="form-group"><label data-t="lbl_email">Email</label><input type="email" id="nvEmail" placeholder="kontakt@vaerksted.dk"></div>
       <div class="form-group"><label data-t="lbl_contact">Kontaktperson</label><input type="text" id="nvKontakt"></div>
-      <div class="form-group full"><label data-t="lbl_address">lbl_address</label><input type="text" id="nvAdresse" placeholder="Vejnavn og husnummer"></div>
+      <div class="form-group full"><label data-t="lbl_address">Adresse</label><input type="text" id="nvAdresse" placeholder="Vejnavn og husnummer"></div>
       <div class="form-group"><label data-t="lbl_zip">lbl_zip</label><input type="text" id="nvPostnr" placeholder="2100" maxlength="4"></div>
       <div class="form-group"><label data-t="lbl_city">lbl_city</label><input type="text" id="nvBy" placeholder="København"></div>
       <div class="form-group"><label data-t="col_status">Status</label><select id="nvAktiv"><option value="true" data-t="f_active">Aktive</option><option value="false" data-t="f_inactive">Inaktive</option></select></div>
@@ -1445,7 +1441,7 @@
     m_new_truck:'📦 Tilføj enhed',lbl_vehicle_no:'Vognummer *',
     ph_vehicle:'fx Vogn 6',lbl_reg:'Reg.nr.',lbl_year:'Årgang',lbl_purchase:'Købspris (kr)',btn_add:'Tilføj',
     m_new_driver:'👤 Tilføj chauffør',lbl_full_name:'Navn *',ph_full_name:'For- og efternavn',
-    lbl_phone:'Telefon',lbl_license:'Kørekortklasse',lbl_employed:'Ansat siden',btn_add_driver:'Tilføj',
+    lbl_phone:'Telefon',lbl_license:'Kørekortklasse',lbl_employed:'Ansat siden',btn_add_driver:'Tilføj',lbl_mobile:'Mobil',lbl_address:'Adresse',
     btn_close:'Luk',
     m_edit_task:'✏️ Rediger opgave',btn_delete:'🗑 Slet',btn_save_changes:'Gem ændringer',
     lbl_dmg_nature:'Skadens art',lbl_ins_short:'Forsikring',
@@ -1547,7 +1543,7 @@
     m_new_truck:'📦 Add unit',lbl_vehicle_no:'Vehicle number *',
     ph_vehicle:'e.g. Unit 6',lbl_reg:'Reg. no.',lbl_year:'Year',lbl_purchase:'Purchase price',btn_add:'Add',
     m_new_driver:'👤 Add driver',lbl_full_name:'Name *',ph_full_name:'First and last name',
-    lbl_phone:'Phone',lbl_license:'Licence class',lbl_employed:'Employed since',btn_add_driver:'Add',
+    lbl_phone:'Phone',lbl_license:'Licence class',lbl_employed:'Employed since',btn_add_driver:'Add',lbl_mobile:'Mobile',lbl_address:'Address',
     btn_close:'Close',
     m_edit_task:'✏️ Edit task',btn_delete:'🗑 Delete',btn_save_changes:'Save changes',
     lbl_dmg_nature:'Damage type',lbl_ins_short:'Insurance',
