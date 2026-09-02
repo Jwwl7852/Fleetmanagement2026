@@ -293,6 +293,10 @@
     .side-nav-logo { padding: 0 12px; flex-shrink: 0; width: 90px; }
     .side-nav-group, .side-nav-divider { display: none; }
     nav.side-nav-list { flex-direction: row; }
+    .side-nav-footer { margin-top: 0; padding: 0 12px; border-top: none; flex-direction: row;
+      flex-shrink: 0; align-items: center; }
+    .side-nav-footer-row { flex-shrink: 0; }
+    #kundeNavn, #headerUserName { display: none; }
   }
 
   /* ===== BILLEDER PÅ OPGAVER ===== */
@@ -359,17 +363,11 @@
   header { background: var(--sidebar); border-bottom: none; height: 70px; }
   .header-inner { height: 70px; padding: 0 26px; gap: 16px; }
   #headerLogo { height: 34px !important; }
-  #kundeNavn { color: #93aab4 !important; font-size: 12.5px !important;
-               padding-left: 0; border-left: none; }
-  #headerUserName { color: #93aab4 !important; }
-  .header-inner button { background: rgba(255,255,255,.07) !important;
-    border: 1px solid rgba(255,255,255,.14) !important; color: #cfdde3 !important; }
-  .header-inner button:hover { background: rgba(255,255,255,.13) !important; }
 
   /* Venstre sidebar-navigation, opdelt i to grupper */
   #appShell { display: flex; align-items: stretch; }
   .side-nav { width: 250px; flex-shrink: 0; background: var(--sidebar-2); display: flex;
-    flex-direction: column; padding: 22px 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+    flex-direction: column; padding: 22px 0 16px; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
   .side-nav-logo { padding: 0 20px 22px; }
   .side-nav-group { padding: 18px 20px 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .14em;
     color: var(--cyan); text-transform: uppercase; }
@@ -384,6 +382,19 @@
     box-shadow: inset 3px 0 0 var(--cyan); }
   .badge { background: var(--yellow); color: #fff; }
   .content-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  /* Bunden af sidebaren: kunde, tema, sprog, bruger og log ud */
+  .side-nav-footer { margin-top: auto; padding: 16px 20px 0; border-top: 1px solid rgba(255,255,255,.08);
+    display: flex; flex-direction: column; gap: 9px; }
+  #kundeNavn { color: #93aab4 !important; font-size: 12.5px !important; }
+  #headerUserName { color: #93aab4 !important; font-size: 12px; }
+  .side-nav-footer-row { display: flex; gap: 8px; }
+  .side-nav-footer button, .side-nav-logout { background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.14); color: #cfdde3; padding: 6px 10px; border-radius: 7px;
+    font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .side-nav-footer button:hover, .side-nav-logout:hover { background: rgba(255,255,255,.13); }
+  #themeBtn, #langBtn { flex: 1; }
+  .side-nav-logout { width: 100%; }
 
   /* Kort og tabeller får ro: tynde kanter, ingen tunge skygger */
   :root.light .card, :root.light .kpi, :root.light .panel,
@@ -493,6 +504,16 @@
     <button class="active" onclick="showTab(&#39;biler&#39;,this)" data-t="nav_trucks">📦 Enheder</button>
     <button id="navBrugerAdmin" onclick="showTab(&#39;brugeradmin&#39;,this)" data-t="nav_users">👥 Brugere</button>
   </nav>
+
+  <div class="side-nav-footer">
+    <span id="kundeNavn"></span>
+    <div class="side-nav-footer-row">
+      <button id="themeBtn" onclick="toggleTheme()">☀️</button>
+      <button id="langBtn" onclick="toggleLang()">🌐 English</button>
+    </div>
+    <span id="headerUserName"></span>
+    <button class="side-nav-logout" onclick="doLogout()">🚪 Log ud</button>
+  </div>
 </aside>
 
 <div class="content-col">
@@ -504,12 +525,7 @@
 <header>
 <div class="header-inner">
   <img id="headerLogo" src="" alt="" style="display:none;height:76px;max-width:200px;object-fit:contain;border-radius:6px;">
-  <span id="kundeNavn" style="font-size:13px;color:var(--muted);white-space:nowrap;"></span>
   <span id="headerAlerts"></span>
-  <button id="themeBtn" onclick="toggleTheme()" style="margin-left:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">☀️</button>
-  <button id="langBtn" onclick="toggleLang()" style="margin-left:auto;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">🌐 English</button>
-  <span id="headerUserName" style="font-size:12px;color:var(--muted);white-space:nowrap;"></span>
-  <button onclick="doLogout()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">🚪 Log ud</button>
 </div>
 </header>
 
@@ -893,7 +909,7 @@
   </div>
   <div class="card">
     <div class="tbl-wrap"><table class="setup-table">
-      <thead><tr><th>Navn</th><th>Email</th><th>Rolle</th><th>Oprettet</th><th>Password</th><th></th></tr></thead>
+      <thead><tr><th>Navn</th><th>Email</th><th>Rolle</th><th>Oprettet</th><th>Adgangskode</th><th></th></tr></thead>
       <tbody id="brugerAdminBody"></tbody>
     </table></div>
   </div>
