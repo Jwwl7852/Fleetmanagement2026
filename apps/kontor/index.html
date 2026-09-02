@@ -1735,10 +1735,8 @@ onAuthStateChanged(auth, async user => {
   // brugeren hører til. Ejere har ingen fast kunde og vælger selv.
   let profil = {};
   try {
-    const token = await user.getIdToken();
-    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json',
-      { headers: { Authorization: 'Bearer ' + token } });
-    profil = resp.ok ? (await resp.json()) || {} : {};
+    const s = await get(ref(db, 'users/'+user.uid));
+    profil = s.exists() ? s.val() : {};
   } catch(e) { profil = {}; }
 
   window._currentUser = { uid:user.uid, email:user.email,

@@ -555,13 +555,11 @@ onAuthStateChanged(auth, async user => {
   // Hent brugerprofil — den fortæller hvilken kunde chaufføren kører for
   let profil = {};
   try {
-    const token = await Promise.race([
-      user.getIdToken(),
+    const s = await Promise.race([
+      get(ref(db, 'users/'+user.uid)),
       new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')), 3000))
     ]);
-    const resp = await fetch(firebaseConfig.databaseURL + '/users/'+user.uid+'.json',
-      { headers: { Authorization: 'Bearer ' + token } });
-    profil = resp.ok ? (await resp.json())||{} : {};
+    profil = s.exists() ? s.val() : {};
   } catch(e) { profil = {}; }
 
   currentUser = { uid:user.uid, email:user.email,
@@ -938,10 +936,9 @@ window.submitIndberetning = async function() {
   try {
     // Find chauffeur ID matching current user
     let chauffeurId = '';
-    const chSnap = await fetch(firebaseConfig.databaseURL + '/' + KP + 'chauffoerer.json',
-      { headers: { Authorization: 'Bearer ' + (await auth.currentUser.getIdToken()) } });
-    if(chSnap.ok) {
-      const chData = await chSnap.json() || {};
+    const chSnap = await get(ref(db, KP+'chauffoerer'));
+    if(chSnap.exists()) {
+      const chData = chSnap.val() || {};
       const match = Object.entries(chData).find(([,ch]) => ch.navn === currentUser.navn || ch.email === currentUser.email);
       if(match) chauffeurId = match[0];
     }
@@ -997,9 +994,8 @@ window.submitIndberetning = async function() {
 
     // Send email notification
     const typeLabels = {'1':'Service','2':'Reparation','3':'Skade','4':'Dæk','5':'Andet','6':'Truckwash','7':'Tankning','8':'Parkering'};
-    const truckSnap = await fetch(firebaseConfig.databaseURL + '/' + KP + 'trucks/'+truck+'.json',
-      { headers: { Authorization: 'Bearer ' + (await auth.currentUser.getIdToken()) } });
-    const truckData = truckSnap.ok ? (await truckSnap.json())||{} : {};
+    const truckSnap = await get(ref(db, KP+'trucks/'+truck));
+    const truckData = truckSnap.exists() ? truckSnap.val() : {};
     const lastbilNavn = truckData.vognr || truck;
 
     try {
