@@ -82,6 +82,12 @@
   th { background: var(--surface2); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; padding: 10px 14px; text-align: left; white-space: nowrap; }
   td { padding: 10px 14px; border-top: 1px solid var(--border); vertical-align: middle; }
   tr:hover td { background: rgba(255,255,255,.02); }
+  .tbl-wrap table:not(.setup-table) th:not(:empty) { cursor: pointer; user-select: none; position: relative; padding-right: 22px; }
+  .tbl-wrap table:not(.setup-table) th:not(:empty):hover { color: var(--text); }
+  .tbl-wrap th[data-dir]::after { content: ''; position: absolute; right: 8px; top: 50%; border: 4px solid transparent; }
+  .tbl-wrap th[data-dir="asc"]::after  { border-bottom-color: var(--accent); margin-top: -6px; }
+  .tbl-wrap th[data-dir="desc"]::after { border-top-color: var(--accent); margin-top: -2px; }
+  @media print { .tbl-wrap th::after { display: none; } }
   .tag { display: inline-block; border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
   .tag.service { background: rgba(59,130,246,.15); color: #93c5fd; }
   .tag.reparation { background: rgba(245,158,11,.15); color: #fcd34d; }
@@ -172,7 +178,6 @@
   .stat-dash-list .dl-empty { color: var(--muted); font-size: 12px; text-align: center; margin: auto; }
 
   /* SERVICE CARDS */
-  .svc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-bottom: 24px; }
   .svc-card { background: var(--surface); border: 4px solid var(--green); border-radius: var(--radius); padding: 27px 27px 21px; cursor: pointer; transition: border-color .15s, transform .12s, box-shadow .12s; }
   .svc-card:hover { transform: translateY(-2px); box-shadow: 0 4px 18px rgba(0,0,0,.3); }
   .svc-card.ring-yellow { border-color: #f59e0b; }
@@ -189,31 +194,8 @@
   .svc-card.ring-yellow .svc-dot { background: #f59e0b; }
   .svc-card.ring-red .svc-dot    { background: var(--red); }
 
-  /* ===== KATEGORI-KORT (serviceplanlægning pr. servicetype) ===== */
-  .cat-card { background: var(--surface); border: 4px solid var(--green); border-radius: var(--radius); padding: 22px 22px 18px; cursor: pointer; transition: border-color .15s, transform .12s, box-shadow .12s, background .15s; display:flex; flex-direction:column; }
-  .cat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 18px rgba(0,0,0,.3); }
-  .cat-card.ring-yellow { border-color: #f59e0b; }
-  .cat-card.ring-red    { border-color: var(--red); }
-  .cat-card.ring-green  { border-color: var(--green); }
-  .cat-card.active      { box-shadow: 0 0 0 2px var(--accent); }
-  /* Overskredet: HELE feltet rødt med sort tekst */
-  .cat-card.overdue { background: var(--red); border-color: var(--red); color:#000; }
-  .cat-card.overdue .cat-title, .cat-card.overdue .cat-line-truck, .cat-card.overdue .cat-line-date, .cat-card.overdue .cat-sub { color:#000 !important; }
-  .cat-card .cat-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; display:flex; align-items:center; gap:8px; }
-  .cat-card .cat-sub   { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
-  .cat-card .cat-lines { display:flex; flex-direction:column; gap:9px; }
-  .cat-card .cat-line  { display:flex; justify-content:space-between; align-items:baseline; gap:10px; border-bottom:1px solid var(--border); padding-bottom:8px; }
-  .cat-card .cat-line:last-child { border-bottom:none; padding-bottom:0; }
-  .cat-card .cat-line-truck { font-weight:600; font-size:14px; }
-  .cat-card .cat-line-date  { font-size:13px; white-space:nowrap; color: var(--muted); }
-  .cat-card .cat-line.next .cat-line-truck { font-size:15px; }
-  /* Tekstfarver på dato/vognr efter hvor tæt servicen er */
-  .cat-line.warn30 .cat-line-truck, .cat-line.warn30 .cat-line-date { color:#f59e0b !important; font-weight:700; }
-  .cat-line.warn14 .cat-line-truck, .cat-line.warn14 .cat-line-date { color: var(--red) !important; font-weight:700; }
-  .cat-line.overdue .cat-line-truck, .cat-line.overdue .cat-line-date { color: var(--red) !important; font-weight:700; }
-  .cat-card .cat-empty { font-size:13px; color: var(--muted); font-style:italic; }
-  .cat-card .cat-notice { margin-top:12px; font-size:11px; color: var(--muted); display:flex; align-items:center; gap:6px; }
-  .cat-card.overdue .cat-notice { color:#000; }
+  /* ===== SERVICETYPE-TABEL (serviceplanlægning pr. servicetype) ===== */
+  tr.svc-row.active td { background: var(--accent-svag); }
 
 
   /* ===== PRINT ===== */
@@ -572,8 +554,18 @@
     </div>
   </div>
 
-  <!-- KATEGORI-KORT (én pr. servicetype) -->
-  <div id="serviceCardGrid" class="svc-grid"></div>
+  <!-- SERVICETYPE-OVERSIGT (én række pr. servicetype) -->
+  <div class="tbl-wrap"><table>
+    <thead><tr>
+      <th data-t="col_svc_type">Servicetype</th>
+      <th data-t="col_status">Status</th>
+      <th data-t="col_svc_planned">Planlagt / enheder</th>
+      <th data-t="col_svc_next_unit">Næste enhed</th>
+      <th data-t="col_next_date">Næste servicedato</th>
+      <th data-t="col_svc_notify">Advisering</th>
+    </tr></thead>
+    <tbody id="serviceCardGrid"></tbody>
+  </table></div>
 
   <!-- DETALJEPANEL (vises når et kategori-kort klikkes) -->
   <div id="serviceDetailPanel" style="display:none;">
@@ -871,12 +863,10 @@
     <h3>👥 Brugeradministration</h3>
     <button class="btn btn-primary btn-sm" onclick="openModal(&#39;modalNyBruger&#39;)">+ Opret bruger</button>
   </div>
-  <div class="card">
-    <div class="tbl-wrap"><table class="setup-table">
-      <thead><tr><th>Navn</th><th>Email</th><th>Rolle</th><th>Oprettet</th><th>Adgangskode</th><th></th></tr></thead>
-      <tbody id="brugerAdminBody"></tbody>
-    </table></div>
-  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Navn</th><th>Email</th><th>Rolle</th><th>Oprettet</th><th>Adgangskode</th><th></th></tr></thead>
+    <tbody id="brugerAdminBody"></tbody>
+  </table></div>
   <div class="card" style="margin-top:20px">
     <h3 style="font-size:14px;font-weight:600;margin-bottom:14px">🔑 Skift min adgangskode</h3>
     <div class="form-grid">
@@ -1394,6 +1384,7 @@
     all_cats:'Alle kategorier',no_expenses:'Ingen udgifter',
     // service
     service_title:'📅 Serviceplanlægning',plan_service:'+ Planlæg service',col_svc_type:'Servicetype',setup_svc_types:'📅 Servicetyper',add_svc_type_btn:'+ Tilføj servicetype',
+    col_svc_planned:'Planlagt / enheder',col_svc_next_unit:'Næste enhed',col_svc_notify:'Advisering',
     f_active:'Aktive',f_all:'Alle',f_inactive:'Inaktive',
     col_next_date:'Næste servicedato',col_interval:'Interval (mdr)',col_next_km:'Næste service km',
     col_current_km:'Aktuel km',col_last_done:'Sidst udført',
@@ -1501,6 +1492,7 @@
     expenses_title:'💰 All expenses',new_expense:'+ New expense',
     all_cats:'All categories',no_expenses:'No expenses',
     service_title:'📅 Service planning',plan_service:'+ Plan service',col_svc_type:'Service type',setup_svc_types:'📅 Service types',add_svc_type_btn:'+ Add service type',
+    col_svc_planned:'Planned / units',col_svc_next_unit:'Next unit',col_svc_notify:'Notification',
     f_active:'Active',f_all:'All',f_inactive:'Inactive',
     col_next_date:'Next service date',col_interval:'Interval (months)',col_next_km:'Next service km',
     col_current_km:'Current km',col_last_done:'Last performed',
@@ -1600,6 +1592,38 @@
     const btn = document.getElementById('langBtn');
     if(btn) btn.textContent = window.LANG === 'da' ? '🌐 English' : '🌐 Dansk';
   };
+
+  // ===== Klik-for-at-sortere: gælder alle tabeller i appen (undtagen de redigerbare Opsætning-tabeller) =====
+  function sortCellNumber(raw) {
+    const s = raw.trim();
+    if(!/^-?[\d.,]+(\s?(kr|km|%|dage|dag|mdr|kg))?$/i.test(s)) return null;
+    let n = s.replace(/[^\d,.\-]/g, '');
+    n = n.includes(',') ? n.replace(/\./g, '').replace(',', '.') : n.replace(/\./g, '');
+    const num = parseFloat(n);
+    return isNaN(num) ? null : num;
+  }
+  document.addEventListener('click', function(e) {
+    const th = e.target.closest('.tbl-wrap th');
+    if(!th || !th.textContent.trim()) return;
+    const table = th.closest('table');
+    if(!table || table.classList.contains('setup-table')) return;
+    const tbody = table.tBodies[0], headRow = table.tHead && table.tHead.rows[0];
+    if(!tbody || !headRow || !tbody.rows.length) return;
+    if(tbody.rows[0].cells.length !== headRow.cells.length) return; // "ingen data"-række
+    const colIndex = Array.from(headRow.children).indexOf(th);
+    const dir = th.getAttribute('data-dir') === 'asc' ? 'desc' : 'asc';
+    Array.from(headRow.children).forEach(h => { if(h!==th) h.removeAttribute('data-dir'); });
+    th.setAttribute('data-dir', dir);
+    const mult = dir === 'asc' ? 1 : -1;
+    const rows = Array.from(tbody.rows).sort((ra, rb) => {
+      const a = (ra.cells[colIndex]?.textContent || '').trim();
+      const b = (rb.cells[colIndex]?.textContent || '').trim();
+      const an = sortCellNumber(a), bn = sortCellNumber(b);
+      if(an !== null && bn !== null) return (an - bn) * mult;
+      return a.localeCompare(b, 'da', {numeric:true, sensitivity:'base'}) * mult;
+    });
+    rows.forEach(r => tbody.appendChild(r));
+  });
 
   // Theme
   const savedTheme = localStorage.getItem('fleet_theme') || 'light';
@@ -2225,7 +2249,7 @@ function svcTypeRows(typeId) {
 
 window.closeServiceDetail = function() {
   document.getElementById('serviceDetailPanel').style.display = 'none';
-  document.getElementById('serviceCardGrid').querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('serviceCardGrid').querySelectorAll('.svc-row').forEach(c=>c.classList.remove('active'));
   currentServiceTypeId = null;
 }
 
@@ -2235,8 +2259,8 @@ window.openServiceDetail = function(typeId) {
   const navn = serviceTyper[typeId]?.navn || typeId;
   document.getElementById('serviceDetailTitle').textContent = '🔧 ' + navn;
   document.getElementById('serviceDetailPanel').style.display = '';
-  document.getElementById('serviceCardGrid').querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
-  const card = document.querySelector('.cat-card[data-typeid="'+typeId+'"]');
+  document.getElementById('serviceCardGrid').querySelectorAll('.svc-row').forEach(c=>c.classList.remove('active'));
+  const card = document.querySelector('.svc-row[data-typeid="'+typeId+'"]');
   if(card) card.classList.add('active');
   // Udfyld advisering-felter
   const noti = serviceTyper[typeId]?.notify || {};
@@ -2305,11 +2329,11 @@ function renderService() {
   const alertEl = document.getElementById('serviceAlerts');
   if(alertEl) alertEl.innerHTML = alertHtml;
 
-  // ---- Kort-gitter: ét kort pr. SERVICETYPE ----
+  // ---- Tabel: én række pr. SERVICETYPE ----
   const grid = document.getElementById('serviceCardGrid');
   const typeIds = Object.keys(serviceTyper).sort((a,b)=>(serviceTyper[a].navn||'').localeCompare(serviceTyper[b].navn||''));
   if(!typeIds.length) {
-    grid.innerHTML = `<p style="color:var(--muted)">${window.LANG==='en'?'Add service types in Settings first':'Opret servicetyper i Opsætning først'}</p>`;
+    grid.innerHTML = `<tr><td colspan="6" class="empty">${window.LANG==='en'?'Add service types in Settings first':'Opret servicetyper i Opsætning først'}</td></tr>`;
     if(currentServiceTypeId) closeServiceDetail();
     return;
   }
@@ -2317,8 +2341,8 @@ function renderService() {
   grid.innerHTML = typeIds.map(typeId => {
     const navn = serviceTyper[typeId]?.navn || typeId;
     const rows = svcTypeRows(typeId);
-    const dated = rows.filter(r => r.nextDate);   // kun dem med planlagt dato vises i listen
-    // Kort-ring: værste tilstand blandt datoerne
+    const dated = rows.filter(r => r.nextDate);   // kun dem med planlagt dato tæller med i status
+    // Værste tilstand blandt datoerne
     let worst = 'green', anyOverdue = false;
     dated.forEach(r => {
       const cls = svcLineClass(r.nextDate);
@@ -2326,39 +2350,34 @@ function renderService() {
       else if(cls==='warn14' && worst!=='red'){ worst = 'red'; }
       else if(cls==='warn30' && worst==='green'){ worst = 'yellow'; }
     });
-    const ringClass = anyOverdue ? 'overdue ring-red' : 'ring-'+worst;
+    let statusKey, statusClass;
+    if(anyOverdue)               { statusKey = 'svc_overdue'; statusClass = 'skade'; }
+    else if(worst!=='green')     { statusKey = 'svc_soon';    statusClass = 'indberettet'; }
+    else                         { statusKey = 'svc_ok';      statusClass = 'udført'; }
 
     const noti = serviceTyper[typeId]?.notify || {};
-    const notiHtml = (noti.email && noti.days)
-      ? `<div class="cat-notice">📧 Advisering ${noti.days} dage før → ${noti.email}</div>`
-      : '';
+    const notiText = (noti.email && noti.days)
+      ? `📧 ${noti.days} ${window.LANG==='en'?'days before':'dage før'} → ${noti.email}`
+      : '—';
 
-    let linesHtml;
-    if(!dated.length) {
-      linesHtml = `<div class="cat-empty">${window.LANG==='en'?'No dates planned':'Ingen datoer planlagt'}</div>`;
-    } else {
-      linesHtml = dated.map((r, i) => {
-        const cls = svcLineClass(r.nextDate);
-        const nextTag = i===0 ? ' next' : '';
-        return `<div class="cat-line${nextTag} ${cls}">
-          <span class="cat-line-truck">${i===0?'➡ ':''}${truckName(r.tid)}</span>
-          <span class="cat-line-date">${r.nextDate}</span>
-        </div>`;
-      }).join('');
-    }
+    const next = dated[0]; // nærmeste dato (svcTypeRows sorterer allerede stigende)
+    const nextUnit = next ? truckName(next.tid) : `<span style="color:var(--muted)">${window.LANG==='en'?'None planned':'Ingen planlagt'}</span>`;
+    const nextDate = next ? next.nextDate : '—';
 
-    return `<div class="cat-card ${ringClass}" data-typeid="${typeId}" onclick="openServiceDetail('${typeId}')">
-      <div class="cat-title">🔧 ${navn}</div>
-      <div class="cat-sub">${dated.length} ${window.LANG==='en'?'planned':'planlagt'} · ${rows.length} ${window.LANG==='en'?'units':'enheder'}</div>
-      <div class="cat-lines">${linesHtml}</div>
-      ${notiHtml}
-    </div>`;
+    return `<tr class="svc-row" data-typeid="${typeId}" style="cursor:pointer" onclick="openServiceDetail('${typeId}')">
+      <td>🔧 ${navn}</td>
+      <td><span class="tag ${statusClass}">${T(statusKey)}</span></td>
+      <td>${dated.length} / ${rows.length}</td>
+      <td>${nextUnit}</td>
+      <td>${nextDate}</td>
+      <td style="color:var(--muted)">${notiText}</td>
+    </tr>`;
   }).join('');
 
   // Genåbn detaljer hvis en kategori var åben
   if(currentServiceTypeId) {
     if(serviceTyper[currentServiceTypeId]) {
-      const card = document.querySelector('.cat-card[data-typeid="'+currentServiceTypeId+'"]');
+      const card = document.querySelector('.svc-row[data-typeid="'+currentServiceTypeId+'"]');
       if(card) card.classList.add('active');
       renderServiceDetail(currentServiceTypeId);
     } else {
