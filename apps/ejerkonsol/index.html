@@ -1471,12 +1471,22 @@ async function byggFakturaLinjer(){
   const aktive = Object.entries(kunder).filter(([,k]) => k.status === 'aktiv');
   const linjer = [];
   for(const [id,k] of aktive){
-    let brugereFaktisk = 0, enhederFaktisk = 0;
-    try {
-      const [bs,es] = await Promise.all([get(ref(db, `k/${id}/brugere`)), get(ref(db, `k/${id}/trucks`))]);
-      brugereFaktisk = bs.exists() ? Object.keys(bs.val()).length : 0;
-      enhederFaktisk = es.exists() ? Object.keys(es.val()).length : 0;
-    } catch(e){ /* springes over hvis data ikke kan hentes */ }
+    // Cloud Functions (taelEnheder/taelBrugere) holder disse tal ajour ved hver
+    // oprettelse/sletning, så vi undgår at hente hele enheds-/brugerlisten bare
+    // for at tælle den. Kunder der endnu ikke har fået tælleren sat (fx fra før
+    // funktionerne fandtes) falder tilbage til den fulde optælling.
+    let brugereFaktisk, enhederFaktisk;
+    if(typeof k.antalBrugere === 'number' && typeof k.antalEnheder === 'number'){
+      brugereFaktisk = k.antalBrugere;
+      enhederFaktisk = k.antalEnheder;
+    } else {
+      brugereFaktisk = 0; enhederFaktisk = 0;
+      try {
+        const [bs,es] = await Promise.all([get(ref(db, `k/${id}/brugere`)), get(ref(db, `k/${id}/trucks`))]);
+        brugereFaktisk = bs.exists() ? Object.keys(bs.val()).length : 0;
+        enhederFaktisk = es.exists() ? Object.keys(es.val()).length : 0;
+      } catch(e){ /* springes over hvis data ikke kan hentes */ }
+    }
     const aftale = senesteTilbud(id, ['accepteret']);
     const moduler = aftale ? aftale.moduler : [{key:'flaade',navn:'Fleetmanager',pris:499}];
     const prisBruger = aftale?.prisBruger ?? 49, prisEnhed = aftale?.prisEnhed ?? 29, rabatPct = aftale?.rabatPct ?? 0;

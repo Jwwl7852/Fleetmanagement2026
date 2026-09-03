@@ -42,6 +42,43 @@ exports.saetKundeClaim = functions
     return null;
   });
 
+// Holder kunder/<id>/antalEnheder ajour, så ejerkonsollens Fakturagrundlag kan
+// læse ét tal i stedet for at hente alle kundens enheder for at tælle dem.
+exports.taelEnheder = functions
+  .region('europe-west1')
+  .database.ref('/k/{kundeId}/trucks/{truckId}')
+  .onWrite(async (change, context) => {
+    const delta = (change.after.exists() ? 1 : 0) - (change.before.exists() ? 1 : 0);
+    if (delta === 0) return null;
+    const kundeId = context.params.kundeId;
+    try {
+      await admin.database().ref('kunder/' + kundeId + '/antalEnheder')
+        .transaction(cur => Math.max(0, (cur || 0) + delta));
+    } catch (err) {
+      functions.logger.error('taelEnheder: kunne ikke opdatere tæller for ' + kundeId, err);
+    }
+    return null;
+  });
+
+// Samme mønster for brugere — skrives både fra ejerkonsollen og fra kontorappens
+// egen brugerstyring, så en tæller vedligeholdt her (i stedet for i klienterne)
+// holder sig rigtig uanset hvor ændringen kommer fra.
+exports.taelBrugere = functions
+  .region('europe-west1')
+  .database.ref('/k/{kundeId}/brugere/{uid}')
+  .onWrite(async (change, context) => {
+    const delta = (change.after.exists() ? 1 : 0) - (change.before.exists() ? 1 : 0);
+    if (delta === 0) return null;
+    const kundeId = context.params.kundeId;
+    try {
+      await admin.database().ref('kunder/' + kundeId + '/antalBrugere')
+        .transaction(cur => Math.max(0, (cur || 0) + delta));
+    } catch (err) {
+      functions.logger.error('taelBrugere: kunne ikke opdatere tæller for ' + kundeId, err);
+    }
+    return null;
+  });
+
 // Kører når nogen tilføjes eller fjernes som platformejer
 exports.saetEjerClaim = functions
   .region('europe-west1')
