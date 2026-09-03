@@ -472,6 +472,7 @@
       <label>Moduler kunden kan bruge</label>
       <label class="switch"><input type="checkbox" id="kModFlaade" checked> Kontorapp — flådestyring</label>
       <label class="switch"><input type="checkbox" id="kModInd" checked> Chaufførapp — indberetning</label>
+      <label class="switch"><input type="checkbox" id="kModLev"> Leverandørapp — leverandørportal</label>
     </div>
     <div class="fld"><label for="kNoter">Interne noter</label><textarea class="inp" id="kNoter" placeholder="Aftaler, priser, hvem der er kontakt hos os…"></textarea></div>
     <div class="msg" id="kMsg"></div>
@@ -864,6 +865,7 @@ $('nyKundeBtn').addEventListener('click', () => {
   $('kStatus').value = 'proeve';
   $('kModFlaade').checked = true;
   $('kModInd').checked = true;
+  $('kModLev').checked = false;
   $('kMsg').textContent = '';
   aabn('mKunde');
   $('kNavn').focus();
@@ -900,7 +902,7 @@ async function gemKunde(){
     proeveUdloeb: $('kUdloeb').value || '',
     maxBrugere: Number($('kMaxBrugere').value) || 0,
     maxBiler:   Number($('kMaxBiler').value)   || 0,
-    moduler: { flaade: $('kModFlaade').checked, indberetning: $('kModInd').checked },
+    moduler: { flaade: $('kModFlaade').checked, indberetning: $('kModInd').checked, leverandoer: $('kModLev').checked },
     noter:    $('kNoter').value.trim(),
     oprettet: redigerer ? (kunder[id]?.oprettet || iso()) : iso(),
     aendret:  Date.now()
@@ -940,6 +942,7 @@ function redigerKunde(id){
   $('kMaxBiler').value = k.maxBiler || '';
   $('kModFlaade').checked = k.moduler?.flaade !== false;
   $('kModInd').checked    = k.moduler?.indberetning !== false;
+  $('kModLev').checked    = k.moduler?.leverandoer === true;
   $('kNoter').value = k.noter || '';
   $('kMsg').textContent = '';
   luk('mDetalje');
@@ -968,7 +971,8 @@ function tegnDetalje(id){
     <dt>Oprettet</dt><dd>${dkDato(k.oprettet)}</dd>
     ${st === 'proeve' ? `<dt>Prøve slutter</dt><dd>${dkDato(k.proeveUdloeb)}</dd>` : ''}
     <dt>Moduler</dt><dd>${[k.moduler?.flaade !== false ? 'Kontorapp' : null,
-                           k.moduler?.indberetning !== false ? 'Chaufførapp' : null]
+                           k.moduler?.indberetning !== false ? 'Chaufførapp' : null,
+                           k.moduler?.leverandoer === true ? 'Leverandørapp' : null]
                           .filter(Boolean).join(' · ') || 'Ingen'}</dd>
     <dt>Grænser</dt><dd>${k.maxBrugere ? k.maxBrugere + ' brugere' : 'Ubegrænset antal brugere'} · ${k.maxBiler ? k.maxBiler + ' enheder' : 'ubegrænset antal enheder'}</dd>
     <dt>Data</dt><dd id="dTaellinger">Henter…</dd>
