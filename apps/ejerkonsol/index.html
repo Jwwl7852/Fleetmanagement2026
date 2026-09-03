@@ -364,6 +364,7 @@
         <p class="sub">Bruges til "Åbn"-knapperne, så du lander direkte hos den rigtige kunde.</p>
         <div class="fld"><label for="cfgFm">Kontorapp (FleetManagement)</label><input class="inp" id="cfgFm" placeholder="https://kontor.fleetcontrol.dk"></div>
         <div class="fld"><label for="cfgInd">Chaufførapp (Indberetning)</label><input class="inp" id="cfgInd" placeholder="https://indberet.fleetcontrol.dk"></div>
+        <div class="fld"><label for="cfgLev">Leverandørapp (Leverandørportal)</label><input class="inp" id="cfgLev" placeholder="https://leverandoer.fleetcontrol.dk"></div>
         <button class="btn btn-primary" id="cfgGemBtn">Gem adresser</button>
         <div class="msg" id="cfgMsg"></div>
       </div>
@@ -698,7 +699,7 @@ document.addEventListener('keydown', e => {
 let ejer = null;          // { uid, email, navn }
 let kunder = {};          // kundeId -> kundeobjekt
 let ejere  = {};          // uid -> { navn, email }
-let pfConfig = {};        // { fmUrl, indUrl }
+let pfConfig = {};        // { fmUrl, indUrl, levUrl }
 let valgtKunde = null;    // kundeId der er åbnet i detaljevinduet
 let redigerer = null;     // kundeId når modal er i redigeringstilstand
 let tilbud = {};          // tilbudId -> tilbudobjekt
@@ -781,6 +782,7 @@ function start(){
     pfConfig = s.val() || {};
     if(document.activeElement !== $('cfgFm'))  $('cfgFm').value  = pfConfig.fmUrl  || '';
     if(document.activeElement !== $('cfgInd')) $('cfgInd').value = pfConfig.indUrl || '';
+    if(document.activeElement !== $('cfgLev')) $('cfgLev').value = pfConfig.levUrl || '';
   });
 }
 
@@ -1243,7 +1245,8 @@ $('cfgGemBtn').addEventListener('click', async () => {
   try {
     await update(ref(db, 'platform/config'), {
       fmUrl:  $('cfgFm').value.trim(),
-      indUrl: $('cfgInd').value.trim()
+      indUrl: $('cfgInd').value.trim(),
+      levUrl: $('cfgLev').value.trim()
     });
     besked(m, 'Adresserne er gemt.', true);
     setTimeout(() => { m.textContent = ''; }, 2500);
