@@ -943,30 +943,26 @@
 
 <!-- ===== OPSÆTNING ===== -->
 <div id="tab-opsaetning" class="tab">
-  <div class="card">
+  <div class="section-header">
     <h3 data-t="setup_trucks">📦 Rediger enheder</h3>
-    <div class="tbl-wrap">
-      <table class="setup-table">
-        <thead><tr><th data-t="col_vehicle_no">Vognr.</th><th data-t="col_reg">Reg.nr.</th><th data-t="col_year">Årgang</th><th data-t="col_purchase">Købspris (kr)</th><th data-t="col_status">Status</th><th></th></tr></thead>
-        <tbody id="setupBody"></tbody>
-      </table>
-    </div>
-    <div style="margin-top:12px">
-      <button class="btn btn-primary btn-sm" data-t="add_truck_btn" onclick="openModal(&#39;modalNyBil&#39;)">+ Tilføj enhed</button>
-    </div>
+    <button class="btn btn-primary btn-sm" data-t="add_truck_btn" onclick="openModal(&#39;modalNyBil&#39;)">+ Tilføj enhed</button>
+  </div>
+  <div class="tbl-wrap" style="margin-bottom:28px">
+    <table class="setup-table">
+      <thead><tr><th data-t="col_vehicle_no">Vognr.</th><th data-t="col_reg">Reg.nr.</th><th data-t="col_year">Årgang</th><th data-t="col_purchase">Købspris (kr)</th><th data-t="col_status">Status</th><th></th></tr></thead>
+      <tbody id="setupBody"></tbody>
+    </table>
   </div>
 
-  <div class="card">
+  <div class="section-header">
     <h3 data-t="setup_drivers">👤 Chauffører</h3>
-    <div class="tbl-wrap">
-      <table class="setup-table">
-        <thead><tr><th data-t="col_name">Navn</th><th data-t="lbl_phone">Telefon</th><th data-t="lbl_mobile">Mobil</th><th data-t="lbl_email">Email</th><th data-t="lbl_address">Adresse</th><th data-t="col_license">Kørekortklasse</th><th data-t="col_status">Status</th><th></th></tr></thead>
-        <tbody id="chauffeurSetupBody"></tbody>
-      </table>
-    </div>
-    <div style="margin-top:12px">
-      <button class="btn btn-primary btn-sm" data-t="add_driver_btn" onclick="openModal(&#39;modalNyChauffeur&#39;)">+ Tilføj chauffør</button>
-    </div>
+    <button class="btn btn-primary btn-sm" data-t="add_driver_btn" onclick="openModal(&#39;modalNyChauffeur&#39;)">+ Tilføj chauffør</button>
+  </div>
+  <div class="tbl-wrap" style="margin-bottom:28px">
+    <table class="setup-table">
+      <thead><tr><th data-t="col_name">Navn</th><th data-t="lbl_phone">Telefon</th><th data-t="lbl_mobile">Mobil</th><th data-t="lbl_email">Email</th><th data-t="lbl_address">Adresse</th><th data-t="col_license">Kørekortklasse</th><th data-t="col_status">Status</th><th></th></tr></thead>
+      <tbody id="chauffeurSetupBody"></tbody>
+    </table>
   </div>
 
   <!-- LOGO -->
@@ -992,31 +988,27 @@
   </div>
 
   <!-- VÆRKSTEDER -->
-  <div class="card">
+  <div class="section-header">
     <h3 data-t="setup_workshops">🔧 Værksteder / Udfører</h3>
-    <div class="tbl-wrap">
-      <table class="setup-table">
-        <thead><tr><th data-t="col_name">Navn</th><th data-t="col_phone">Telefon</th><th data-t="lbl_mobile">Mobil</th><th data-t="lbl_email">Email</th><th data-t="lbl_contact">Kontaktperson</th><th data-t="lbl_address">Adresse</th><th data-t="col_status">Status</th><th></th></tr></thead>
-        <tbody id="vaerkstedSetupBody"></tbody>
-      </table>
-    </div>
-    <div style="margin-top:12px">
-      <button class="btn btn-primary btn-sm" data-t="add_workshop_btn" onclick="openModal(&#39;modalNyVaerksted&#39;)">+ Tilføj værksted</button>
-    </div>
+    <button class="btn btn-primary btn-sm" data-t="add_workshop_btn" onclick="openModal(&#39;modalNyVaerksted&#39;)">+ Tilføj værksted</button>
+  </div>
+  <div class="tbl-wrap" style="margin-bottom:28px">
+    <table class="setup-table">
+      <thead><tr><th data-t="col_name">Navn</th><th data-t="col_phone">Telefon</th><th data-t="lbl_mobile">Mobil</th><th data-t="lbl_email">Email</th><th data-t="lbl_contact">Kontaktperson</th><th data-t="lbl_address">Adresse</th><th data-t="col_status">Status</th><th></th></tr></thead>
+      <tbody id="vaerkstedSetupBody"></tbody>
+    </table>
   </div>
 
   <!-- SERVICE TYPER -->
-  <div class="card">
+  <div class="section-header">
     <h3 data-t="setup_svc_types">📅 Servicetyper</h3>
-    <div class="tbl-wrap">
-      <table class="setup-table">
-        <thead><tr><th data-t="col_name">Navn</th><th data-t="col_interval">Interval (mdr)</th><th></th></tr></thead>
-        <tbody id="svcTypeSetupBody"></tbody>
-      </table>
-    </div>
-    <div style="margin-top:12px">
-      <button class="btn btn-primary btn-sm" onclick="addSvcType()" data-t="add_svc_type_btn">+ Tilføj servicetype</button>
-    </div>
+    <button class="btn btn-primary btn-sm" onclick="addSvcType()" data-t="add_svc_type_btn">+ Tilføj servicetype</button>
+  </div>
+  <div class="tbl-wrap" style="margin-bottom:28px">
+    <table class="setup-table">
+      <thead><tr><th data-t="col_name">Navn</th><th data-t="col_interval">Interval (mdr)</th><th></th></tr></thead>
+      <tbody id="svcTypeSetupBody"></tbody>
+    </table>
   </div>
 
   <!-- MAIL-OPSÆTNING (EmailJS) til service-advisering -->
