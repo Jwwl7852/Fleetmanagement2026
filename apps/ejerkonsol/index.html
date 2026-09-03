@@ -164,6 +164,89 @@
   .kv dd{color:var(--text)}
   .loading{padding:40px;text-align:center;color:var(--muted);font-size:13px}
 
+  /* ---------- tilbud & fakturagrundlag ---------- */
+  .modul-grp-lbl{font-size:10.5px;letter-spacing:.06em;color:var(--muted2);text-transform:uppercase;margin:14px 0 2px}
+  .modul-grp-lbl:first-child{margin-top:0}
+  .modul-rk{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .modul-rk:last-child{border-bottom:none}
+  .modul-rk input[type=checkbox]{width:17px;height:17px;margin-top:2px;accent-color:var(--accent);flex-shrink:0}
+  .modul-rk .navn{font-weight:600;font-size:13.5px}
+  .modul-rk .beskr{font-size:12px;color:var(--muted);margin-top:1px}
+  .modul-rk .pris{width:118px;flex-shrink:0;margin-left:auto}
+  .modul-rk .pris .inp{text-align:right;padding:8px 10px}
+  .modul-rk .inp:disabled{opacity:.5}
+
+  .calc-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:15px 17px;margin:18px 0}
+  .linje{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;color:var(--muted);
+         font-variant-numeric:tabular-nums;max-width:340px}
+  .linje b{color:var(--text);font-weight:600}
+  .linje.sum{border-top:1px solid var(--border);margin-top:5px;padding-top:7px;font-weight:650;color:var(--text);font-size:16px}
+  .calc-box .linje{max-width:none}
+
+  .chip.udkast{background:var(--surface2);color:var(--muted)}
+  .chip.sendt{background:rgba(34,194,207,.14);color:var(--accent2)}
+  .chip.accepteret{background:#e6f4ef;color:var(--green)}
+  .chip.afvist{background:#fbecec;color:#9c3a39}
+  .chip.afviger{background:var(--rav-svag);color:#8a5c17;border:1px solid var(--rav-kant)}
+  .chip.matcher{background:#e6f4ef;color:var(--green)}
+  .kstripe.udkast{background:var(--muted2)}
+  .kstripe.sendt{background:var(--cyan)}
+  .kstripe.accepteret{background:var(--green)}
+  .kstripe.afvist{background:var(--red)}
+
+  .board-head.tilbud,.krow.tilbud{grid-template-columns:3px 1.6fr .9fr .8fr .8fr .9fr auto}
+  .board-head.tilbud div:nth-child(2),.krow.tilbud .kmain{padding-left:16px}
+
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+  .tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px 19px;
+        box-shadow:0 1px 2px rgba(20,35,45,.04)}
+  .tile .lbl{font-size:11px;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}
+  .tile b{display:block;font-size:25px;font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .tile .sub{font-size:12px;color:var(--muted2);margin-top:4px}
+  .tile.flag b{color:#8a5c17}
+  @media(max-width:820px){.tiles{grid-template-columns:1fr}}
+
+  .periode{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;
+           font-size:13px;font-weight:650}
+
+  .fak-detalje{background:var(--surface2)}
+  .fak-detalje td{padding:0;border-bottom:1px solid var(--border)}
+  .fak-detalje .inde{padding:14px 16px 16px 44px}
+  .rk-abn{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:2px 4px}
+  .rk-abn:hover{color:var(--accent)}
+  td.tal,th.tal{text-align:right;font-variant-numeric:tabular-nums}
+  tfoot td{border-top:2px solid var(--border);border-bottom:none;font-weight:650;padding-top:13px}
+
+  /* ---------- print (tilbud og fakturagrundlag som PDF) ---------- */
+  #printArea{display:none}
+  @media print{
+    body > *:not(#printArea){display:none !important}
+    #printArea{display:block !important}
+    .doc{padding:14px 6px 10px;max-width:720px;margin:0 auto;font-family:var(--font);color:#0b1622}
+    .doc-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #0b1622;
+              padding-bottom:14px;margin-bottom:20px}
+    .doc-head h1{font-size:19px;letter-spacing:.10em;margin:0}
+    .doc-firma{font-size:11px;color:#555;margin-top:4px}
+    .doc-meta{text-align:right;font-size:12px;color:#333}
+    .doc-meta b{display:block;font-size:15px;letter-spacing:.05em;margin-bottom:4px}
+    .doc-til{margin-bottom:18px;font-size:13px}
+    .doc-til .navn{font-weight:700;font-size:14px}
+    .doc-status{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;padding:2px 8px;
+                border:1px solid #0b1622;border-radius:4px}
+    .doc table{width:100%;border-collapse:collapse;margin-bottom:14px}
+    .doc th{text-align:left;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:#555;
+           border-bottom:1px solid #999;padding:6px 4px}
+    .doc td{padding:8px 4px;border-bottom:1px solid #ddd;font-size:12.5px}
+    .doc td.tal,.doc th.tal{text-align:right;font-variant-numeric:tabular-nums}
+    .doc .total-rk td{border-top:2px solid #0b1622;border-bottom:none;font-weight:700;font-size:14px;padding-top:10px}
+    .doc .vilkaar{margin-top:22px;font-size:11px;color:#555;line-height:1.6;border-top:1px solid #ccc;padding-top:11px}
+    .doc .flag-note{margin-top:12px;font-size:11.5px;background:#FBF1E1;border:1px solid #D9A44E;
+                    padding:8px 10px;border-radius:6px;color:#7a5417}
+    .side-label{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:#8a97a3;padding:4px 6px}
+    .print-page{page-break-after:always}
+    .print-page:last-child{page-break-after:auto}
+  }
+
   @media(max-width:900px){
     #shell.vis{flex-direction:column}
     .side{width:100%;height:auto;position:static;padding-bottom:8px}
@@ -176,7 +259,10 @@
     .krow,.board-head{grid-template-columns:3px 1fr auto}
     .krow .kcell:nth-of-type(2),.krow .kcell:nth-of-type(3),
     .board-head div:nth-child(4),.board-head div:nth-child(5){display:none}
+    .krow.tilbud,.board-head.tilbud{grid-template-columns:3px 1fr auto}
+    .krow.tilbud .kcell:not(:last-of-type){display:none}
     .fld-row{grid-template-columns:1fr}
+    .tiles{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -216,6 +302,11 @@
       <button class="on" data-view="kunder">Kunder</button>
       <button data-view="ejere">Ejere</button>
       <button data-view="opsaetning">Opsætning</button>
+    </nav>
+    <div class="side-grp">SALG &amp; ØKONOMI</div>
+    <nav class="tabs">
+      <button data-view="tilbud">Tilbud</button>
+      <button data-view="fakturagrundlag">Fakturagrundlag</button>
     </nav>
     <div class="side-tal">
       <div><b id="cntKunder">0</b> kunder i alt</div>
@@ -288,6 +379,51 @@
         </div>
       </div>
     </div>
+
+    <!-- ---- TILBUD ---- -->
+    <div class="view" id="view-tilbud">
+      <div class="head">
+        <div><h2>Tilbud</h2><span class="undertekst">Beregn og send tilbud til kunder på hovedmodul, tilvalgsmoduler, brugere og enheder</span></div>
+        <div class="spacer"></div>
+        <button class="btn btn-primary" id="nytTilbudBtn">Nyt tilbud</button>
+      </div>
+      <div class="board" id="tilbudBoard">
+        <div class="loading">Henter tilbud…</div>
+      </div>
+    </div>
+
+    <!-- ---- FAKTURAGRUNDLAG ---- -->
+    <div class="view" id="view-fakturagrundlag">
+      <div class="head">
+        <div><h2>Fakturagrundlag</h2><span class="undertekst">Aktive kunder, beregnet ud fra aftalt pris og faktisk forbrug lige nu</span></div>
+        <div class="spacer"></div>
+        <div class="periode" id="fgPeriode">—</div>
+      </div>
+      <div class="tiles">
+        <div class="tile"><div class="lbl">AKTIVE KUNDER I GRUNDLAGET</div><b id="fgAktive">—</b><div class="sub">Prøve og spærrede kunder indgår ikke</div></div>
+        <div class="tile"><div class="lbl">GRUNDLAG I ALT</div><b id="fgTotal">—</b><div class="sub">Ekskl. moms, pr. måned</div></div>
+        <div class="tile flag"><div class="lbl">AFVIGER FRA AFTALE</div><b id="fgAfviger">—</b><div class="sub">Faktisk forbrug ≠ aftalt i tilbud</div></div>
+      </div>
+      <div class="note" id="fgLogNote" style="display:none"></div>
+      <div class="note">Kun kunder med status <b>Aktiv</b> tages med. Beløbet pr. linje er beregnet af faktisk antal brugere/enheder lige nu — ikke det, der oprindeligt stod i tilbuddet.</div>
+      <div class="board" style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Kunde</th><th>Moduler</th>
+            <th class="tal">Brugere<br><span style="font-weight:400">aftalt / faktisk</span></th>
+            <th class="tal">Enheder<br><span style="font-weight:400">aftalt / faktisk</span></th>
+            <th class="tal">Beløb</th><th></th><th></th>
+          </tr></thead>
+          <tbody id="fgBody"><tr><td colspan="7" style="color:var(--muted)">Henter…</td></tr></tbody>
+          <tfoot><tr><td colspan="4">I alt til fakturering</td><td class="tal" id="fgSum">—</td><td></td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <div class="modal-foot" style="justify-content:flex-start;margin-top:16px">
+        <button class="btn btn-primary" id="printFakturaBtn">Print / gem som PDF — 1 kunde pr. side</button>
+        <button class="btn" id="eksportCsvBtn">Eksportér til CSV</button>
+        <button class="btn" id="markerFaktureretBtn">Markér måneden som faktureret</button>
+      </div>
+    </div>
   </main>
   </div>
 </div>
@@ -355,6 +491,17 @@
 
     <dl class="kv" id="dKv"></dl>
 
+    <div class="panel" style="margin-top:4px;margin-bottom:18px;padding:17px 19px">
+      <div class="head" style="margin-bottom:10px">
+        <h3 style="font-size:14px">Pris &amp; abonnement</h3>
+        <div class="spacer"></div>
+        <button class="btn btn-sm btn-primary" id="dNytTilbudBtn">Nyt tilbud</button>
+      </div>
+      <div class="kv" id="dPrisKv" style="margin-bottom:14px"></div>
+      <table><thead><tr><th>Dato</th><th>Moduler</th><th class="tal">Brugere</th><th class="tal">Enheder</th><th class="tal">Pr. måned</th><th>Status</th></tr></thead>
+      <tbody id="dTilbudBody"></tbody></table>
+    </div>
+
     <div class="head" style="margin-bottom:12px">
       <h3 style="font-size:15px">Brugere hos kunden</h3>
       <div class="spacer"></div>
@@ -407,6 +554,71 @@
   </div>
 </div>
 
+<!-- ================= MODAL: NYT TILBUD ================= -->
+<div class="modal" id="mTilbud">
+  <div class="modal-box wide">
+    <div class="modal-top">
+      <div><h3>Nyt tilbud</h3><p id="tSub">Vælg kunde, moduler og omfang</p></div>
+      <button class="modal-x" data-close="mTilbud">✕</button>
+    </div>
+
+    <div class="fld">
+      <label for="tKunde">Kunde</label>
+      <select class="inp" id="tKunde"></select>
+    </div>
+
+    <div class="fld">
+      <label>Moduler</label>
+      <div class="modul-grp-lbl">Hovedmodul — indgår altid</div>
+      <div class="modul-rk" data-modul="flaade" data-navn="Fleetmanager">
+        <input type="checkbox" id="tMod_flaade" checked disabled>
+        <div><div class="navn">Fleetmanager</div>
+             <div class="beskr">Kontorapp til flådestyring — grundpris pr. måned</div></div>
+        <div class="pris"><input class="inp pris-inp" id="tPris_flaade" type="number" min="0" step="1" value="499"></div>
+      </div>
+      <div class="modul-grp-lbl">Tilvalgsmoduler — lægges oven på hovedmodulet</div>
+      <div class="modul-rk" data-modul="chauffoer" data-navn="Chaufførapp">
+        <input type="checkbox" id="tMod_chauffoer">
+        <div><div class="navn">Chaufførapp</div>
+             <div class="beskr">Indberetning for chauffører</div></div>
+        <div class="pris"><input class="inp pris-inp" id="tPris_chauffoer" type="number" min="0" step="1" value="199" disabled></div>
+      </div>
+      <div class="modul-rk" data-modul="leverandoer" data-navn="Leverandørportal">
+        <input type="checkbox" id="tMod_leverandoer">
+        <div><div class="navn">Leverandørportal</div>
+             <div class="beskr">Adgang for værksteder og leverandører</div></div>
+        <div class="pris"><input class="inp pris-inp" id="tPris_leverandoer" type="number" min="0" step="1" value="249" disabled></div>
+      </div>
+    </div>
+
+    <div class="fld-row">
+      <div class="fld"><label for="tAntalBrugere">Antal brugere</label><input class="inp" id="tAntalBrugere" type="number" min="0" value="1"></div>
+      <div class="fld"><label for="tPrisBruger">Pris pr. bruger/md</label><input class="inp" id="tPrisBruger" type="number" min="0" value="49"></div>
+    </div>
+    <div class="fld-row">
+      <div class="fld"><label for="tAntalEnheder">Antal enheder</label><input class="inp" id="tAntalEnheder" type="number" min="0" value="1"></div>
+      <div class="fld"><label for="tPrisEnhed">Pris pr. enhed/md</label><input class="inp" id="tPrisEnhed" type="number" min="0" value="29"></div>
+    </div>
+    <div class="fld-row">
+      <div class="fld"><label for="tRabat">Rabat (%)</label><input class="inp" id="tRabat" type="number" min="0" max="100" value="0"></div>
+      <div class="fld"><label for="tGyldig">Tilbuddet gælder til</label><input class="inp" id="tGyldig" type="date"></div>
+    </div>
+
+    <div class="calc-box" id="tCalc"></div>
+
+    <div class="fld"><label for="tNote">Note på tilbuddet</label><textarea class="inp" id="tNote" placeholder="Fx aftalte vilkår eller bindingsperiode…"></textarea></div>
+
+    <div class="msg" id="tMsg"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close="mTilbud">Annullér</button>
+      <button class="btn" id="tPrintBtn">Print / gem som PDF</button>
+      <button class="btn" id="tGemUdkastBtn">Gem som udkast</button>
+      <button class="btn btn-primary" id="tSendBtn">Send tilbud via mail</button>
+    </div>
+    <div class="hint" style="text-align:right">"Send tilbud via mail" åbner dit mailprogram med emne og tekst udfyldt — der sendes ikke noget automatisk.</div>
+  </div>
+</div>
+
 <!-- ================= MODAL: BEKRÆFT SLETNING ================= -->
 <div class="modal" id="mSlet">
   <div class="modal-box">
@@ -428,10 +640,12 @@
   </div>
 </div>
 
+<div id="printArea"></div>
+
 <script src="firebase-config.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, get, set, update, remove, onValue }
+import { getDatabase, ref, get, set, update, remove, onValue, push }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -463,6 +677,7 @@ const dkDato = s => {
   if(!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return '—';
   const [a,m,d] = s.split('-'); return `${d}.${m}.${a}`;
 };
+const kr = n => Math.round(n).toLocaleString('da-DK') + ' kr.';
 function slug(s){
   return String(s||'').toLowerCase()
     .replace(/[æä]/g,'ae').replace(/[øö]/g,'oe').replace(/å/g,'aa')
@@ -486,8 +701,10 @@ let ejere  = {};          // uid -> { navn, email }
 let pfConfig = {};        // { fmUrl, indUrl }
 let valgtKunde = null;    // kundeId der er åbnet i detaljevinduet
 let redigerer = null;     // kundeId når modal er i redigeringstilstand
+let tilbud = {};          // tilbudId -> tilbudobjekt
 
 const STATUS_TEKST = { aktiv:'Aktiv', proeve:'Prøve', spaerret:'Spærret' };
+const TSTATUS_TEKST = { udkast:'Udkast', sendt:'Sendt', accepteret:'Accepteret', afvist:'Afvist' };
 
 /* =====================================================================
    Login
@@ -554,6 +771,12 @@ function start(){
   onValue(ref(db, 'kunder'), s => { kunder = s.val() || {}; tegnKunder(); tegnTal(); if(valgtKunde) tegnDetalje(valgtKunde); },
     e => $('kundeBoard').innerHTML = `<div class="empty"><b>Kunne ikke hente kunder</b>${esc(e.message)}</div>`);
   onValue(ref(db, 'platform/ejere'), s => { ejere = s.val() || {}; tegnEjere(); });
+  onValue(ref(db, 'tilbud'), s => {
+    tilbud = s.val() || {};
+    tegnTilbud();
+    if(valgtKunde) tegnDetalje(valgtKunde);
+    if($('view-fakturagrundlag').classList.contains('on')) tegnFakturagrundlag();
+  }, e => $('tilbudBoard').innerHTML = `<div class="empty"><b>Kunne ikke hente tilbud</b>${esc(e.message)}</div>`);
   onValue(ref(db, 'platform/config'), s => {
     pfConfig = s.val() || {};
     if(document.activeElement !== $('cfgFm'))  $('cfgFm').value  = pfConfig.fmUrl  || '';
@@ -567,6 +790,7 @@ document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click
   document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
   b.classList.add('on');
   $('view-' + b.dataset.view).classList.add('on');
+  if(b.dataset.view === 'fakturagrundlag') tegnFakturagrundlag();
 }));
 
 /* =====================================================================
@@ -748,6 +972,7 @@ function tegnDetalje(id){
     <dt>Data</dt><dd id="dTaellinger">Henter…</dd>
     ${k.noter ? `<dt>Noter</dt><dd>${esc(k.noter)}</dd>` : ''}`;
   $('dSpaerBtn').textContent = st === 'spaerret' ? 'Ophæv spærring' : 'Spær adgang';
+  tegnPrisPanel(id);
 }
 
 async function hentTaellinger(id){
@@ -1023,6 +1248,356 @@ $('cfgGemBtn').addEventListener('click', async () => {
     besked(m, 'Adresserne er gemt.', true);
     setTimeout(() => { m.textContent = ''; }, 2500);
   } catch(e){ besked(m, 'Kunne ikke gemme: ' + e.message); }
+});
+
+/* =====================================================================
+   Tilbud
+   ===================================================================== */
+function beregnTilbud(t){
+  const modulSum = (t.moduler||[]).reduce((s,m) => s + (m.pris||0), 0);
+  const subtotal = modulSum + (t.antalBrugere||0)*(t.prisBruger||0) + (t.antalEnheder||0)*(t.prisEnhed||0);
+  const total = subtotal * (1 - (t.rabatPct||0)/100);
+  return { modulSum, subtotal, total };
+}
+function modulNavne(t){ return (t.moduler||[]).map(m => m.navn).join(' + ') || '—'; }
+function senesteTilbud(kundeId, statusliste){
+  return Object.entries(tilbud)
+    .filter(([,t]) => t.kundeId === kundeId && statusliste.includes(t.status))
+    .sort((a,b) => (b[1].dato||'').localeCompare(a[1].dato||''))[0]?.[1] || null;
+}
+
+function tegnTilbud(){
+  const rk = Object.entries(tilbud).sort((a,b) => (b[1].dato||'').localeCompare(a[1].dato||''));
+  const board = $('tilbudBoard');
+  if(!rk.length){
+    board.innerHTML = `<div class="empty"><b>Ingen tilbud endnu</b>Opret det første tilbud på en kunde.</div>`;
+    return;
+  }
+  board.innerHTML =
+    `<div class="board-head tilbud"><div></div><div>Kunde</div><div>Brugere</div><div>Enheder</div><div>Pr. måned</div><div>Status</div><div></div></div>` +
+    rk.map(([id,t]) => {
+      const k = kunder[t.kundeId] || { navn: t.kundeId };
+      const b = beregnTilbud(t);
+      const st = t.status || 'udkast';
+      return `<div class="krow tilbud">
+        <div class="kstripe ${esc(st)}"></div>
+        <div class="kmain"><div class="kname">${esc(k.navn || t.kundeId)}</div><div class="kid">${esc(modulNavne(t))} · ${dkDato(t.dato)}</div></div>
+        <div class="kcell tal">${t.antalBrugere||0}</div>
+        <div class="kcell tal">${t.antalEnheder||0}</div>
+        <div class="kcell tal"><b>${kr(b.total)}</b></div>
+        <div class="kcell"><span class="chip ${esc(st)}">${TSTATUS_TEKST[st] || st}</span></div>
+        <div class="kactions"><button class="btn btn-sm" data-tilbud-abn="${esc(id)}">Åbn</button></div>
+      </div>`;
+    }).join('');
+  board.querySelectorAll('[data-tilbud-abn]').forEach(b => b.addEventListener('click', () => {
+    const t = tilbud[b.dataset.tilbudAbn]; if(t) visDetalje(t.kundeId);
+  }));
+}
+
+function tegnPrisPanel(kundeId){
+  const aftale = senesteTilbud(kundeId, ['accepteret']);
+  $('dPrisKv').innerHTML = aftale ? (() => {
+    const b = beregnTilbud(aftale);
+    return `<dt>Aktuel aftale</dt><dd><b>${kr(b.total)}/md</b> — ${esc(modulNavne(aftale))}, ${aftale.antalBrugere} brugere, ${aftale.antalEnheder} enheder${aftale.rabatPct ? `, ${aftale.rabatPct}% rabat` : ''}</dd>
+            <dt>Gælder til</dt><dd>${dkDato(aftale.gyldigTil)}</dd>`;
+  })() : `<dt>Aktuel aftale</dt><dd>Ingen accepteret endnu — opret et tilbud.</dd>`;
+
+  const historik = Object.entries(tilbud).filter(([,t]) => t.kundeId === kundeId).sort((a,b) => (b[1].dato||'').localeCompare(a[1].dato||''));
+  $('dTilbudBody').innerHTML = historik.length ? historik.map(([,t]) => {
+    const b = beregnTilbud(t);
+    const st = t.status || 'udkast';
+    return `<tr><td>${dkDato(t.dato)}</td><td>${esc(modulNavne(t))}</td>
+      <td class="tal">${t.antalBrugere||0}</td><td class="tal">${t.antalEnheder||0}</td>
+      <td class="tal">${kr(b.total)}</td><td><span class="chip ${esc(st)}">${TSTATUS_TEKST[st] || st}</span></td></tr>`;
+  }).join('') : `<tr><td colspan="6" style="color:var(--muted)">Ingen tilbud endnu.</td></tr>`;
+}
+
+$('nytTilbudBtn').addEventListener('click', () => aabnTilbudModal(null));
+$('dNytTilbudBtn').addEventListener('click', () => { luk('mDetalje'); aabnTilbudModal(valgtKunde); });
+
+function aabnTilbudModal(forudvalgtKundeId){
+  const rk = Object.entries(kunder).sort((a,b) => (a[1].navn||'').localeCompare(b[1].navn||'', 'da'));
+  $('tKunde').innerHTML = rk.map(([id,k]) => `<option value="${esc(id)}">${esc(k.navn || id)}</option>`).join('');
+  if(forudvalgtKundeId) $('tKunde').value = forudvalgtKundeId;
+  $('tSub').textContent = 'Vælg kunde, moduler og omfang';
+  $('tAntalBrugere').value = 1; $('tAntalEnheder').value = 1; $('tRabat').value = 0;
+  $('tPris_flaade').value = 499; $('tPris_chauffoer').value = 199; $('tPris_leverandoer').value = 249;
+  $('tPrisBruger').value = 49; $('tPrisEnhed').value = 29;
+  $('tMod_chauffoer').checked = false; $('tMod_leverandoer').checked = false;
+  const enAarFrem = new Date(); enAarFrem.setFullYear(enAarFrem.getFullYear()+1);
+  $('tGyldig').value = enAarFrem.toISOString().slice(0,10);
+  $('tNote').value = '';
+  $('tMsg').textContent = '';
+  opdaterModulFelter();
+  aabn('mTilbud');
+}
+
+function hentModulLinjer(){
+  return [...document.querySelectorAll('#mTilbud .modul-rk[data-modul]')].map(rk => {
+    const chk = rk.querySelector('input[type=checkbox]');
+    const pris = Number(rk.querySelector('.pris-inp').value) || 0;
+    return { key: rk.dataset.modul, navn: rk.dataset.navn, pris, checked: chk.checked };
+  }).filter(m => m.checked);
+}
+function opdaterModulFelter(){
+  document.querySelectorAll('#mTilbud .modul-rk[data-modul]').forEach(rk => {
+    const chk = rk.querySelector('input[type=checkbox]');
+    rk.querySelector('.pris-inp').disabled = !chk.checked;
+  });
+  opdaterCalc();
+}
+function opdaterCalc(){
+  const linjer = hentModulLinjer();
+  const modulSum = linjer.reduce((s,m) => s+m.pris, 0);
+  const antalBrugere = Number($('tAntalBrugere').value)||0;
+  const prisBruger = Number($('tPrisBruger').value)||0;
+  const antalEnheder = Number($('tAntalEnheder').value)||0;
+  const prisEnhed = Number($('tPrisEnhed').value)||0;
+  const rabatPct = Number($('tRabat').value)||0;
+  const subtotal = modulSum + antalBrugere*prisBruger + antalEnheder*prisEnhed;
+  const rabatKr = subtotal * rabatPct/100;
+  const total = subtotal - rabatKr;
+  $('tCalc').innerHTML =
+    linjer.map(m => `<div class="linje"><span>${esc(m.navn)}${m.key==='flaade' ? ' — grundpris' : ' — tilvalg'}</span><b>${kr(m.pris)}</b></div>`).join('') +
+    `<div class="linje"><span>${antalBrugere} brugere × ${kr(prisBruger)}</span><b>${kr(antalBrugere*prisBruger)}</b></div>
+     <div class="linje"><span>${antalEnheder} enheder × ${kr(prisEnhed)}</span><b>${kr(antalEnheder*prisEnhed)}</b></div>
+     ${rabatPct ? `<div class="linje"><span>Rabat ${rabatPct}%</span><b>−${kr(rabatKr)}</b></div>` : ''}
+     <div class="linje sum"><span>I alt pr. måned</span><b>${kr(total)}</b></div>`;
+}
+document.querySelectorAll('#mTilbud .modul-rk input[type=checkbox]').forEach(c => c.addEventListener('change', opdaterModulFelter));
+['tPris_flaade','tPris_chauffoer','tPris_leverandoer','tAntalBrugere','tPrisBruger','tAntalEnheder','tPrisEnhed','tRabat']
+  .forEach(id => $(id).addEventListener('input', opdaterCalc));
+
+function laesTilbudFraForm(status){
+  const kundeId = $('tKunde').value;
+  return {
+    kundeId, dato: iso(),
+    moduler: hentModulLinjer().map(m => ({ key:m.key, navn:m.navn, pris:m.pris })),
+    antalBrugere: Number($('tAntalBrugere').value)||0, prisBruger: Number($('tPrisBruger').value)||0,
+    antalEnheder: Number($('tAntalEnheder').value)||0, prisEnhed: Number($('tPrisEnhed').value)||0,
+    rabatPct: Number($('tRabat').value)||0, status, gyldigTil: $('tGyldig').value,
+    note: $('tNote').value.trim(), oprettetAf: ejer?.uid || '', aendret: Date.now()
+  };
+}
+
+async function gemTilbud(status){
+  const kundeId = $('tKunde').value;
+  if(!kundeId) { besked($('tMsg'), 'Vælg en kunde.'); throw new Error('ingen kunde'); }
+  const data = laesTilbudFraForm(status);
+  $('tGemUdkastBtn').disabled = true; $('tSendBtn').disabled = true;
+  try {
+    const nyRef = push(ref(db, 'tilbud'));
+    await set(nyRef, data);
+    return nyRef.key;
+  } catch(e){
+    besked($('tMsg'), 'Kunne ikke gemme: ' + e.message);
+    throw e;
+  } finally {
+    $('tGemUdkastBtn').disabled = false; $('tSendBtn').disabled = false;
+  }
+}
+
+$('tGemUdkastBtn').addEventListener('click', async () => {
+  try { await gemTilbud('udkast'); luk('mTilbud'); } catch(e){}
+});
+
+$('tSendBtn').addEventListener('click', async () => {
+  const kundeId = $('tKunde').value;
+  const k = kunder[kundeId];
+  if(!k) return besked($('tMsg'), 'Vælg en kunde.');
+  if(!k.email) return besked($('tMsg'), 'Kunden har ingen email registreret — udfyld den under Redigér kunde.');
+  let id;
+  try { id = await gemTilbud('sendt'); } catch(e){ return; }
+  const t = tilbud[id] || laesTilbudFraForm('sendt');
+  const b = beregnTilbud(t);
+  const linjeTekst = t.moduler.map(m => `- ${m.navn}: ${kr(m.pris)}/md`).join('\n');
+  const emne = `Tilbud fra FleetControl til ${k.navn}`;
+  const krop =
+`Kære ${k.kontakt || k.navn},
+
+Hermed tilbud på FleetControl:
+
+${linjeTekst}
+- ${t.antalBrugere} brugere × ${kr(t.prisBruger)} = ${kr(t.antalBrugere*t.prisBruger)}
+- ${t.antalEnheder} enheder × ${kr(t.prisEnhed)} = ${kr(t.antalEnheder*t.prisEnhed)}
+${t.rabatPct ? '- Rabat ' + t.rabatPct + '%: −' + kr(b.subtotal*t.rabatPct/100) + '\n' : ''}
+I alt pr. måned (ekskl. moms): ${kr(b.total)}
+Tilbuddet gælder til: ${dkDato(t.gyldigTil)}
+
+Venlig hilsen
+Veyro Systems ApS · FleetControl`;
+  window.location.href = `mailto:${encodeURIComponent(k.email)}?subject=${encodeURIComponent(emne)}&body=${encodeURIComponent(krop)}`;
+  luk('mTilbud');
+});
+
+$('tPrintBtn').addEventListener('click', () => {
+  const kundeId = $('tKunde').value;
+  const k = kunder[kundeId];
+  if(!k) return besked($('tMsg'), 'Vælg en kunde.');
+  const t = laesTilbudFraForm('udkast');
+  const b = beregnTilbud(t);
+  const nr = 'T-' + t.dato.replace(/-/g,'') + '-' + kundeId.slice(0,4).toUpperCase();
+  $('printArea').innerHTML = `
+    <div class="doc">
+      <div class="doc-head">
+        <div><h1>VEYRO SYSTEMS</h1><div class="doc-firma">Fleetcontrol.dk ApS · fleetcontrol.dk</div></div>
+        <div class="doc-meta"><b>TILBUD</b>Tilbudsnr. ${esc(nr)}<br>Dato ${dkDato(t.dato)}<br>Gyldigt til ${dkDato(t.gyldigTil)}</div>
+      </div>
+      <div class="doc-til"><div class="navn">${esc(k.navn)}</div>Att. ${esc(k.kontakt||'')}<br>${k.cvr ? 'CVR ' + esc(k.cvr) : ''}</div>
+      <table><thead><tr><th>Ydelse</th><th class="tal">Pris/md</th></tr></thead><tbody>
+        ${t.moduler.map(m => `<tr><td>${esc(m.navn)}${m.key==='flaade' ? ' (hovedmodul)' : ' (tilvalgsmodul)'}</td><td class="tal">${kr(m.pris)}</td></tr>`).join('')}
+        <tr><td>${t.antalBrugere} brugere × ${kr(t.prisBruger)}</td><td class="tal">${kr(t.antalBrugere*t.prisBruger)}</td></tr>
+        <tr><td>${t.antalEnheder} enheder × ${kr(t.prisEnhed)}</td><td class="tal">${kr(t.antalEnheder*t.prisEnhed)}</td></tr>
+        ${t.rabatPct ? `<tr><td>Rabat ${t.rabatPct}%</td><td class="tal">−${kr(b.subtotal*t.rabatPct/100)}</td></tr>` : ''}
+        <tr class="total-rk"><td>I alt pr. måned, ekskl. moms</td><td class="tal">${kr(b.total)}</td></tr>
+      </tbody></table>
+      ${t.note ? `<div class="vilkaar"><b>Note:</b> ${esc(t.note)}</div>` : ''}
+      <div class="vilkaar">Tilbuddet er gyldigt til ${dkDato(t.gyldigTil)}. Priser er ekskl. moms og reguleres ved ændring i antal brugere eller enheder.</div>
+    </div>`;
+  window.print();
+});
+
+/* =====================================================================
+   Fakturagrundlag
+   ===================================================================== */
+async function byggFakturaLinjer(){
+  const aktive = Object.entries(kunder).filter(([,k]) => k.status === 'aktiv');
+  const linjer = [];
+  for(const [id,k] of aktive){
+    let brugereFaktisk = 0, enhederFaktisk = 0;
+    try {
+      const [bs,es] = await Promise.all([get(ref(db, `k/${id}/brugere`)), get(ref(db, `k/${id}/trucks`))]);
+      brugereFaktisk = bs.exists() ? Object.keys(bs.val()).length : 0;
+      enhederFaktisk = es.exists() ? Object.keys(es.val()).length : 0;
+    } catch(e){ /* springes over hvis data ikke kan hentes */ }
+    const aftale = senesteTilbud(id, ['accepteret']);
+    const moduler = aftale ? aftale.moduler : [{key:'flaade',navn:'Fleetmanager',pris:499}];
+    const prisBruger = aftale?.prisBruger ?? 49, prisEnhed = aftale?.prisEnhed ?? 29, rabatPct = aftale?.rabatPct ?? 0;
+    const bAftalt = aftale?.antalBrugere ?? brugereFaktisk, eAftalt = aftale?.antalEnheder ?? enhederFaktisk;
+    const modulSum = moduler.reduce((s,m) => s+m.pris, 0);
+    const subtotal = modulSum + brugereFaktisk*prisBruger + enhederFaktisk*prisEnhed;
+    const total = subtotal * (1 - rabatPct/100);
+    const afviger = bAftalt !== brugereFaktisk || eAftalt !== enhederFaktisk;
+    linjer.push({ id, k, moduler, prisBruger, prisEnhed, rabatPct, bAftalt, eAftalt, brugereFaktisk, enhederFaktisk, modulSum, subtotal, total, afviger });
+  }
+  return linjer;
+}
+
+function periodeNoegle(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function periodeLabel(){
+  const navn = new Date().toLocaleDateString('da-DK', {month:'long', year:'numeric'});
+  return navn.charAt(0).toUpperCase() + navn.slice(1);
+}
+
+async function tegnFakturagrundlag(){
+  $('fgPeriode').textContent = periodeLabel();
+  $('fgBody').innerHTML = `<tr><td colspan="7" style="color:var(--muted)">Henter faktisk forbrug…</td></tr>`;
+  const linjer = await byggFakturaLinjer();
+  window._fgLinjer = linjer;
+
+  const sum = linjer.reduce((s,l) => s+l.total, 0);
+  const afvigerAntal = linjer.filter(l => l.afviger).length;
+  $('fgAktive').textContent = linjer.length;
+  $('fgTotal').textContent = kr(sum);
+  $('fgAfviger').textContent = afvigerAntal;
+  $('fgSum').textContent = kr(sum);
+
+  if(!linjer.length){
+    $('fgBody').innerHTML = `<tr><td colspan="7" style="color:var(--muted)">Ingen aktive kunder lige nu.</td></tr>`;
+  } else {
+    $('fgBody').innerHTML = linjer.map(l => `
+      <tr>
+        <td><strong>${esc(l.k.navn)}</strong></td>
+        <td>${esc(l.moduler.map(m=>m.navn).join(' + '))}</td>
+        <td class="tal">${l.bAftalt} / ${l.brugereFaktisk}</td>
+        <td class="tal">${l.eAftalt} / ${l.enhederFaktisk}</td>
+        <td class="tal"><strong>${kr(l.total)}</strong></td>
+        <td>${l.afviger ? `<span class="chip afviger">Afviger</span>` : `<span class="chip matcher">Matcher</span>`}</td>
+        <td><button class="rk-abn" data-udvid="${esc(l.id)}">Detaljer ▾</button></td>
+      </tr>
+      <tr class="fak-detalje" id="fgDetalje-${esc(l.id)}" hidden><td colspan="7"><div class="inde">
+        ${l.moduler.map(m => `<div class="linje"><span>${esc(m.navn)} — grundpris</span><b>${kr(m.pris)}</b></div>`).join('')}
+        <div class="linje"><span>${l.brugereFaktisk} brugere (faktisk) × ${kr(l.prisBruger)}</span><b>${kr(l.brugereFaktisk*l.prisBruger)}</b></div>
+        <div class="linje"><span>${l.enhederFaktisk} enheder (faktisk) × ${kr(l.prisEnhed)}</span><b>${kr(l.enhederFaktisk*l.prisEnhed)}</b></div>
+        ${l.rabatPct ? `<div class="linje"><span>Rabat ${l.rabatPct}% (fra tilbud)</span><b>−${kr(l.subtotal*l.rabatPct/100)}</b></div>` : ''}
+        <div class="linje sum"><span>Fakturabeløb</span><b>${kr(l.total)}</b></div>
+        ${l.afviger ? `<div class="hint" style="margin-top:8px;color:#8a5c17">Tilbuddet lød på ${l.bAftalt} brugere / ${l.eAftalt} enheder — kunden bruger nu ${l.brugereFaktisk} / ${l.enhederFaktisk}. Overvej et nyt tilbud.</div>` : ''}
+      </div></td></tr>`).join('');
+    $('fgBody').querySelectorAll('[data-udvid]').forEach(b => b.addEventListener('click', () => {
+      const rad = $('fgDetalje-'+b.dataset.udvid);
+      rad.hidden = !rad.hidden;
+      b.textContent = rad.hidden ? 'Detaljer ▾' : 'Detaljer ▴';
+    }));
+  }
+
+  try {
+    const logSnap = await get(ref(db, 'platform/fakturaLog/' + periodeNoegle()));
+    if(logSnap.exists()){
+      const log = logSnap.val();
+      $('fgLogNote').style.display = '';
+      $('fgLogNote').innerHTML = `<b>Markeret som faktureret</b> af ${esc(log.navn||log.email||'—')} d. ${dkDato(log.dato)}.`;
+    } else {
+      $('fgLogNote').style.display = 'none';
+    }
+  } catch(e){ /* ignoreres */ }
+}
+
+$('printFakturaBtn').addEventListener('click', () => {
+  const linjer = window._fgLinjer || [];
+  if(!linjer.length) return;
+  const periode = periodeLabel();
+  $('printArea').innerHTML = linjer.map((l,i) => `
+    <div class="side-label">Side ${i+1} af ${linjer.length} — ${esc(l.k.navn)}</div>
+    <div class="doc print-page">
+      <div class="doc-head">
+        <div><h1>VEYRO SYSTEMS</h1><div class="doc-firma">Fleetcontrol.dk ApS · fleetcontrol.dk</div></div>
+        <div class="doc-meta"><b>FAKTURAGRUNDLAG</b>Periode ${esc(periode)}<br>Dannet ${dkDato(iso())}</div>
+      </div>
+      <div class="doc-til">
+        <div class="navn">${esc(l.k.navn)}</div>Att. ${esc(l.k.kontakt||'')}<br>${l.k.cvr ? 'CVR ' + esc(l.k.cvr) : ''}
+        <div class="doc-status">${l.afviger ? 'FORBRUG AFVIGER FRA AFTALE' : 'FORBRUG MATCHER AFTALE'}</div>
+      </div>
+      <table><thead><tr><th>Grundlag</th><th class="tal">Beløb</th></tr></thead><tbody>
+        ${l.moduler.map(m => `<tr><td>${esc(m.navn)} — grundpris</td><td class="tal">${kr(m.pris)}</td></tr>`).join('')}
+        <tr><td>${l.brugereFaktisk} brugere (faktisk forbrug) × ${kr(l.prisBruger)}</td><td class="tal">${kr(l.brugereFaktisk*l.prisBruger)}</td></tr>
+        <tr><td>${l.enhederFaktisk} enheder (faktisk forbrug) × ${kr(l.prisEnhed)}</td><td class="tal">${kr(l.enhederFaktisk*l.prisEnhed)}</td></tr>
+        ${l.rabatPct ? `<tr><td>Rabat ${l.rabatPct}% (fra tilbud)</td><td class="tal">−${kr(l.subtotal*l.rabatPct/100)}</td></tr>` : ''}
+        <tr class="total-rk"><td>Fakturagrundlag i alt, ekskl. moms</td><td class="tal">${kr(l.total)}</td></tr>
+      </tbody></table>
+      ${l.afviger ? `<div class="flag-note">Aftalt omfang var ${l.bAftalt} brugere / ${l.eAftalt} enheder — faktisk forbrug er ${l.brugereFaktisk} brugere / ${l.enhederFaktisk} enheder. Overvej et nyt tilbud, hvis afvigelsen er varig.</div>` : ''}
+      <div class="vilkaar">Grundlaget er beregnet af faktisk antal brugere og enheder ved udskriftstidspunktet og danner basis for fakturering — ikke selve fakturaen.</div>
+    </div>`).join('');
+  window.print();
+});
+
+$('eksportCsvBtn').addEventListener('click', () => {
+  const linjer = window._fgLinjer || [];
+  if(!linjer.length) return;
+  const rk = [['Kunde','CVR','Moduler','Brugere aftalt','Brugere faktisk','Enheder aftalt','Enheder faktisk','Beløb kr','Afviger']];
+  linjer.forEach(l => rk.push([
+    l.k.navn, l.k.cvr||'', l.moduler.map(m=>m.navn).join(' + '),
+    l.bAftalt, l.brugereFaktisk, l.eAftalt, l.enhederFaktisk,
+    Math.round(l.total), l.afviger ? 'Ja' : 'Nej'
+  ]));
+  const csv = rk.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(';')).join('\r\n');
+  const blob = new Blob(['﻿' + csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `fakturagrundlag-${periodeNoegle()}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+$('markerFaktureretBtn').addEventListener('click', async () => {
+  const linjer = window._fgLinjer || [];
+  if(!confirm(`Markér ${periodeLabel()} som faktureret for ${linjer.length} kunder?`)) return;
+  try {
+    await set(ref(db, 'platform/fakturaLog/' + periodeNoegle()), {
+      dato: iso(), navn: ejer?.navn || '', email: ejer?.email || '',
+      antalKunder: linjer.length, total: Math.round(linjer.reduce((s,l)=>s+l.total,0))
+    });
+    tegnFakturagrundlag();
+  } catch(e){ alert('Kunne ikke gemme: ' + e.message); }
 });
 </script>
 </body>

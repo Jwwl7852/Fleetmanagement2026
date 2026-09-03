@@ -12,7 +12,15 @@
       "config": {
         ".read": "auth != null",
         ".write": "auth != null && root.child('platform/ejere').child(auth.uid).exists()"
+      },
+      "fakturaLog": {
+        ".read": "auth != null && root.child('platform/ejere').child(auth.uid).exists()",
+        ".write": "auth != null && root.child('platform/ejere').child(auth.uid).exists()"
       }
+    },
+    "tilbud": {
+      ".read": "auth != null && root.child('platform/ejere').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('platform/ejere').child(auth.uid).exists()"
     },
     "kunder": {
       ".read": "auth != null && root.child('platform/ejere').child(auth.uid).exists()",
